@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Bert简单理解——原理与介绍</title>
+    <url>/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[<p>关于Bert的相关笔记：</p>
+<a id="more"></a>
+<h1 id="1-BERT的作用"><a href="#1-BERT的作用" class="headerlink" title="1.BERT的作用"></a>1.BERT的作用</h1><p>学习参考链接：<a href="https://www.infoq.cn/article/HBS5tZGyqzaxtCSvz3pJ" target="_blank" rel="noopener">infoQ</a>  <a href="https://www.infoq.cn/article/UhS0UsctOQ2pbiXL3SAY" target="_blank" rel="noopener">infoQ2</a></p>
+<p>因为在NLP任务中我们需要大量的任务专有数据，通常情况下只能将文本分成字段，得到几百或者几十万个人工标注的数据，这远远不够NLP任务中所用的训练数据。</p>
+<p>所以开发一系列训练通用得语言模型，使用网上爬虫获取的文本（未注释）作为模型输入，得到大量的专有任务需要的数据集,该过程也成为<strong>预训练</strong>。</p>
+<p>Bert就是这样的一个训练通用语言模型的工具。(自己理解意义上的)</p>
+<h1 id="2-BERT核心思想"><a href="#2-BERT核心思想" class="headerlink" title="2.BERT核心思想"></a>2.BERT核心思想</h1><p><strong>Masked LM</strong> 新技术：它随机 mask 句子中的单词，然后尝试预测它们。mask 意味着模型将从两个方向观察，它使用句子的全部上下文，包括左边和右边的环境，来预测被 mask 的词(将某个词盖住，并预测该词)。与之前的语言模型不同，它会同时考虑前一个和下一个标记。现有的基于 LSTM 的从左到右和从右到左的组合模型缺少这个“相同时间的部分”。（更准确地说，BERT 是没有方向性的。）</p>
+<h1 id="3-BERT的工作原理"><a href="#3-BERT的工作原理" class="headerlink" title="3.BERT的工作原理"></a>3.BERT的工作原理</h1><p>BERT 依附于“Transformer”（一种标注机制，用来学习文本中单词之间的上下文关系）。<br><strong>Transformer简介</strong>：一个基本的 Transformer 包括一个编码器，用来读取文本输入，一个解码器，用来产生关于任务的预测。<br><strong>BERT中仅需要一个编码器的部分</strong><br><strong>BERT 是一个用 Transformers 作为特征抽取器的深度双向预训练语言理解模型</strong><br><strong>word2vec是一个上下文无关的模型，为词汇表中的每个词都找到各自的词向量</strong></p>
+<p>Transformer 工作时力求执行一个少的、恒定数量的步骤。在每个步骤中，它应用一个<strong>标注机制</strong>来<strong>理解句子中所有单词之间的关系，而不管它们的位置</strong>。例如，对于句子“ I arrived at the bank after crossing the river”，需要确定“bank”这个词是指一条河的岸边，而不是一个金融机构，Transformer 可以很快根据“river”这个词进行标注，只用一步就实现了目的。</p>
+<h2 id="3-1BERT预训练的输入"><a href="#3-1BERT预训练的输入" class="headerlink" title="3.1BERT预训练的输入"></a>3.1BERT预训练的输入</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p><strong>1.</strong>词嵌入后的 Token Embedding，每次输入总以符号 [CLS] 的 embedding 开始，如果是两个句子，则句之间用 [SEP] 隔开。<br><strong>2.</strong>句子类别的符号。将表示句子 A 或句子 B 的标记添加到每个 token 中。这可以在不同的句子间区分编码器。<br><strong>3.</strong>Position Embedding，同Transformer 中的一致。将positional embedding 添加到每个 token 中，以标示其在句子中的位置</p>
+</blockquote>
+<p>将上述的<strong>三个向量相加</strong>即为<strong>BERT预训练的输入</strong></p>
+<h2 id="3-2-Masked-Language-Model（核心思想）"><a href="#3-2-Masked-Language-Model（核心思想）" class="headerlink" title="3.2 Masked Language Model（核心思想）"></a>3.2 Masked Language Model（核心思想）</h2><p>BERT在训练的时候将遮盖住语料中的15%的词语，用[MASK]代替，通过预测这部分的词语（与true word相比较）学习句子中的语义、句法和语义信息。（这是一个不断迭代的过程，参考word2vec的训练过程）</p>
+<blockquote>
+<p><strong>其指导思想是“简单”</strong>：使用（ MASK） token 随机 mask 15% 的单词输入，之后运行基于编码器的 BERT 标注，然后基于所提供的上下文中的其他 non-masked 词序列预测被 mask 的单词含义。然而，这种原始的 mask 方法有一个问题——模型只在 [ MASK]token 出现在输入中时才尝试预测，而我们希望模型不管输入中出现了什么 tokens 都能够尝试预测正确的 tokens 。为了解决这个问题，我们选择 mask15% 的 tokens：（如果标记都用[MASK]表示会影响模型，所以在随机mask的时候采用下面的策略。<br><strong>1</strong>.实际上 80% 的 tokens 被替换为 token [MASK].。<br>eg、my dog is hairy → my dog is [MASK]<br><strong>2</strong>.10% 的 token 被替换为随机 token。<br>eg、my dog is hairy → my dog is apple<br><strong>3</strong>.10% 的 token 保持不变。<br>eg、my dog is hairy → my dog is hairy</p>
+</blockquote>
+<p>训练 BERT 损失函数时，只考虑 mask token 的预测，而忽略非 mask token 的预测。这会导致模型的收敛速度比从左到右或从右到左的模型慢得多</p>
+<h2 id="3-3-Next-Sentence-Prediction（一个预训练中的任务）"><a href="#3-3-Next-Sentence-Prediction（一个预训练中的任务）" class="headerlink" title="3.3 Next Sentence Prediction（一个预训练中的任务）"></a>3.3 Next Sentence Prediction（一个预训练中的任务）</h2><p>该任务是指将两个句子作为输入，做一个判断任务，即第二句话是不是第一句话的下一个任务。<br><strong>该任务可以得到句子的向量（句向量）</strong></p>
+<p>正如我们前面看到的，BERT 用一个特殊的（SEP）token 来分隔句子。在训练过程中，模型一次输入两个句子:</p>
+<p>1.有 50% 的可能性，第二句话在第一句之后。<br>2.有 50% 的可能性，它是一个来自完整语料库的随机句子。</p>
+<p>之后 BERT 就要预测第二个句子是否是随机的，并假设这个随机的句子与第一个句子是断开的：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvOGEvN2QvOGFmOTgyZmNkN2UzMGJjYWU5MWZmM2JiMzAwODgxN2QucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>预测第二句与第一句是否是连接的，基本上完整的输入序列经过 Transformer 模型，再用一个简单的分类器层将（CLS）token 的输出转换为 2×1 的向量，并使用 softmax 分配 IsNext-Label。</p>
+<p>该模型结合了 Masked LM 神经网络和下一句预测进行训练。这是为了最小化两种策略的组合损失函数——所谓的“合作共赢”。（还未理解）</p>
+<h1 id="4-BERT的学习内容"><a href="#4-BERT的学习内容" class="headerlink" title="4. BERT的学习内容"></a>4. BERT的学习内容</h1><p><strong>语义信息</strong>（玄学解释），学习到统计学意义上的信息（个人理解）</p>
+<h1 id="5-BERT的优点"><a href="#5-BERT的优点" class="headerlink" title="5.BERT的优点"></a>5.BERT的优点</h1><p>BERT 是一个强大的预训练，因其超大的参数量和较强的特征提取能力，能够从海量的语料中学习到一些语言学和一定程度的语义信息。</p>
+<h1 id="6-BERT的应用场景"><a href="#6-BERT的应用场景" class="headerlink" title="6.BERT的应用场景"></a>6.BERT的应用场景</h1><p><strong>BERT</strong> 在<strong>自然语言推理</strong>、<strong>情感分析</strong>、<strong>问题问答</strong>、<strong>意译检测</strong>和<strong>语言可接受性</strong>等一般语言理解的各种任务场景。</p>
+<p><strong>eg</strong>、BERT应用在问答场景时：给定一个问题和一个上下文段落，该模型预测该段落中最有可能回答该问题的开始和结束标记。这意味着我们可以使用 BERT 模型通过学习两个额外的向量来训练我们的应用程序，这两个向量分别表示答案的开头和结尾。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>第一个博客</title>
+    <url>/2020/04/27/%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<a id="more"></a>
+<p>这是本博客网站的第一次尝试 ！！</p>
+]]></content>
+      <tags>
+        <tag>TestingTag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/04/27/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<a id="more"></a>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>Testing</category>
+      </categories>
+      <tags>
+        <tag>TestingTag</tag>
+      </tags>
+  </entry>
+</search>
