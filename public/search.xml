@@ -1,6 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>&lt;论文&gt;一篇关于自动生成源代码评论的报告</title>
+    <url>/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>A Survey of Automatic Generation of SourceCode Comments_ Algorithms and Techniques综述论文阅读笔记</p>
+<a id="more"></a>
+<h1 id="一篇关于自动生成源代码评论的报告"><a href="#一篇关于自动生成源代码评论的报告" class="headerlink" title="一篇关于自动生成源代码评论的报告"></a>一篇关于自动生成源代码评论的报告</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>代码评论主要用于提高源码的可读性与可理解性。<br>第一步，大致的分析了代码评论的挑战与调查框架；第二，介绍了典型的算法分类，设计原理、以及各个算法的优缺点。本论文提供了代码评论的质量评估概述，最后总结一些关于代码评论生成和评论质量检测未来的方向。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>代码评论主要是针对程序的功能与意义大致描述。不仅仅通过代码评论提高代码可理解性，有研究提出通过定义一个长的描述性的方法类名等，提示代码的用处。</p>
+<p>之前用于代码注释的方法是机器学习或者基于信息检索技术，评论的框架大致分为三个方面：数据准备；源代码表达；文本生成<br><img src="https://img-blog.csdnimg.cn/20191229162512154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>代码注释与注释的质量检测是相辅相成的，质量检测标注的指定是代码注释领域的一大挑战。<br>代码注释是软件工程与人工智能的交叉研究领域，发了好多顶会。本论文解决的问题：<strong>1.使研究人员能够访问具有代表性的算法目录，以进行自动注释生成，并使新研究人员对自动代码注释的最新算法有很好的了解； 2.总结现有研究的主要挑战和局限性</strong><br>第二部分提供了自动生成评论的动机，并讨论了技术挑战。 第三节讨论了注释生成技术的核心思想，并对各种技术进行了总结。 在第四节中，我们讨论了注释的质量评估问题，并以不同研究中使用的数据集为重点，并总结了代码注释的质量评估标准。 第五节将讨论自动代码注释生成的未来方向。在第六节中，我们总结了本文</p>
+<h2 id="自动生成代码注释的概述"><a href="#自动生成代码注释的概述" class="headerlink" title="自动生成代码注释的概述"></a>自动生成代码注释的概述</h2><p>A、问题陈述<br>代码注释生成主要就是将程序性语言转化为自然语言的描述，不仅描述了代码的功能也体现出编程者背后的思想。简单讲就是通过代码分析，揭示出设计意图，代码逻辑、程序功能、相关参数的含义。<br>B、代码自动生成与研究框架的挑战<br>目前的研究算法工作流程大致都和图一中的一致。<br>自动代码评论的过程通常分为三个方向：第一，将数据收集用于构建评论生成体系的数据集。这些被用于训练、验证、测试模型，提取代码与相对应的评论，或者提取评论生成系统中所需要的特殊规则。通常通过对开源社区或者网站爬取、下载等方式获得数据集。第二、通过确定的算法评论生成。<strong>第三节</strong>具体讲解。第三、评论质量检测。有俩种流行的方法：人工检测与自动化检测。这将会在<strong>第四节</strong>讲解。</p>
+<p>依据检测结果会有不同的进一步措施：评测结果令人满意，评论过程就会停止；否则，程序会回到第一步：准备更多的更合适的数据 或者调整源码处理算法，继续下面的过程。重复上述过程。</p>
+<p>1.）目前的挑战</p>
+<p>a：挑战一：代码自动注释算法<br>总结为三类算法;1.基于信息检索算法2.基于深度神经网络算法3.其他代码自动生成算法（详细见第三节）<br><code>源码模型：ASTs、 分析树、上下文token、CFGs、数据流等等</code><br>上述模型被分为三种目录：1.基于token的代码模型，从源码中提取关键词或者关于主题的词语,词袋模型（BoT）或者（Bow）.基于信息检索的算法主要通过模型去表示源码。2.基于句法规则的模型，主要是抽象语法树，基于深度神经网络3.其他模型。<br>缺少可以综合表示源码各种信息的复合模型。目前的困难就是寻找一个这种综合性 的模型。<br><code>文本生成：在代码评论的项目中，必须在构建自然语言注释之前先提取出代码语言的相关信息，这是一个难点</code><br>现存的文本生成算法可以分为三种：1.基于事先设定好的规则生成2.基于解码编码生成（encoder-decoder模型）3.基于文本检索，从语料库种查询现存的相似注解</p>
+<p>b、挑战二：注释质量检测<br>存在两个问题：<strong>验证测试算法需要统一的数据集</strong>；<strong>评估标准的选择</strong></p>
+<p><code>统一的数据集：需要将测试的数据集做一个统一，但是，由于每个特定的注释生成算法都具有语言依赖性，因此要统一数据集进行测试就具有挑战性。</code></p>
+<p><code>评估标准的选择：设计和制定适当的注释质量评估指标非常重要，这将促进自动代码注释生成的研究</code></p>
+<p>2.）research framework<br>目前，关于代码注释的研究文献主要集中在注释与代码可读性之间的关系，注释与代码可理解性之间的关系，代码注释的自动编程算法和质量评估等方面。<br>通常我们从两个方面总结目前的代码注释与相关研究<strong>：自动程序注释技术</strong>；<strong>代码注释的质量评估</strong>。我们会在本片论文种讨论分析注释的质量检测问题。另一种与代码注释相关的工作是在于引导开发者在何处进行正确的代码注释？？？这也能是一个方向？？，旨在提高代码的可读性。<br><img src="https://img-blog.csdnimg.cn/2019123015232778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>本文重点研究评论生成算法和评论质量评估算法。 这两条工作线相互依存，它们的关系如图2所示。</strong></p>
+<p>3.）代码注释技术领域的发展趋势<br>2010-2014大多数采用信息检索的方法；<br>近五年大多采用深度神经网络技术。<br>为了研究从最近十年发表的59篇论文中选出32篇代表性的论文阅读文献。<br><img src="https://img-blog.csdnimg.cn/2019123015234468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>图3</strong>显示了多年来根据论文中使用的算法类型分配的论文,本图印证了上面关于技术趋势的总结（信息检索和深度神经网络）。图3表明最近的研究主要集中在基于深度神经网络的评论技术上</p>
+<h2 id="代码注释的算法"><a href="#代码注释的算法" class="headerlink" title="代码注释的算法"></a>代码注释的算法</h2><p>本节主要展示代码注释的相关算法的分类：<br>A、算法分类<br>三类：如图<br><img src="https://img-blog.csdnimg.cn/20191230152852957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>B、基于信息检索的评论生成算法<br>给一个无注释的源码以及一个拥有注释的源码数据集，基于信息检索的算法可以计算出无注释源码与数据集的相关性，并精确的预测出无注释源码的相应注释。<br>基于信息检索技术的注释算法通常利用基于向量空间模型（VSM），潜在语义索引（LSI）和潜在狄利克雷分配（LDA）的技术或其他相关技术，例如代码克隆检测（代码查重）。信息检索（IR）技术在软件工程领域的早期应用之一是关于代码和注释之间的可追溯性。</p>
+<p>2003年，Marcusand Maletic [45]利用潜在语义索引（LSI）技术，对源代码和外部文档进行分析，以从程序和文档中提取语义信息，并进一步恢复了文档和源代码之间的链接。 尽管研究本身并不涉及自动注释生成的问题，但该方法可以应用于代码注释。在现有文献中，相似性比较不是直接以源代码文本的形式进行的。<br>大多数注释系统将源代码转换为<strong>解析树（parse tree）或抽象语法树（AST）</strong>的形式，然后将目标代码与数据集中的其他源代码进行比较，根据比较结果返回响应的matched代码。采用启发式规则对匹配码的对应注释进行过滤。最后获得最匹配的对应代码注释作为输入无注释源码的注释。总的来说，这些算法通常通过搜索或设计规则来生成评论文本。</p>
+<p>1）基于VSM/LSI 的代码注释生成算法</p>
+<pre><code>VSM（基于向量空间模型）/LSI （潜在语义索引）</code></pre><p>当我们使用VSM和/或LSI为源代码生成注释时，源代码文本或查询文本通常表示为向量，矩阵或元组。向量中的每个元素表示文档中单词的权重。在VSM中，有很多计算项权重的方法，而项频逆文档频率（tf-idf）是使用最广泛的加权方法。LSI利用奇异值分解（SVD），识别术语和概念之间的术语相关性，并提取文本的概念性主题。<strong>注释系统根据每个术语的权重值确定该术语是否应出现在源代码注释中</strong>，或计算查询文本向量与源代码文本之间的文本相似度。具有较高相似性的术语表示与代码段或查询主题相关性更高。基于查询的代码注释系统便根据这些高相关性的关键词组成目标源码的注释。<br>这些技术用于挖掘代码文本，并在源代码文本中找出关键字，以将自然语言描述构造为代码注释。这些注释常用于描述功能、特征或者源码的变量，例如类、方法、代码块等等。<br><strong>Haiduc的应用</strong>：采用VSM和LSI 的方法分析源码文本产生源码类或者方法的自然语言总结。首先，他们将源代码文档和程序包转换为文档集，称为语料库。 然后，他们将标识符名称中包含的术语以及来自源代码和文档的注释以矩阵形式表示出来。使用VSM生成源代码的摘要时，将根据选择的权重选择源代码文档中最相关的术语，同时还使用LSI技术计算语料库中每个术语的向量与向量之间的余弦相似度 源代码文档的摘要，然后生成高度相似的术语，这些术语不会出现在要概述的方法或类中，而是出现在语料库中。这样，他们分析了<strong>Java项目中的方法和类源代码</strong>，并为其生成了简短，准确的文本描述。<strong>Haiduce</strong>t等人做出了另一种贡献， <strong>仅利用LSI为开放源代码存储库中的Java类代码生成摘要注释</strong>。<br>Vassalloet等人利用相同的方法。 使用VSM模型来表示Stack Overflow上的问与答（Q＆A）中的源代码文本和开发人员讨论文本为矢量，并计算目标源代码文本和讨论文本之间的<strong>余弦相似度</strong>以查找映射。 推荐使用高度相似的段落文本作为目标源代码的注释。 结果，他们挖掘了众包知识以推荐评论方法。<br>同样，Panichellaet等人[57] 使用启发式和向量空间模型来处理和分析开发人员通信以进行方法描述。 开发人员交流主要是指与类，方法和参数有关的电子邮件和错误报告。 他们提取可追溯到源代码方法的段落文本，<strong>并通过计算文本段落和每种跟踪方法的文本之间的文本相似度（即余弦相似度）来识别相关段落</strong>（<strong><code>这句话没有明白</code></strong>）。 建议使用相似度高的相关段落作为方法说明。<br>这种技术的缺点在于，它仅考虑语料库或源代码文档中出现的术语，而不考虑源代码文档中包含的其他信息，例如程序调用，数据依赖性，源代码中的单词序列 。 因此，这些系统难以进一步提高所生成评论的准确性。（有较高的局限性。目前的应用层面依旧在数据挖掘中，个人猜测）</p>
+<p>2）基于代码克隆检测的注释生成算法<br>wong的案例： 提出一种基于编码克隆检测技术的方法，该方法可从大型编程问答网站（Q＆A）挖掘评论。来自Q＆A的关于Stack Overflow的帖子，包含代码片段以及相应的文本描述，被称为代码描述映射（即为代码和相应的文本描述是一一对应的），这种对应关系被提取出来作为数据库，然后找最大对应子字符串。。。。够狠！！这种办法生成的注释的数量和质量在很大程度上取决于为注释系统构建的数据集的规模和质量。</p>
+<p>这种方法的缺点是生成的评论数量少得多。 原因是生成的注释的数量很大程度上取决于数据库或GitHub的开源软件项目中包含的信息。 例如，如果从未在任何帖子中讨论过代码段，则评论系统将根本无法推荐任何评论。<br>3）基于LDA的注释生成算法</p>
+<p>基于LDA的注释生成算法涉及使用LDA模型构建源代码模型并为目标源代码生成注释。 换句话说，LDA可以提取源代码的特定功能。<br>另外，Movshovitz-Attias和Cohen [52]使用主题模型，LDA和n-gram模型来预测Java源代码的注释。 他们分别从多个训练数据集中，在相同的源代码文档上训练n-gram模型和LDA模型。 然后他们将文档视为具有两种实体类型（代码和文本令牌）的混合成员，并在文档上训练链接LDA模型。使用受过训练的模型，他们计算文档主题的后验概率，并进一步推断注释令牌的概率。 最后，建议将高概率的注释标记作为源代码文件的注释。<br>Rahmanet等人使用LDA [61]。 分析来自Stack Overflow问答站点的讨论，以为开源项目推荐有见地的评论。 他们利用不同于Wonget等人的基于启发式的技术[83]来挖掘众包知识以对开源项目发表评论。 生成的注释主要描述了源代码的不足，质量和范围，以改进源代码，并可以帮助维护工程师执行维护任务</p>
+<p>4） 其他的基于信息检索的注释生成算法</p>
+<p><code>暂略</code></p>
+<p><strong>C、基于深度神经网络的注释生成算法</strong>（<strong>重点部分</strong>！！！）</p>
+<p>代码注释生成可以被当作是一种翻译工作（程序语言与自然语言之间）</p>
+<p>主要由两个方向：基于循环神经网络算法与基于其他神经网络算法。深度神经网络分为三种：卷积神经网络（CNN），循环神经网络（RNN）和递归神经网络（RvNN？？不确定是啥。。）[60]。<br>卷积神经网络适合用于NLP，图像识别和语音处理等方向中。RNN常用于处理和预测顺序数据，在NLP和语音处理中应用较好；RNN和RvNN均可用于本论文场景–代码注释生成。</p>
+<ul>
+<li>两个重要的结构：<strong>encoder-decoder结构</strong>和<strong>attention机制</strong></li>
+</ul>
+<p><strong>a、encoder-decoder结构</strong></p>
+<p>在编码器-解码器的结构中，编码器起到将源代码编码为固定大小的矢量的作用； 解码器负责对源代码矢量进行解码并预测源代码的注释。各种编码器/解码器结构之间的差异在于输入形式和神经网络的类型。通常，编码器/解码器的内部结构可以选择RNN，CNN 和RNN的变体，例如门控循环单元（GRU）和长期短期记忆模型（LSTM）。</p>
+<p><strong>b、attention机制</strong></p>
+<p>它负责将较高的权重值动态分配给解码器输入序列中每个单词的更相关的标记。对于长序列情况下性能不佳的问题，这是一个很好的解决方案。由于基于深度神经网络的注释生成算法属于机器学习的类别，因此基于深度神经网络的注释生成系统需要包含代码和注释的高质量数据集来训练神经网络。<strong>数据集可以满足系统的所有数据需求，还提供用于训练以及验证和测试评论算法的数据</strong>，一集多用。。。</p>
+<p>1）基于RNN的注释生成算法</p>
+<p>RNN的另外两个重要变体是<strong>长期短期记忆模型（LSTM）</strong>和<strong>门控循环单元（GRU）</strong>。<br>LSTM的特点是它具有三门控制器结构并构造了可控制的记忆神经元，可解决传统RNN中的梯度下降和梯度爆炸。<br>与LSTM相比，GRU结构简单，克服了LSTM的缺点：结构复杂，实现复杂，执行效率低。GRU仅使用两个门：一个是更新门，另一个是复位门。<br>根据编码器中使用的RNN数量，将基于RNN的注释生成算法分为两类：<strong>基于单编码器的注释算法</strong>和<strong>基于多编码器的注释算法</strong><br>ａ、基于单编码器的注释算法</p>
+<p>编码器由一个RNN组成。这是一个典型的用于代码注释生成的编码解码结构。</p>
+<p>*<em>一篇比较先进的论文: RvNN ,parse tree,encoder-decoder(GRU based),attention:Y.Liang and K. Q. Zhu, ‘‘Automatic generation of text descriptive com-ments for code blocks,’’ *</em></p>
+<p>b.基于多编码器的注释生成算法</p>
+<p>RNN利用GRU或LSTM表示长输入序列之间的长距离特征。 CNN利用卷积注意或卷积层来收集和表示源代码的功能和位置模型</p>
+]]></content>
+      <tags>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;论文&gt;Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis</title>
+    <url>/2020/04/30/Progressive%20Self-Supervised%20Attention%20Learning%20forAspect-Level%20Sentiment%20Analysis%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</url>
+    <content><![CDATA[<p>摘要：Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis翻译及理解</p>
+<a id="more"></a>
+
+<h1 id="Progressive-Self-Supervised-Attention-Learning-forAspect-Level-Sentiment-Analysis翻译及理解"><a href="#Progressive-Self-Supervised-Attention-Learning-forAspect-Level-Sentiment-Analysis翻译及理解" class="headerlink" title="Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis翻译及理解"></a>Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis翻译及理解</h1><p>1.本文针对神经网络在学习过程中存在的强模式过学习和弱模式欠学习的问题，提出了渐进自监督注意力机制算法，有效缓解了上述问题。主要基于擦除的思想，使得模型能够渐进的挖掘文本中需要关注的信息，并平衡强模式和弱模式的学习程度。在基于方面层次的情感分析三个公开数据集和两个经典的基础模型上测试表明，所提出的方法取得了不错的性能表现。<br>2.在方面层次的情感分类任务中，经典方法为使用注意力机制来捕获上下文文本中与给定方面最为相关的信息。然而，注意力机制容易过多的关注数据中少部分有强烈情感极性的高频词汇，而忽略那些频率较低的词。</p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在方面级别的情感分类（ASC）中，普遍的做法是为优势神经模型配备注意机制，以便获得给定方面每个上下文词的重要性。 但是，这种机制倾向于过分关注少数带有情感极性的频繁单词，而忽略了很少出现的单词。 本文提出了一种针对神经ASC模型的渐进式自我监督注意学习方法，该方法会自动从训练语料库中挖掘有用的注意监督信息，以细化注意机制。特别是，我们对所有训练实例进行<strong>迭代的情感预测</strong>。 <strong>将具有最大注意力权重的上下文单词提取为对每个实例的正确/不正确预测具有积极/误导性影响的上下文单词</strong>，然后将该单词本身屏蔽起来以进行后续迭代。 最后，用<strong>正则化项</strong>削弱了常规训练目标，这使ASC模型可以继续将注意力集中在提取的活动上下文词上，同时减少那些误导对象的权重。对多个数据集的实验结果表明，我们提出的方法产生了更好的注意力机制，从而导致了对两种状态的重大改进 最先进的神经ASC模型。 源代码和经过训练的模型可从<a href="https://github.com/DeepLearnXMU" target="_blank" rel="noopener">https://github.com/DeepLearnXMU/PSSAttention</a>获得。</p>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>基于方面的情感分析在该领域中是一项单独的任务，旨在推断出输内容在某一方面的情感极性。</p>
+<p>目前该工作的处理模型：占主导地位的ASC模型已发展为基于神经网络（NN）的模型，它可以自动的学习输入内容的情感关系，表现良好。attention机制在该任务中也有着重要的作用。</p>
+<p><strong>现存的基于attention的ASC模型有一个重大的缺陷</strong>：这种机制倾向于过分关注少数带有情感极性的频繁单词，而忽略了很少出现的单词。</p>
+<p>两个模式：“apparent patterns” and “inap-parent patterns”<br>其中，“明显模式”被解释为带有强烈情绪极性的高频词汇，而“不明显模式”则被解释为训练数据中的低频词汇，神经网络通常会对显示模式的词语过度学习，针对不明显的词语忽视掉。<br><strong>一个反面例子</strong>：<br><img src="https://img-blog.csdnimg.cn/20191222135819263.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在前三个训练句中，由于语境词“小”经常与消极情绪一起出现，注意机制对其给予了更多的关注，并将包含“小”情绪的句子与消极情绪直接联系起来。这就不可避免地导致了另一个信息上下文单词“crowded”被部分忽略，尽管它也是消极意义上的词语。因此,情绪的神经ASC模型错误地预测最后两个测试句子:在第一个测试中句子,神经ASC模型未能捕获的负面情绪与“拥挤”;同时,在第二个测试句子,注意机制直接关注“小”尽管这样与方面词没有关系。（<strong>本次测试样例中的aspect是place？？</strong>）</p>
+<p>在本文中，我们提出了<strong>一种针对神经ASC模型的新型渐进式自我监督注意力学习方法</strong>。该方法可以自动的递增的从训练语料中获得注意力监督信息，它可以用于指导ASC模型中attention机制的训练。</p>
+<p><strong>想法依据</strong>：注意权重最大的上下文词对输入句子的情感预测影响最大。因此，在模型训练过程中应考虑正确预测的训练实例的上下文词。 相反，预测错误的训练数据应该被忽视。为此，我们迭代地对所有训练实例进行情绪预测。</p>
+<p><strong>大致过程</strong>：特别的是，在每次迭代时，我们从每一次训练实例中提取出最大的attention权重去规范attention监督信息，这可以用于规范attention机制的训练：在正确预测的情况下，我们将保留此词以供考虑； 否则，预计该词的注意力下降。然后，我们屏蔽了到目前为止每个训练实例提取的所有上下文词，然后<strong>重新进行上述过程</strong>以发现更多注意机制的监督信息。 最后，我们用调节器增强标准训练目标，该调节器强制这些挖掘的上下文词的注意力分布与其预期分布相一致。</p>
+<p><strong>本文突出贡献</strong>：<br>(1)通过深入分析，指出了目前一般的注意力机制存在的不足。<br>(2)提出了一种新的神经ASC模型注意监控信息自动提取的增量方法。<br>(3)我们将我们的方法应用于两个主要的神经ASC模型:记忆网络(MN) 和转换网络(TNet)。几个基准数据集的实验结果证明了该方法的有效性。</p>
+<h2 id="2-背景"><a href="#2-背景" class="headerlink" title="2.背景"></a>2.背景</h2><p>本节简单给出MN和TNet两个模型的介绍，这两个模型都实现了令人满意的效果。<br><strong>几个参数介绍：</strong><br>x=   (x1,x2,…,xN) ：输入句子文本<br>t= (t1,t2,…,tT) ：给出的目标aspect<br>y,yp∈{Positive,  Negative,  Neutral}用于表示真实的标签和预测的标签（即情感极性）<br><img src="https://img-blog.csdnimg.cn/20191222165031285.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">)<img src="https://img-blog.csdnimg.cn/20191222165050794.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>MN模型</strong>：先介绍一个方面嵌入矩阵，将每个target aspect的单词tj转换为词向量表示形式，然后定义最终t的词向量表示形式为v(t)，作为该词的<strong>平均aspect词嵌入向量</strong>。 同时，另一个嵌入矩阵用于将每个上下文单词xi投影到连续存储的内存中，用mi表示。然后，使用内部attention机制生成句子x的与aspect相关的情感语义表示<br><img src="https://img-blog.csdnimg.cn/20191222145515516.png" alt="在这里插入图片描述"><br>其中M是一个attention矩阵，并且<strong>hi</strong>是从上下文词中引出的xi的最终语义表示，被从上下文词嵌入矩阵导出。 最后，我们使用完全连接的输出层基于o和v（t）进行分类。</p>
+<p><strong>TNet</strong>：三个组件<br>(1)底层是Bi-LSTM，它将输入x转换为<strong>上下文化的单词表示形式</strong> （<strong>此处有疑问</strong>）<br><img src="https://private.codecogs.com/gif.latex?h%5E%7B%280%29%7D%28x%29%20=%20%28h_1%5E%7B%280%29%7D,h_2%5E%7B%280%29%7D,%5Ccdots,h_N%5E%7B%280%29%7D%29" alt="在这里插入图片描述"><br>(即Bi-LSTM的隐藏状态)。</p>
+<p>(2)中间部分作为整个模型的核心，包含L层上下文保持转换(Context-Preserving Transformation:CPT)，其中单词表示形式更新为<img src="https://private.codecogs.com/gif.latex?h%5E%7B%28l&plus;1%29%7D%28x%29%20=%20CPT%28h%5E%7B%28l%29%7D%28x%29%29" alt="在这里插入图片描述">)。CPT层的关键操作是特定于目标的转换。它包含另一个Bi-LSTM，用于通过注意机制生成v(t)，然后将v(t)合并到单词表示中。此外，CPT层还配备了上下文保存机制(Context-Preserving Mechanism: CPM)来保存上下文信息和学习更抽象的单词级特性。最后，我们得到了单词级语义表示<br><img src="https://private.codecogs.com/gif.latex?h%28x%29%20=%20%28h_1,h_2,%5Ccdots,h_N%29,with%20h_i%20=h_i%5E%7B%28L%29%7D" alt="在这里插入图片描述"><br>(3)最上层是CNN层，用于生成与方面相关的句子表示o进行情感分类。</p>
+<p>在这项工作中，我们考虑了原始TNet的另一种替代方案，该替代方案用注意力机制替换了最顶层的CNN，以产生与方面相关的句子表示形式为：o = Atten（h（x），v（t））。 在第4节中，我们将研究原始的TNet及其配备注意机制的变体的性能，该机制由TNet-ATT表示。</p>
+<p><strong>训练对象</strong>：上述两种模型都以gold-truth情绪标签的负对数可能性为研究对象<br><img src="https://img-blog.csdnimg.cn/20191222151213443.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3-本文方法"><a href="#3-本文方法" class="headerlink" title="3.本文方法"></a>3.本文方法</h2><p>在本节中，我们首先描述了方法背后的基本认识，然后提供了其详细信息。最后，我们阐述了如何将挖掘的监督信息纳入注意机制到神经ASC模型中。我们的方法只适用于神经ASC模型的训练优化，对模型测试没有任何影响</p>
+<h3 id="3-1基本介绍（直观理解）"><a href="#3-1基本介绍（直观理解）" class="headerlink" title="3.1基本介绍（直观理解）"></a>3.1基本介绍（直观理解）</h3><p>我们的方法的基本直觉源于以下事实：在注意力ASC模型中，每个上下文单词在给定方面的重要性主要取决于其关注权重。 因此，关注度最大的上下文词对输入句子的情感预测影响最大。 因此，对于训练句子，如果ASC模型的预测是正确的，我们认为继续关注该上下文词是合理的。 相反的话，应该降低该上下文词的注意力权重。<br>但是，如前所述，具有最大注意力权重的上下文词通常是具有强烈情感极性的上下文词。 它通常在训练语料库中频繁发生，因此在模型训练过程中往往会过分考虑。 这同时导致对其他上下文单词，尤其是具有情感极性的低频单词的学习不足。 <strong>为了解决该问题，一种直观且可行的方法是在重新研究训练实例的其余上下文词的效果之前，首先屏蔽该最重要的上下文词的影响。 在这种情况下，可以根据它们的注意力权重发现其他具有情感极性的低频上下文词</strong></p>
+<h3 id="3-2算法细节"><a href="#3-2算法细节" class="headerlink" title="3.2算法细节"></a>3.2算法细节</h3><p>我们提出了一种新颖的增量方法，可以从训练实例中自动挖掘有影响力的上下文词，然后可以将其用作神经ASC模型的注意监督信息。（说好几遍了。。。）<br><img src="https://img-blog.csdnimg.cn/20191222151828977.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>首先使用初始训练语料库D进行模型训练，然后获得初始模型参数$\Theta ^{(0)}$（第1行）。 然后，我们继续训练K迭代模型，在其中可以迭代地提取所有训练实例的有影响力的上下文单词（第6-25行）。 在此过程中，对于每个训练实例（x，t，y），我们引入初始化为∅的两个单词集（第2-5行），以记录其提取的上下文单词：（1）$S_{a}(x)$包括对 x的情绪预测有积极作用的上下文单词。每个$S_{a}(x)$的单词将被考虑更加细化的模型训练中（2）$S_{m}(x)$包含具有误导作用的上下文词，预期其注意力权重将降低。 具体来说，在第k次训练迭代中，我们采用以下步骤来处理（x，t，y）：<br><img src="https://img-blog.csdnimg.cn/20191222153036559.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>在第1步中</strong>，我们首先应用上一次迭代的模型参数θ（k-1）生成纵横表示v（t）（第9行）。 重要的是，根据sa（x）和sm（x），我们然后屏蔽所有先前提取的x的上下文词以创建新的句子x’，其中每个被屏蔽的词都用特殊标记“ 〈mask〉”替换（第10行） 以此方式，在x’的情感预测期间将屏蔽这些上下文词的影响，因此可以从x’提取其他上下文词。 最后我们得到单词之间的关系：<br><img src="https://img-blog.csdnimg.cn/20191222153336482.png" alt="在这里插入图片描述"><br><strong>在第2步中</strong>，基于v（t）和h（x’），利用θ（k-1）预测x’作为yp的情感极性（第12行），其中单词级注意力权重分布<br><img src="https://img-blog.csdnimg.cn/20191222153553720.png" alt="在这里插入图片描述"><br>权重分布由下式得到<br><img src="https://img-blog.csdnimg.cn/20191222153637602.png" alt="在这里插入图片描述"></p>
+<p><strong>在步骤3中</strong>，我们使用熵E（α（x’） ）以测量α（x’）的方差（第13行），有助于确定影响上下文上下文词的存在，以进行x’的情感预测:<br><img src="https://img-blog.csdnimg.cn/20191222153739401.png" alt="在这里插入图片描述"><br>如果E（α（x’））小于阈值Cα（第14行），我们认为存在至少一个上下文词，对x’的情感预测有很大影响。 因此，我们提取具有最大注意权重的上下文词x’m（第15-20行），将其用作注意监督信息以完善模型训练。 具体来说，我们针对x’的不同预测结果采取两种策略来处理x’m：如果预测正确，我们希望继续关注x’m，将其添加到sa（x）中（第16-17行）； 否则，我们期望减少x’m的注意力权重，因此将其包括到sm（x）中（第18-19行）。</p>
+<p><strong>在第4步中</strong>，我们将t，x’和y组合成一个三元组，并将其与收集到的三元组合并，以形成一个新的训练语料库D（k）（第22行）。 然后，我们将D（k）做出影响级以继续更新模型参数以进行下一次迭代（第24行）。 通过这样做，我们使模型具有适应性，可以发现更多有影响力的上下文词。</p>
+<p>通过上述步骤的集合，我们可以提取所有训练实例的有影响力的上下文词。 表2说明了表1中显示的第一句话的上下文词挖掘过程。在此示例中，我们轮换着迭代这提取下面三个词“small”,  “crowded”和“quick”。前两个词包含在insa（x）中，最后一个包含在insm（x）中。最后，每个训练实例的提取上下文词将被包含到D中，形成具有注意力监控信息的最终训练语料Ds（第26-29行） ，这将用于进行最后的模型训练（第30行）。 </p>
+<h3 id="3-3attention监督信息模型的训练"><a href="#3-3attention监督信息模型的训练" class="headerlink" title="3.3attention监督信息模型的训练"></a>3.3attention监督信息模型的训练</h3><p><img src="https://img-blog.csdnimg.cn/20191222154622883.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述">)<img src="https://img-blog.csdnimg.cn/20191222154642873.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="4、实验部分"><a href="#4、实验部分" class="headerlink" title="4、实验部分"></a>4、实验部分</h2><p><strong>数据集</strong>：我们将提出的方法应用于MN和TNet-ATT（参见第2节），并在三个基准数据集上进行了实验：LAPTOP， REST和TWITTER。在数据集中，已经提供了每个句子的目标方面。 此外，我们删除了一些带有冲突情绪标签的实例（Chen et al。，2017）。 表3列出了最终数据集的统计信息。（上面的表）</p>
+<p><strong>对比模型</strong>：我们将两个增强的ASC模型称为MN（+ AS）和TNet-ATT（+ AS），并将它们与MN，TNet和TNet-ATT进行比较。 请注意，我们的模型需要进行额外的K + 1次迭代训练，因此，我们还将它们与上述进行了额外的K + 1次迭代训练的模型进行了比较，分别表示为MN（+ KT），TNet（+ KT）和TNet-ATT（+ KT）。此外为了研究不同种attention监督信息的影响，我们还列出了MN（+ ASa）和MN（+ ASm）的性能，它们分别仅利用了sa（x）和sm（x）的上下文词，并且对于TNet-ATT（+ ASa）和TNet-ATT（+ ASm）都是相同的效果。</p>
+<p><strong>训练细节</strong>：我们使用预先训练的GloVe vectors初始化矢量尺寸为300的单词嵌入。对于词汇量不大的单词，我们从均匀分布[-0.25，0.25]中随机采样其嵌入。 此外，我们在[-0.01，0.01]之间均匀初始化了其他模型参数。为缓解过度拟合，我们在LSTM的输入单词嵌入和最终与方面相关的句子表示上采用了dropout策略。 （Kingma and Ba，2015）被作为优化器，学习率为0.001。<br>在实施我们的方法时，我们根据经验将最大迭代数K为5，方程3中的γ设置为LAPTOP数据集上的0.1，REST数据集上的0.5，TWITTER数据集上为0.1。 所有超参数均为20％随机调整的训练数据。最后，我们使用F1-Macro和准确性作为我们的评估方法。<br><img src="https://img-blog.csdnimg.cn/20191222155726907.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="4-1Effects-of-epsilon-a"><a href="#4-1Effects-of-epsilon-a" class="headerlink" title="4.1Effects of $\epsilon _{a}$"></a>4.1Effects of $\epsilon _{a}$</h3><p>$\epsilon _{a}$是一个非常重要的超参数，它控制挖掘注意超信息的迭代次数（请参见算法1第14行）。 因此，在这组实验中，我们将$\epsilon _{a}$从1.0更改为7.0，每次递增1，以研究其对我们的模型在验证集上的性能的影响。图3和图4显示了实验 不同模型的结果。 具体来说，$\epsilon _{a}$= 3.0的MN（+ AS）达到最佳性能，而当$\epsilon _{a}$= 4.0时，获得了TNet-ATT（+ AS）的最优性能。 我们观察到α的增加并没有导致进一步的改进，这可能是由于提取了更多嘈杂的上下文词所致。由于这些结果，我们分别将MN（+ AS）和TNet-ATT（+ AS）的$\epsilon _{a}$设置为3.0和4.0。 </p>
+<h3 id="4-2-总体结果"><a href="#4-2-总体结果" class="headerlink" title="4.2 总体结果"></a>4.2 总体结果</h3><p>表4提供了所有实验结果。 为了增强我们实验结果的说服力，我们还在同一数据集上显示了MN（Wang等人，2018）和TNet（Liet等人，2018）先前报告的得分。 根据实验结果，我们可以得出以下结论：</p>
+<p><strong>首先</strong>，我们重新实现的MN和TNet均与（Wang等人，2018; Li等人，2018）中报道的原始模型相当。 这些结果表明，我们重新实现的基准具有竞争力。 当我们用注意机制替换TNet的CNN时，TNet-ATT稍逊于TNet。 此外，当我们在这些模块上执行附加的K + 1迭代训练时，它们的性能并没有显着改变，这表明仅增加训练时间就无法增强神经ASC模型的性能。</p>
+<p><strong>其次</strong> 在MN和TNet-ATT中提出的方法中，上下文单词in sa（x）比in sm（x）更有效，这是因为正确预测的训练实例的比例大于不正确训练实例的比例。 此外，MN（+ ASa）和MN（+ ASm）之间的性能差距比TNet-ATT的两个变体之间的性能差距要大。 一个潜在的原因是TNet-ATT的性能优于MN，这使TNet-ATT可以产生更正确预测的训练实例。 与MN相比，这反过来给TNet-ATT带来了更多关注的监督。</p>
+<p>最后，当我们同时使用两种注意力监督信息时，无论哪种算法，测试集中MN（+ AS）在所有方面都明显优于MN。尽管我们的TNet-ATT稍逊于TNet，但TNet-ATT（+ AS）仍大大超过TNet和TNet-ATT。 这些结果强有力地证明了我们方法的有效性和普遍性。</p>
+<h3 id="4-3案例研究"><a href="#4-3案例研究" class="headerlink" title="4.3案例研究"></a>4.3案例研究</h3><p>为了了解我们的方法如何改进神经ASC模型，我们深入分析了TNet-ATT和TNet-ATT（+ AS）的注意力结果。 已经发现，我们提出的方法可以很好地解决上述两个问题。<br><img src="https://img-blog.csdnimg.cn/20191222160606414.png" alt="在这里插入图片描述"><br>表5提供了两个测试案例。 TNet-ATT错误地将第一个测试句子的情绪预测为中立。 这是因为上下文词“不舒服”仅出现在两个带有负极性的训练实例中，这分散了对其的注意力。 使用我们的方法时，在这两种情况下，“uncomfortable”的平均注意力权重增加到基线的2.6倍。 因此，TNet-ATT（+ AS）能够为该上下文词分配更大的关注权重（0.0056→0.2940），从而导致对第一个测试句子的正确预测。 对于第二个测试语句，由于上下文单词“ cute”出现在大多数具有正极性的训练实例中，因此TNet-ATT直接将注意力集中在该单词上，然后错误地将情感感知预测为积极。 采用我们的方法，在具有神经或负极性的训练实例中，“可爱”的注意力权重显着降低。 具体而言，在这些情况下，“可爱”的平均权重降低到原始值的0.07倍。 因此，TNet-ATT（+ AS）将较小的权重（0.1090→0.0062）分配给“cute”，并获得正确的情感预测。</p>
+<h2 id="5-相关工作"><a href="#5-相关工作" class="headerlink" title="5.相关工作"></a>5.相关工作</h2><p>最近，已经证明神经模型在ASC上是成功的。 例如，由于具有多重优势（例如更简单，更快速），具有注意力机制的MN被广泛使用（Tang等; Wang等）。另一种流行的神经模型是LSTM，它也涉及 一个关注机制来明确捕捉每个上下文词的重要性（Wang等人，2016）。 总的来说，注意力机制在所有这些模型中都起着至关重要的作用。</p>
+<p>跟随这种趋势，研究人员诉诸了更为复杂的注意力机制来重新完善神经ASC模型。 Chen 提出了一种多注意机制来捕获相隔很远距离的情感特征，以使其对不相关的信息更具鲁棒性。 Ma等人为ASC设计了一个交互式注意力网络，其中引入了两个注意力网络来对目标和上下文进行交互建模。 Liu 提出对ASC利用多种注意力：一个是从给定方面的左上下文获得的，另一个是从给定方面的右上下文获得的。 最近，ASC也探索了基于变换的模型（Li等，2018），注意力机制被CNN取代。</p>
+<p>与这些工作不同的是，我们的工作与引入注意力监督以精炼的研究相一致。 注意机制，已成为事件检测（Liuet等人，2017），机器翻译（Liu等人，2016）和警察杀人检测（Nguyen and Nguyen，2018）等多个基于NN的NLP任务中的热门研究主题。 ）。 但是，这种有监督的注意力获取是很费力的。 因此，我们主要致力于自动采矿监督信息，以获取神经ASC模型的注意机制。从理论上讲，我们的方法与这些模型正交，因此我们将对这些模型的适应性留作以后的工作。</p>
+<p>我们的工作受到两个最新模型的启发：其中一个时（Wei等人，2017）提出使用分类阳离子网络逐步消除区分对象区域以解决弱监督语义分割问题，另一个是（Xu等人，2018） 其中提出了一种与全局信息集成的辍学方法，以鼓励模型挖掘不明显的特征或模式进行文本分类。 据我们所知，我们的工作是第一个探索自动挖掘ASC注意监控信息的人。</p>
+<h2 id="6-总结与工作计划"><a href="#6-总结与工作计划" class="headerlink" title="6.总结与工作计划"></a>6.总结与工作计划</h2><p>在本文中，我们探索了如何自动挖掘监督信息，以用于神经ASC模型的注意机制。 通过深入的分析，我们首先指出了ASC注意机制的缺陷：一些带有情感极性的常用词往往被​​过度学习，而频率较低的词却缺乏足够的学习能力。 然后，我们提出了一种新的方法来自动地、增量地挖掘神经ASC模型的注意监督信息。 这些挖掘的信息可以通过正则化项进一步用于优化模型训练。 为了验证我们方法的有效性，我们将我们的方法应用于两个主要的神经ASC模型，实验结果表明我们的方法显着改善了这两个模型的性能。 因此，我们计划将我们的方法扩展到具有注意机制的其他神经NLP任务，例如神经文档分类（Yang等）和神经机器翻译（Zhang等）。</p>
+]]></content>
+      <tags>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Bert简单理解——原理与介绍</title>
     <url>/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[<p>关于Bert的相关笔记：</p>
@@ -35,6 +131,36 @@
 ]]></content>
   </entry>
   <entry>
+    <title>&lt;论文&gt; Unsupervised Machine Translation Using Monolingual Corpora Only</title>
+    <url>/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/</url>
+    <content><![CDATA[<p>论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only<br>作者： Guillaume Lample / Ludovic Denoyer /Marc Aurelio Ranzato<br>发表时间：2018/4/30<br>论文链接：<a href="https://arxiv.org/pdf/1711.00043v1.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00043v1.pdf</a><br>代码链接：<a href="https://github.com/facebookresearch/MUSE" target="_blank" rel="noopener">https://github.com/facebookresearch/MUSE</a> 以及 <a href="https://github.com/facebookresearch/fastText" target="_blank" rel="noopener">https://github.com/facebookresearch/fastText</a></p>
+<a id="more"></a>
+
+<p>发现一篇很详细的翻译笔记：<a href="https://blog.csdn.net/ljp1919/article/details/102728699?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158599074719726869003034%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158599074719726869003034&biz_id=0&utm_source=distribute.pc_search_result.none-task-blog-all_SOOPENSEARCH-3" target="_blank" rel="noopener">地址</a></p>
+<p>在此仅作自己的学习笔记总结：</p>
+<h1 id="1-论文概述"><a href="#1-论文概述" class="headerlink" title="1 论文概述"></a>1 论文概述</h1><p><strong>本文目的</strong>：希望不利用平行语料库实现机器翻译，本文提出的模型，仅需要两个语种各自的单语种语料数据集，并将2者映射到同一隐空间中。模型主要是学习通过从共享的隐特征向量空间中重建这两种语种。<br><strong>模型的两个原则</strong>：第一个原则：这个模型必须能够从一个带噪声的输入中重建出一个给定语种的句子，如标准去噪自动编码器。第二个原则：该模型能够在目标域中对带有噪声的翻译句子重建出源句，反之亦然。<br><strong>模型重要思想</strong>：关键思想是在两种语言（或领域）之间建立共同的潜在空间，并通过根据两个原则在两个领域中进行重构来学习翻译：（i）该模型必须能够从特定语言中重构给定语言的句子。 噪声版本，如标准降噪自动编码器中的那样（Vincent等，2008）。 （ii）在目标域中相同句子经过嘈杂翻译的情况下，该模型还学会重建任何源句，反之亦然。 对于（ii），翻译后的句子是通过使用反向翻译程序获得的（Sennrich et al。，2015），即 通过使用学习的模型将源句子翻译到目标域。 除了这些重建目标之外，我们使用对抗性正则化术语来约束源句和目标句的潜在表示形式以使其具有相同的分布，从而该模型尝试欺骗鉴别器，同时对鉴别器进行训练以识别给定潜在句子表示形式的语言（Ganin 等人，2016年）。 然后反复重复此过程，从而产生质量提高的翻译模型。 为了保持我们的方法完全不受监督，我们使用了一个简单的无监督翻译模型来初始化我们的算法，该模型基于一个句子的逐词翻译，并使用源自相同单语数据的双语词典（Conneau et al。，2017）。 通过仅使用单语数据，我们就可以将两种语言的句子编码到相同的特征空间中，并且从那里，我们还可以使用任何一种语言进行解码/翻译； 参见图1的说明：<br><img src="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>x和z分别代表encode和decode两端的输入：<br><img src="https://img-blog.csdnimg.cn/20200404175037569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在本文中，我们注意使用equence-to-sequence模型。 编码器是双向LSTM，它返回隐藏状态序列z =（z1，z2，…，zm）。 在每个步骤中，作为LSTM的解码器将采用先前的隐藏状态，当前字和上下文矢量由编码器状态上的加权总和给出。</p>
+<p><strong>方法总览</strong>：给定相同或其他域中相同句子的嘈杂版本，我们通过重构特定域中的句子来训练编码器和解码器。<br><img src="https://img-blog.csdnimg.cn/20200404175833601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="2-模型各个模块"><a href="#2-模型各个模块" class="headerlink" title="2 模型各个模块"></a>2 模型各个模块</h1><p><strong>噪声模型训练</strong>：<strong>如何通过噪声语句训练自动编码</strong><br>本文采用与去噪自编码器(DAE)相似的策略将噪声添加到输入句子中。<br>训练的目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404180401308.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200404180819755.png" alt="在这里插入图片描述"><br><strong>跨域训练</strong>：<br>如何实现源语句与翻译语句之间 的映射？<br> (1)从源语种中采样出一个句子x，在l2中生成此时的翻译结果。这个 翻译结果是基于当前翻译模型M生成的，所以可以表示为y=M(x)<br>(2)再对该翻译结果y进行加噪，得到corrupted的C(y)。目标是学习能够在C(y)中重建出x的encoder和decoder。所以这里的加噪在C(y)这里。<br>(3)根据C(y)重建x<br>此时的损失目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404181923118.png" alt="在这里插入图片描述"><br><strong>对抗训练</strong>：还未理解</p>
+<p>当 encoder 所输出的特征位于同一个空间而不管输入的句子是何语种时，那么 decoder 就有可能无视encoder中的输入句子而实现decode为特定语种。其实，隐空间就像是一个标准，在这个标准上可以任意转为其他格式(这里特指语种)，而其他语种需要统一转到该隐空间，进行标准统一。</p>
+<p>但是需要注意，decoder 在目标域中生成句子时仍然可能有错误的翻译。限制 encoder 在同一特征空间映射两种语言，并不意味着句子之间存在严格的对应关系。所幸的是，前面介绍的公式2中跨域训练的损失减轻了这种担忧。最近关于双语词典的研究表明，这种约束在词级别(word level)上是非常有效的，这表明只要这两种隐表征在特征空间上表现出较强的结构性，那么这种约束在句子层面( sentence level)上也可能有效。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200404190059530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>下图为本文最重点的图，描述了模型是如何工作的：<br><img src="https://img-blog.csdnimg.cn/20200404184311342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>模型主要包含原文重建和译文重建两个部分。图中上面是原文重建部分，使用的是自编码器，输入源语言最后的输出仍然是源语言。下面是译文重建部分，给定源语言之后，先经过M模型翻译为对应的译文，然后经过encoder-decoder模型翻译回原文</p>
+<h1 id="3-训练"><a href="#3-训练" class="headerlink" title="3 训练"></a>3 训练</h1><h2 id="3-1-迭代训练"><a href="#3-1-迭代训练" class="headerlink" title="3.1 迭代训练"></a>3.1 迭代训练</h2><p>最终学习算法在算法1中进行了描述，该模型的一般体系结构如图2所示。如前所述，我们的模型依赖于从初始翻译模型M（1）（第3行）开始的迭代算法。根据等式2的跨域损耗函数的需要，此函数用于转换可用的单语数据。在每次迭代中，通过最小化等式4 –的损耗来训练新的编码器和解码器（第7行）。 然后，通过组合生成的编码器和解码器来创建新的翻译模型M（t + 1），然后重复该过程。</p>
+<p>为快速启动该过程，M（1）使用学习到的并行词典对每个句子进行逐词翻译，使用Conneau等人提出的仅利用单语数据的无监督方法。<br><img src="https://img-blog.csdnimg.cn/20200404185051800.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h1><p><strong>数据集</strong>：WMT’14 English-French、WMT’14 English-French、Multi30k-Task1</p>
+<h2 id="4-1-Baselines"><a href="#4-1-Baselines" class="headerlink" title="4.1 Baselines"></a>4.1 Baselines</h2><p><strong>Word-by-word translation (WBW)</strong>：逐词翻译系统。该系统对相关语种，比如English-French 性能较好，但是在相距较远的语种如English-German表现较差。</p>
+<p><strong>Word reordering (WR)</strong>：WR系统是对WBW的结果用LSTM模型做了一次词序调整。由于难以穷尽一个句子中单词(有些句子单词量大于100个)的全部排列组合，这里仅仅考虑相邻单词之间的互换操作。在实验过程中选择最好的交换，迭代10次。这个baseline仅仅用于 WMT dataset ，这是因为 WMT dataset 有足够多的数据可以训练一个较好的语言模型。</p>
+<p><strong>Oracle Word Reordering (OWR)</strong>：使用参考，我们仅使用WBW给出的字词就能产生最佳的生成效果。 这种方法的性能是任何模型都可以完成的，而无需替换单词。</p>
+<p><strong>Supervised Learning</strong>：考虑了与我们完全相同的模型，但是在监督下进行训练，在原来的平行句上使用了标准的交叉熵损失。</p>
+<h1 id="5-相关工作"><a href="#5-相关工作" class="headerlink" title="5 相关工作"></a>5 相关工作</h1><p>与我们类似的工作是Shen等人的非平行文本样式转换方法。 作者考虑了序列到序列模型，在该模型中，赋予解码器的潜在状态也被馈送到鉴别器。 编码器与解码器一起训练以重建输入，但也愚弄了鉴别器。 作者还发现，训练两个鉴别器（一个用于源，一个用于目标域）是有益的。 然后，他们训练了解码器，以使在特定域中的句子解码过程中，根据各自的区分器无法区分出重复的隐藏状态。<br>在此之前，Hu等人训练了变分自动编码器（VAE），其中解码器输入是非结构化潜在向量的级联，以及表示要生成的句子属性的结构化代码。 鉴别器在解码器的顶部被训练以对所生成句子的标签进行分类，而解码器被训练为满足该鉴别器。 由于解码过程的不可微性，在每个步骤中，其解码器都将在上一步中预测的概率向量作为输入。<br>也许，最相关的先前工作是由He等人完成的。 （2016b），他实际上是直接针对3.2节中提出的模型选择指标进行了优化。 他们的方法的一个缺点（尚未应用到完全无人监督的环境中）是，它需要使用效率非常低的基于强化学习的方法，通过离散预测的顺序向后传播。 在这项工作中，我们改为建议a）使用对称体系结构，以及b）在训练目标与源之间的翻译时将源与目标之间的翻译冻结，反之亦然。通过交替此过程，我们使用完全可区分的模型进行操作，并且我们有效地收敛。</p>
+<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h1><p>我们提出了一种新的神经机器翻译方法，其中仅使用单语数据集学习翻译模型，而句子或文档之间没有任何对齐。 我们方法的原则是从简单的无监督逐词翻译模型开始，并基于<strong>重构损失</strong>来迭代地改进此模型，<strong>并使用鉴别器来对齐源语言和目标语言的潜在分布</strong>。 我们的实验表明，我们的方法无需任何形式的监督就能学习有效的翻译模型</p>
+]]></content>
+      <tags>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2020/04/27/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
@@ -57,6 +183,180 @@
       </categories>
       <tags>
         <tag>TestingTag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;学习笔记&gt; word2vec笔记（Hierarchical Softmax）</title>
+    <url>/2020/04/30/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/</url>
+    <content><![CDATA[<h1 id="word2vec学习笔记-1"><a href="#word2vec学习笔记-1" class="headerlink" title="word2vec学习笔记#1"></a>word2vec学习笔记#1</h1><p>文章来自于<strong><a href="https://www.hankcs.com/nlp/word2vec.html" target="_blank" rel="noopener">码农场</a></strong>大佬的博文，做自己的摘抄笔记。</p>
+<a id="more"></a>
+<h2 id="word2vec"><a href="#word2vec" class="headerlink" title="word2vec"></a>word2vec</h2><pre><code>word2vec作为神经概率语言模型的输入，其本身其实是神经概率模型的副产品，是为了通
+过神经网络学习某个语言模型而产生的中间结果。具体来说，“某个语言模型”指的是
+“CBOW”和“Skip-gram”。具体学习过程会用到两个降低复杂度的近似方法——Hierarchical 
+Softmax或Negative Sampling。两个模型乘以两种方法，一共有四种实现。</code></pre><h2 id="Hierarchical-Softmax"><a href="#Hierarchical-Softmax" class="headerlink" title="Hierarchical Softmax"></a>Hierarchical Softmax</h2><p><strong>模型共同点</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png" alt="图一"><br><strong>两种模型的网络结构如下</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG82ZTVkOWxqMjE2YzBxa3doay5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上图中w(t)表示句子中t位置处的词语</p>
+<h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>原理：一种根据上下文词语预测当前空缺位置的概率的模型，如上左图。<br>学习目标是最大化下面的似然函数：<br><img src="https://img-blog.csdnimg.cn/20191212223414310.png" alt="在这里插入图片描述"><br>其中W为语料库中的认一个词。<br><strong>输入层</strong>是上下文的词语的词向量（现在是在训练CBOW模型，词向量只是个副产品，确切来说，是CBOW模型的一个参数。训练开始的时候，词向量是个<strong>随机值</strong>，随着训练的进行不断被更新）。<br><strong>输出层</strong>输出最可能的w。由于语料库中词汇量是固定的|C|个，所以上述过程其实可以看做一个多分类问题。给定特征，从|C|个分类中挑一个。</p>
+<p>由上输出层的分析可知，最后是对输出层的数据进行分类，下方用的<strong>Hierarchical Softmax</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d215NGpkbndqMjE0dzEyYTQydi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>非叶子节点就是一个分类器（感知机），用1或者0来代替分类的结果，每一个叶子节点即为语料库中的一个词语，可以通过上述的概率表述出条件概率   $P(w|context(w))$<br>引入下列符号：<br>1、$p^w$:从根节点到w对应的叶子节点的路径<br>2、$l^w$:路径包含的节点个数<br>3、$P_{1}^{w}$、$P_{2}^{w}$、$P_{3}^{w}$……$P_{l^w}^{w}$：为路径中的各个节点<br>4、$d_{2}^{w}$、$d_{3}^{w}$、$d_{4}^{w}$……$d_{l}^{w}$在零到一范围内，其中$d_{l}^{w}$表示第j个对应的编码（根节点无编码）<br>5、$\Theta _{1}^{w}$、$\Theta _{2}^{w}$、$\Theta _{3}^{w}$……$\Theta _{l^w}^{w}$为路径$p^w$中非叶节点对应的参数向量<br>得w的条件概率：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29oazNwaTdqMjBrYTA0MnQ5MS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>从根节点到叶节点经过了 $l^w$-1个节点，编码从下标2开始（根节点无编码），对应的参数向量下标从1开始（根节点为1）。</p>
+<p>每一项是一个逻辑斯谛回归：（即为每一个0或者1的选择都有着两个不同的概率，且二者的和为一）<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29xNW9lb2pqMjBwbTA1eXQ5YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上式两种情况综合到一个公式中去：（下式中$d_{l}^{w}$有两种取值：0或者1）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d293YzJvaTJqMjBxbTAybWpycy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>目标函数取对数似然：（一种结果转化方式？）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d295aWt5cDBqMjBmYzAza2dscy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上面几个公式结合得到如下：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AwbXdzNWdqMjB6aTA4NmduOS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>简化为：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上式就是结果似然函数，将其最大化则得到我们最初需要通过CBOW预测的结果，将上式各项都取到最大化<br>每一项有两个参数，一个是每个节点的参数向量$\Theta <em>{j-1}^{w}$，另一个是输出层的输入$X</em>{w}$（即是中间层的输出结果转变为Hierarchical Softmax的输入）对这两个值求偏导：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B0NHhnOHRqMjEyNjAzcTc1Ni5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>因为有如下的性质<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B1czMzM3FqMjBiaTAyZ214NS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所以带入上式即可得到<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B3aXhha25qMjBuZTAya3Q5My5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>最终结果为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B4ajYxd2pqMjBjbzAyazBzcy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$\Theta <em>{j-1}^{w}$的迭代公式即为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B6ajBtMHpqMjBsMjAyNnQ5MC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$X</em>{w}$偏导式为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所有直接将 $\Theta <em>{j-1}^{w}$的偏导数中的$\Theta _{j-1}^{w}$替换为$X</em>{w}$，得到关于$X_{w}$的偏导数<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3E1Y2Zxa25qMjBqZTAzcXQ5Mi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>得到的是$X_{w}$的更新迭代，因为$X_{w}$并不是输入的向量，而是一个中间产物，所以必须把该结果向上传递至每个单词的词向量中：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FjZGR3dzdqMjBxNjA0MndmNC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br><strong>重点：两个参数的更新伪代码</strong>：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FnejBlbHFqMjBwbTBxYXE1YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+]]></content>
+      <tags>
+        <tag>word2vec</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;学习笔记&gt; word2vec是如何得到向量的（CBOW模型）</title>
+    <url>/2020/04/30/word2vec%E6%98%AF%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E5%90%91%E9%87%8F%E7%9A%84%EF%BC%88CBOW%E6%A8%A1%E5%9E%8B%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="学习笔记"><a href="#学习笔记" class="headerlink" title="学习笔记"></a>学习笔记</h1><p>只是自己的学习笔记，只把自己要记忆的知识写下来。<br>简单理解的链接： <a href="https://www.zhihu.com/question/44832436" target="_blank" rel="noopener">word2vec是如何得到向量的</a></p>
+<a id="more"></a>
+
+<p><strong>word2vec的准备操作</strong>：中文需要将每句话用工具分词（jieba等）</p>
+<p><strong>word2vec的作用</strong>：是将语料库中的词训练出各自的词向量，供NLP其他后续具体任务的使用。</p>
+<p><strong>word2vec的处理方法</strong>：两种训练方法<strong>CBOW</strong>模型和<strong>Skip-gram</strong>模型。]</p>
+<p><strong>word2vec的算法加速方法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
+<blockquote>
+<p>1.<strong>CBOW</strong>模型根据中心词W(t)周围的词来预测中心词<br>2.<strong>Skip-gram</strong>模型则根据中心词W(t)来预测周围词</p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0wZjQzOWUxYmI0NGM3MWM4ZTY5NGNjNjVjYjUwOTI2M19oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>上图中两个矩阵是CBOW模型要不断学习迭代的:$W_{v<em>n}$与$W_{n</em>v}^{‘}$</p>
+</blockquote>
+<p><strong>输入层</strong>是被预测那个词的上下文词的one-hot向量（该向量是针对语料库中所有分词的）</p>
+<p><strong>第一个权重矩阵</strong>：$W_{v<em>n}$为输入权重矩阵，（V</em>N矩阵，V为自己设定的数，一般为50-300，好像是，N为one-hot向量的维数，初始化权重矩阵W）。<strong>这里的V与N具体指代的内容存疑。</strong></p>
+<p><strong>接下来的步骤</strong>：将上下文单词的one-hot向量分别与输入权重矩阵相乘，得到第一次迭代的词向量（后面需要不断的迭代词向量，通过学习输入权重矩阵）；将所有上下文“词向量”相加取平均值即可得到神经网络中间层。</p>
+<p><strong>第二个权重矩阵</strong>：$W_{n*v}^{‘}$为输出权重矩阵，这个矩阵中N为one-hot向量的维度，v为自己取得数字。</p>
+<p><strong>接下来的步骤</strong>：运用softmax将预测结果规整到一定范围内。这里就可以用到前面提到的两个加速算法了，因为仅仅依靠softmax太慢。</p>
+<p><strong>加速算法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
+<p>如下图<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWM0LnpoaW1nLmNvbS84MC92Mi0xNzEzNDUwZmEyYTBmMzdjOGNiY2NlNGZmZWYwNGJhYV9oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<p>最最重要的：<strong>任何一个单词的one-hot表示乘以这个矩阵都将得到自己的word embedding。</strong>（word2vec的目的）</p>
+]]></content>
+      <tags>
+        <tag>word2vec</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;论文&gt;基于情绪分析方向使用依赖信息加强注意力机制</title>
+    <url>/2020/04/30/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="基于情绪分析方向使用依赖信息加强注意力机制"><a href="#基于情绪分析方向使用依赖信息加强注意力机制" class="headerlink" title="基于情绪分析方向使用依赖信息加强注意力机制"></a>基于情绪分析方向使用依赖信息加强注意力机制</h1><blockquote>
+<p>原文题目: Using Dependency Information to Enhance AttentionMechanism for Aspect-based Sentiment Analysis</p>
+</blockquote>
+<a id="more"></a>
+<p><strong>idea1</strong>:是否可以<strong>将情绪分析(分类)的研究应用到法条的选择中</strong>,通过其他算法将大概的案情相关法条缩减范围,通过情绪分析的方法将确定上述的几个法条是否可以在案情中使用.同理适用到其他对文本判定类别的应用之中.</p>
+<p>本文是将<strong>attention机制</strong>应用到<strong>文本情绪分析</strong>中,即为ABSA.</p>
+<blockquote>
+<p>aspect 指的是下文例子中的food和service等词,针对这些方面进行情感分析,可能是积极,消极,中立.</p>
+</blockquote>
+<p><strong>摘要</strong>：注意力机制已经被证实对ABSA（情绪分析）有效。最近出现许多研究针对于基于依赖关系实现注意力机制。然而，缺点在于依赖树必须先获得这棵树，而且存在受到误差传播的影响。因为发现注意力机制的计算是基于图去依赖分析，我们设计了一个基于多任务的新方法去转移对ABSA的依赖知识。分别针对<strong>ABSA</strong>训练了一个<strong>基于注意力的LSTM模型</strong>，针对<strong>依赖解析</strong>训练了一个<strong>基于图的模型</strong>.这个转移可以缓解因为训练数据不足造成的网络训练不足的问题.在semeval的2014餐馆笔记本一系列实验中表明我们的模型可以从依赖关系知识中获得可观的收益,并获得与具有复杂网络结构的最新模型相同的性能.</p>
+<p><strong>关键词</strong>:<strong>Aspect-based Sentiment Analysis, Multi-task Learning, DependencyParsing, Attention Mechanism</strong></p>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p> 文本情感分析的重要性,在互联网时代,大量的自动评价应用是很有发展前景的.例子: For example, in the sentence“greatfood but the service was dreadful”, targets are food and service, and the correspondingsentiment polarities are positive and negative respectively.其中target是food和service.</p>
+<p> attention机制对情感分析是很重要的,它可以强制模型去学习上下文文本与目标的关系.<strong>(存疑?)</strong>.但是当句子很复杂,特别是当文本与目标之间差别巨大,传统的attention模型有能力限制.为了克服这个缺点,一些研究者用依赖关系去完整计算对长距离的特定的目标.在这些工作中,依赖树可以用于对传统机器学习模型和基于神经网络的模型提取关系特征,或建立递归神经网络方法中用于输入的特定递归结构.但是这些方法高度依赖于自动依赖解析器产生的输入依赖解析树,树可能有错误，因此遭受错误传播问题。<br>      经过深层次的研究发现这个attention机制的计算实际上是基于图依赖分析的一部分.attention机制是去计算在句子中任何一个词与target之间的关系,当基于图依赖分析会计算出句子中任意两个词语之间的关系.所以从图依赖分析中获得的信息可以协助attention网络的训练!!! 在这篇论文中,我们以多任务学习的方式结合了一个基于attention的LSTM模型和一个基于图依赖分析的模型.我们通过一系列实验和对注意力机制改善的可视化演示了我们方法的有效性。</p>
+<blockquote>
+<p> 本文的主要贡献为:</p>
+<ol>
+<li>第一个检测到注意力层计算是基于图的依赖分析的一部分的人。 因此，联合学习与基于图的依赖关系解析可以帮助培训注意层.<br>2.我们提出了一种基于方面的情感分析的通用方法，该方法可以转移依赖性知识以获得更好的与方面相关的表示。 该架构对所有基于LSTM的ABSA模型均有效<br>3.我们提出了一种有效的方法来增强注意力机制。 它无需使用额外的依赖解析器即可传输依赖关系的知识。 在预测阶段，可以节省大量的计算资源。</li>
+</ol>
+</blockquote>
+<p>本文的其余部分的结构如下。 第2节介绍了有关基于方面的情感分析的文献。 提议的方法的总体设计在第3节中进行了描述。第4节介绍了实验设置和分析。 最后，第5节介绍了结论和未来的工作。</p>
+<h2 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2.相关工作"></a>2.相关工作</h2><h3 id="2-1-基于方面的情感分析"><a href="#2-1-基于方面的情感分析" class="headerlink" title="2.1 基于方面的情感分析"></a>2.1 基于方面的情感分析</h3><p><strong>基于方面的情感分析</strong>在文献中经常被认为是分类问题.传统的方法是基于一系列人工定义的特征做研究,但是该结果十分依赖人工的标注是否正确.而且特征的标注是一件是十分耗费人力的工作.</p>
+<p>后续的工作中在以后的工作中，方法像许多其他NLP任务一样变成了基于神经网络的方法。 简而言之，其发展大致可分为三个阶段。 最初，将任务建模为句子分类问题。 假设某产品有怀疑，则ABSA任务实际上是一个3N分类问题，因为每个方面都与三个情感极性有关：积极，消极和中立。 第二阶段是递归神经网络。 提出了许多基于递归神经网络的树结构模型。 在最近阶段，大多数作品都基于基于方面的句子表示的思想，该句子生成针对特定方面的句子表示。 Wang等采用这种想法，并利用注意力机制来产生这样的表示。 德宏等 设计了一个交互式注意力网络（IAN），它使用两个注意力网络对目标和上下文进行交互建模。 唐等提出了一种名为“具有方面嵌入的门控卷积网络”的模型（GCAE），该模型使用方面信息通过CNN和门控机制控制句子的情感特征流。 同样，黄等将目标的合并结果视为应用于句子的额外卷积核。 也有研究者将ABSA任务视为一个问答问题，其中基于内存的网络起着主要作用.</p>
+<h3 id="2-2依赖性解析"><a href="#2-2依赖性解析" class="headerlink" title="2.2依赖性解析"></a>2.2依赖性解析</h3><p><strong>*依赖性分析</strong>在情感分析中也被广泛使用*。 大多数方法从依赖树中获得直接或简短的依赖特征，以捕获句子中单词之间的关系。 Xinbo等在计算注意力权重以捕获确定目标的远程信息时，将依赖项嵌入作为附加输入。 铁二等将句子中每个依赖子树的情感极性视为隐藏变量。 考虑隐藏变量之间的相互作用来计算整个句子的极性。 Soujanya等人通过允许情感基于输入情感的依存关系从一个概念流到另一个概念.更好地理解句子中每个概念的语境作用。 但是它们都需要附加的依赖解析器，通常是斯坦福依赖解析器，并且受错误传播问题的影响。 而且，其解析过程也消耗了大量的计算资源.  </p>
+<h2 id="3-模型"><a href="#3-模型" class="headerlink" title="3 模型"></a>3 模型</h2><p>本文提出一个多任务学习模型去传递依赖性的知识给基于aspect情感分析模型. 3.1中展示基于attention的LSTM模型,3.2中为基于图依赖分析模型,3.3中为最后的多任务学习模型.</p>
+<h3 id="3-1-基于attention的LSTM模型"><a href="#3-1-基于attention的LSTM模型" class="headerlink" title="3.1 基于attention的LSTM模型"></a>3.1 基于attention的LSTM模型</h3><p>对于基于aspect的情感分析模型任务,基于attention的LSTM模型已经被证明了是有用的.它建立了一个指向性的LSTM层提取输入文本中每个词的上下文表示.之后，应用注意层来计算每个单词对aspect的贡献并获得最终的aspect相关表示,情感极性最终由softmax层计算.(<strong>对此段还是存在问题</strong>)</p>
+<p>输入句子中给出n个词语$W_{s1}$,$W_{s2}$,$W_{s3}$,……$W_{sn}$,和m个词组aspect为$W_{a1}$,$W_{a2}$,$W_{a3}$,……$W_{am}$,我们将每一个$W_{i}$词与嵌入向量e($W_{i}$)通过向量矩阵E一一对应起来.其中矩阵的横向量为单词总量,纵向量个数为词向量的维度.这些aspect的代表$e_{a_aspect}$是目标单词的词向量的平均值.(如下图中的第一个表达式)<br><img src="https://img-blog.csdnimg.cn/20191221175253667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="图一"><br>LSTM层被用于提取每一个单词的上下文表示关系.每一个时间步的输出都是最后的表达.<strong>下公式中的V1V2等都是作为attention的输入</strong><img src="https://img-blog.csdnimg.cn/20191221175555841.png" alt="在这里插入图片描述"><br>之后,一个attention层被用于计算每句子中一个词$w_{si}$针对<strong>aspect</strong>的权重$\alpha _{i}$.它的输出是所有文本特征的加权总和。<strong>(该输出即为图一中attention的唯一输出)</strong></p>
+<blockquote>
+<p>疑问? 图一中的H是指代这什么内容???<br>猜测:图一中的attention层分为两个其中H为encoder层,aspect embedding为decoder层??</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221175928342.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191221175945554.png" alt="在这里插入图片描述"><br>在计算βi之前，我们将$e_{a_aspect}$乘以Wα。 原因是具有一定含义的一个aspect在实际场景中可以有几种表达方式。 以笔记本电脑为例，屏幕还可以表示为显示，分辨率和外观。 因此，相似aspect的短语应被分组为一个方面。 这里我们使用一个简单的全连接神经网络来实现方面短语分组.$f_{score}$是一个基于内容的功能，<strong>可以计算每个单词对目标意见的贡献</strong>。</p>
+<p>最后，基于最终表示z，创建一个softmax层来预测概率分布的情感类别。<img src="https://img-blog.csdnimg.cn/20191221181558457.png" alt="在这里插入图片描述"><br>其中Ci表示当前样本的真实标号，Pi(Ci)表示P中真实标号的概率。</p>
+<h3 id="3-2-基于图依赖分析"><a href="#3-2-基于图依赖分析" class="headerlink" title="3.2 基于图依赖分析"></a>3.2 基于图依赖分析</h3><p><img src="https://img-blog.csdnimg.cn/20191221181742147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>图2基于图的依赖解析器的神经模型架构图,所有的MLP共享相同的参数。 在获得所有可能的n（n-1）个arcs的分数之后，可以使用动态编程算法找到最高的得分树.</p>
+<p>我们遵循基于圆弧因素的基于图的依赖解析器，其中一个树的分数是其所有head-modifier arcs（h，m）的总和。考虑到ABSA任务数据集仅是具有情感极性的注释（即是积极消极或者中立），我们只用词向量作为输入就可，CHEN已经证实了POS（词性）对于依赖分析更加有指导性.网络结构在图二中已经展示了.</p>
+<p>对于基于图的依赖关系解析，获取LSTM层输出的过程与3.1节中说明的ABSA模型的过程相同。 假设我们已经在公式2中获得了LSTM层的输出，则头部修改器arc score（h，m，s）的分数是通过一个简单的MLP层计算得出的.<br><img src="https://img-blog.csdnimg.cn/20191221193128568.png" alt="在这里插入图片描述"><br>在获得n（n-1）个可能弧的所有分数之后，找到最高得分的依存关系树成为最大化树空间Y（s）中生成树的问题。 使用Eisner的解码算法（1996年）可以有效地解决这一问题。</p>
+<p><strong>最后的模型如下</strong>:<br><img src="https://img-blog.csdnimg.cn/20191221193222345.png" alt="在这里插入图片描述"><br>在训练该模型时，不像我们仅使用结构损失而不使用由弧形标签错误产生的损失，因为这会使模型更加复杂且难以训练。 <strong>换句话说，我们只预测解析树的结构，而忽略弧的特定类别。</strong> 结构损失是基于余量的目标，旨在最大程度地提高金树的分数与预测解析树的最高分数之间的余量：<br><img src="https://img-blog.csdnimg.cn/20191221193423659.png" alt="在这里插入图片描述"></p>
+<h3 id="3-3-多任务学习"><a href="#3-3-多任务学习" class="headerlink" title="3.3 多任务学习"></a>3.3 多任务学习</h3><p><img src="https://img-blog.csdnimg.cn/20191221193502123.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>图3</strong> 多任务学习模型的插图 虚线的右边是基线模型。 FC代表完全连接的网络。</p>
+<p>从用于attention计算的公式5与为了依赖分析的公式10中,我们可以看到attention机制仅仅是基于图依赖分析计算的一部分.<br>使用文章开始的英文例子“great food but the service was dread-ful”,<strong>基于图的依存关系分析计算出句子中任意两个单词之间的关系</strong>,而<strong>注意力机制仅计算目标单词“ food”与句子中任何其他单词之间的相关性</strong>。 因此，依赖项语法中的信息可以帮助注意层的训练。</p>
+<blockquote>
+<p><strong>上述两句话就是前面两个模型的作用</strong></p>
+</blockquote>
+<p>我们建议将深度学习成功应用于依赖分析，以基于图的依赖分析模型进行联合学习。 <strong>两个模块共享一个单词嵌入层和一个LSTM层，而其他层则是特定于任务的。</strong> 最终模型的结构如图3所示。句子和Aspect共享相同的单词嵌入矩阵。 总损失由以下公式计算：</p>
+<blockquote>
+<p><strong>需要去了解以下什么是依赖分析 dependence analysis???</strong></p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221193945540.png" alt="在这里插入图片描述"><br>其中λ是影响网络优化方向的超参数</p>
+<h2 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h2><h3 id="4-1数据集"><a href="#4-1数据集" class="headerlink" title="4.1数据集"></a>4.1数据集</h3><p>对于ABSA任务，我们使用两个公共方面级别的注释数据集：SemEval 2014 Task4餐厅和笔记本电脑评论数据集。 还提供了培训和测试集。 表1给出了这两个数据集的完整统计信息。</p>
+<p><img src="https://img-blog.csdnimg.cn/20191221201034275.png" alt="在这里插入图片描述"><br>对于基于图的依赖项解析任务，我们使用Penn TreeBank (PTB)[17]数据集的Stanford dependency conversion，使用与                      相同的训练/测试分割。这些数据来自1989年的《华尔街日报》。</p>
+<h3 id="4-2-实验设置"><a href="#4-2-实验设置" class="headerlink" title="4.2 实验设置"></a>4.2 实验设置</h3><p>我们的模型是使用DyNet工具包[20]在python中实现的，用于神经网络训练。 在我们所有的实验中，我们使用在8400亿个令牌的未标记数据上预训练的300维GloVe向量4 [22]来初始化嵌入层，而所有其他参数都是随机初始化的。 单词嵌入矩阵中只包含频率最高的10,000个单词,其余的低频单词由<UNK>代替. 所有参数均通过网络培训进行更新。 对于公式12中的整体损失，经过一些尝试后，将λ设置为0.05。</p>
+<p>为了最优化结果,使用衰减率和基础学习率设置为0.001的RMSProp优化器。 上面未提及的其他参数设置为DyNet提供的默认值。</p>
+<h3 id="4-3-与现存的方法进行比较"><a href="#4-3-与现存的方法进行比较" class="headerlink" title="4.3 与现存的方法进行比较"></a>4.3 与现存的方法进行比较</h3><p>为了权威地演示该模型的性能，我们将其与以下模型进行比较：</p>
+<p>LSTM + ATT使用注意力机制从当前方面提取上下文表示，然后应用softmax层进行分类。</p>
+<p>TD-LSTM在构建学习模型时整合了目标词和上下文词之间的联系。 它使用两个LSTM网络捕获目标词及其上下文之间的联系，以生成目标相关表示。</p>
+<p>ATAE-LSTM利用方面嵌入和词嵌入的串联作为LSTM层的输入，然后添加一个公共 注意层以获得与方面有关的表示。 Wang等揭示了情感的情感极性也与所连接的方面有关。</p>
+<p>MemNet是一种基于记忆网络的ABSA任务方法。 它堆叠了一个多层注意模型，以获取每个上下文词对当前方面的情感极性判断的贡献。 该模型不仅在速度上大大超过了基于LSTM的模型，而且还可以与基于最新功能的SVM系统相媲美。</p>
+<p>DOC：MULT以多任务学习的方式从文档级情感分类中转移知识 。 它也基于LSTM + ATT。 文档级别的标签数据相对容易在线访问，例如亚马逊评论。</p>
+<p>GCAE是一个基于卷积神经网络和门控机制的模型。 它在方面方面具有附加的卷积层。 然后，目标的合并结果将作为额外的卷积过滤器应用于句子。</p>
+<p>我们使用常用的准确性和macro-f1作为评估指标。 结果示于表2。基于它们，我们有以下观察结果:</p>
+<blockquote>
+<p>1–当与LSTM + ATT模型进行比较时，我们观察到依赖性知识非常有帮助。 它为所有数据集中的指标均带来了巨大的改进。<br>2–DOC：MULT是另一种多任务学习方法。 与没有多任务学习的模型相比，它也取得了很大的进步。 但是，当整个句子的情感极性与各个方面的情感极性不一致时，该句子级别的情感信息将干扰对方面级别的情感极性的预测。 在那种情况下，来自依赖弧的知识仍然可以帮助我们找到与各方面相对应的情感词。 因此，基于图的依赖关系分析的多任务学习可以实现更好的性能。<br>3–作为一种多任务学习方法，DOC：MULT和DP：MULT都极大地提高了LSTM + ATT模型的性能，这也反映了一个事实，即数据 稀缺。 当前数据不足以训练非常有效的基于神经网络的模型。<br>4–当我们分析表3中所示的测试结果的混淆矩阵时，我们发现类别之间的样本不平衡也给网络培训带来了困难。 中立类别的召回率远低于其他两个类别。 一方面，这是由于中性样本自身的歧义所致。 另一方面，中性样本太少使模型很难学习与中性有关的模式。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221202042327.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="4-4-attention权重的可视化"><a href="#4-4-attention权重的可视化" class="headerlink" title="4.4 attention权重的可视化"></a>4.4 attention权重的可视化</h3><p>在本节中，我们从数据集中选择一些测试样本并可视化它们的注意权重。 通过与没有多任务学习的模型结果进行比较，我们可以确认依赖信息是否发挥了应有的作用。 结果如图4所示。选择的样本都在多方面提出了意见相反的情感极性，这不能用句子级情感分析方法正确地进行分析。主要观察如下：</p>
+<blockquote>
+<p>–我们的模型可以更准确地定位与方面相关的情感词4（b）。 即使评论对包含多个情感词的多个方面进行了评论，该模型仍然可以找到针对特定方面的那些相关情感词。</p>
+<p>–在我们的模型4（a）中，与方面相关的情感词的权重更高。 这可以使关注层获得的与方面有关的表示包含更多的情感信息</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221202216546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>–同时，当对不同方面的看法不同时，我们的模型将赋予对比连接更大的权重，例如图4（a）和4（b）中的“ but”。 当不同方面的情感倾向完全相反时，这种现象尤其明显。 这些词包含丰富的依赖性信息，可以为注意机制带来极大的好处</p>
+</blockquote>
+<p>这些现象都表明我们的模型具有更好的注意力表现，并证实依赖知识对注意力机制非常有帮助。 该知识有助于模型获得更好的与方面有关的表示，并最终改善总体性能.</p>
+<h2 id="5-结论"><a href="#5-结论" class="headerlink" title="5 结论"></a>5 结论</h2><p>在本文中，我们提出了一种基于多任务学习策略的基于方面的情感分析的新方法。 据我们所知，我们是第一个检测注意力机制和基于图的依存关系分析之间的关系的人。 我们使用依赖知识来增强关注层的性能，然后提高整体性能。 我们已经证明了我们提出的方法的有效性，并可视化了注意层的改进。 我们的方法也具有一定的通用性。 它可以应用于其他基于LSTM的ABSA模型，以进一步提高其性能。 将来，我们将寻找更有效的方法来转移对ABSA任务的依赖性知识，并将更加关注中性注释的识别。</p>
+]]></content>
+      <categories>
+        <category>论文</category>
+      </categories>
+      <tags>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;数据分析&gt; 深度学习数据预处理（pandas篇）</title>
+    <url>/2020/04/30/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/</url>
+    <content><![CDATA[<p>摘要：数据预处理的四种技术：数据合并，数据清洗，数据标准化，数据转换</p>
+<a id="more"></a>
+<p>只是做自己的学习笔记使用，如有错误请评论区指出。<br>数据预处理的四种技术：<strong>数据合并，数据清洗，数据标准化，数据转换</strong></p>
+<h1 id="导包和数据集"><a href="#导包和数据集" class="headerlink" title="导包和数据集"></a>导包和数据集</h1><p>工具使用pandas和numpy</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train_df =pd.read_csv(<span class="string">'../datas/train.csv'</span>)  <span class="comment"># train set</span></span><br><span class="line">test_df  = pd.read_csv(<span class="string">'../datas/test.csv'</span>)   <span class="comment"># test  set</span></span><br><span class="line">combine  = [train_df, test_df]</span><br></pre></td></tr></table></figure>
+<h1 id="查看数据维度以及类型"><a href="#查看数据维度以及类型" class="headerlink" title="查看数据维度以及类型"></a>查看数据维度以及类型</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看前五条数据</span></span><br><span class="line"><span class="keyword">print</span> train_df.head(<span class="number">5</span>)  </span><br><span class="line"><span class="comment">#查看每列数据类型以及nan情况</span></span><br><span class="line"><span class="keyword">print</span> train_df.info()  </span><br><span class="line"><span class="comment">#获得所有object属性</span></span><br><span class="line"><span class="keyword">print</span> train_data.describe(include=[<span class="string">'O'</span>]).columns</span><br></pre></td></tr></table></figure>
+<h1 id="操作训练集中的信息"><a href="#操作训练集中的信息" class="headerlink" title="操作训练集中的信息"></a>操作训练集中的信息</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#统计Title单列元素对应的个数</span></span><br><span class="line"><span class="keyword">print</span> train_df[<span class="string">'Title'</span>].value_counts() </span><br><span class="line"><span class="comment">#属性列删除(针对Name和Passengerld两列操作)</span></span><br><span class="line">train_df = train_df.drop([<span class="string">'Name'</span>, <span class="string">'PassengerId'</span>], axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="1-合并数据"><a href="#1-合并数据" class="headerlink" title="1.合并数据"></a>1.合并数据</h1><pre><code>建立关系表： 
+data1 = pd.DataFrame({&apos;key1&apos;:list(&apos;aavde&apos;),&apos;key2&apos;:list(&apos;asdfs&apos;),&apos;key3&apos;:list(str(12345))})</code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215122841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<pre><code>data1 = pd.DataFrame(np.random.rand(3,3),index = list(&apos;abc&apos;),columns = list(&apos;ABC&apos;)) </code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215330416.png" alt="在这里插入图片描述"></p>
+<h2 id="堆叠"><a href="#堆叠" class="headerlink" title="堆叠"></a>堆叠</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法一：</span></span><br><span class="line">pd.concat(objs,join=‘outer’, join_axes=<span class="literal">None</span>,ignore_index=<span class="literal">False</span>, </span><br><span class="line">keys=<span class="literal">None</span>, levels=<span class="literal">None</span>, names=<span class="literal">None</span>, verify_interity=<span class="literal">False</span>, copy=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>objs</strong>    接受用于合并的series,dataframe的组合。以列表的形式，eg：[data1,data2]其中data1和data2为两个二维表<br><strong>axis</strong>    表示堆叠的轴向，默认axis为0，表示纵向堆叠，以行为主的堆叠方式<br><strong>join</strong>    接受inner或outer。表示其他轴向上的索引是按交集还是并集进行合并，默认为outer；<strong>outer</strong>表示并集，不存在的关系其值用NaN代替；<strong>inner</strong>表示交集，结果仅返回无空值的行或者列（此处由axis的取值决定，0：列中无空值；1：行中无空值）<br><strong>ignore_index</strong>    接受boolean.表示是否不保留连接轴上的索引，产生一组新索引range(toatal_length)默认为False<br><strong>verify_intergrity</strong>    接受boolean，检查新连接的轴是否包含重复项。如果发现重复项，则引发异常。默认为False</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法二:利用append实现纵向堆叠，前提是合并的两张表列名应该一致</span></span><br><span class="line">data1.append(data2,ignore_index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="通过主键合并数据"><a href="#通过主键合并数据" class="headerlink" title="通过主键合并数据"></a>通过主键合并数据</h2><p>具体实例可见 <a href="https://blog.csdn.net/moshanghuali/article/details/89764552?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479591419726869037198%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479591419726869037198&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">链接</a><br>    主键合并就是通过一个或者多个键将两个数据集的行连接起来。类似于sql中的join。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">pd.merge(left,right,how,on,left_on,right_on,left_index,right_index,sort,suffixes)  </span><br><span class="line"></span><br><span class="line"><span class="comment">#例如;此时data_1与data_2的共同列名为key2.将其传给on。作为合并主键，进行交集合并,其中inner和outer的含义同上</span></span><br><span class="line">pd.merge(data_1,data_2,on = <span class="string">'key2'</span>,how = <span class="string">'inner'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321213611755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="你还好吗"><br><strong>可以通过主键合并的情况如下：</strong><br><strong>1</strong> 左右数据有共同的列名，用共同的列名作为主键。此时使用on参数，传入共同的列名。合并后的数据列数为原来数据的列数和减去连接键的数量<br><strong>2</strong> 使用不同列名主键进行合并<br><strong>3</strong> 赋予left_index和right_index参数。使用原本数据的index(行索引)作为主键进行合并</p>
+<p>还可以通过<strong>不同的列名作为主键</strong>进行融合</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_on = <span class="string">'key1'</span>,right_on = <span class="string">'key2'</span>) <span class="comment"># 左右的合并主键分别是key1和key2。</span></span><br></pre></td></tr></table></figure>
+<p>通过<strong>索引</strong>为主键</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_index = <span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>join方法</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">dataframe.join(self,other,on=<span class="literal">None</span>,how=‘left’,lsuffix=’’,resuffix=’’,sort=<span class="literal">False</span>)</span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_1.join(data_2,on = <span class="string">'key2'</span>,lsuffix=<span class="string">' '</span>,rsuffix=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321221302628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="2-清洗数据"><a href="#2-清洗数据" class="headerlink" title="2.清洗数据"></a>2.清洗数据</h1><h2 id="检测重复值"><a href="#检测重复值" class="headerlink" title="检测重复值"></a>检测重复值</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.drop_duplicates(subset=<span class="literal">None</span>,keep=‘first’,inplace=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_repeat.drop_duplicates(subset=<span class="string">'key2'</span>)</span><br><span class="line">data_repeat.drop_duplicates(subset=[<span class="string">'key1'</span>,<span class="string">'key2'</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321221838894.png" alt="在这里插入图片描述"></p>
+<h2 id="检测与处理缺失值"><a href="#检测与处理缺失值" class="headerlink" title="检测与处理缺失值"></a>检测与处理缺失值</h2><p><strong>检测</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data_null = pd.DataFrame(&#123;<span class="string">'key1'</span>:[np.nan,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,np.nan],<span class="string">'key2'</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,np.nan]&#125;)</span><br><span class="line"></span><br><span class="line">data_null.isnull()   <span class="comment"># 以true或者false来表示是否是缺失值。</span></span><br><span class="line">data_null.isnull().sum()   <span class="comment"># 统计一下缺失值数目，结果将按列缺失值的个数</span></span><br></pre></td></tr></table></figure>
+<p><strong>处理</strong><br>    处理缺失值的方法主要有：<strong>删除法，替换法，插值法。</strong></p>
+<p><strong>删除缺失值</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#其中subset指出需要删除空值的列名，与how属性联动才可以使用</span></span><br><span class="line">dataframe.dropna(axis = <span class="number">0</span>,how = ‘any’,thresh=<span class="literal">None</span>,subset=<span class="literal">None</span>,inplace = <span class="literal">None</span>)</span><br><span class="line"><span class="comment"># thresh属性 表示能够容忍生下来的非缺失值的个数。</span></span><br></pre></td></tr></table></figure>
+<p><em>上面的thresh属性存在疑问</em><br><img src="https://img-blog.csdnimg.cn/20200321222833377.png" alt="在这里插入图片描述"><br><strong>替换缺失值</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.fillna(value = <span class="literal">None</span>,method=<span class="literal">None</span>,axis=<span class="literal">None</span>,inpalce=<span class="literal">False</span>,limit=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如：使用111代替缺失值</span></span><br><span class="line">data_null.fillna(<span class="number">111</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321223611745.png" alt="在这里插入图片描述"></p>
+<h1 id="3-数据的标准化"><a href="#3-数据的标准化" class="headerlink" title="3.数据的标准化"></a>3.数据的标准化</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/93162100?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">数据标准化</a></p>
+<h1 id="4-数据的转换"><a href="#4-数据的转换" class="headerlink" title="4.数据的转换"></a>4.数据的转换</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/92831389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158480195419724848323709%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158480195419724848323709&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">见链接</a></p>
+<h1 id="numpy操作数据"><a href="#numpy操作数据" class="headerlink" title="numpy操作数据"></a><a href="https://blog.csdn.net/weixin_45252110/article/details/96027968?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479622919724811821089%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479622919724811821089&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">numpy操作数据</a></h1>]]></content>
+      <tags>
+        <tag>pandas</tag>
       </tags>
   </entry>
   <entry>

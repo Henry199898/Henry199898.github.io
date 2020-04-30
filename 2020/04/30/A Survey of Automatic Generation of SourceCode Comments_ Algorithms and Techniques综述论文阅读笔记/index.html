@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="A Survey of Automatic Generation of SourceCode Comments_ Algorithms and Techniques综述论文阅读笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文&gt;一篇关于自动生成源代码评论的报告">
+<meta property="og:url" content="http://yoursite.com/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Henry ’Blog">
+<meta property="og:description" content="A Survey of Automatic Generation of SourceCode Comments_ Algorithms and Techniques综述论文阅读笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191229162512154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019123015232778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2019123015234468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191230152852957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-04-30T11:00:14.258Z">
+<meta property="article:modified_time" content="2020-04-30T11:31:22.871Z">
+<meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191229162512154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文>一篇关于自动生成源代码评论的报告 | Henry ’Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Henry199898" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Henry ’Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文>一篇关于自动生成源代码评论的报告
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-30 19:00:14 / 修改时间：19:31:22" itemprop="dateCreated datePublished" datetime="2020-04-30T19:00:14+08:00">2020-04-30</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>A Survey of Automatic Generation of SourceCode Comments_ Algorithms and Techniques综述论文阅读笔记</p>
+<a id="more"></a>
+<h1 id="一篇关于自动生成源代码评论的报告"><a href="#一篇关于自动生成源代码评论的报告" class="headerlink" title="一篇关于自动生成源代码评论的报告"></a>一篇关于自动生成源代码评论的报告</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>代码评论主要用于提高源码的可读性与可理解性。<br>第一步，大致的分析了代码评论的挑战与调查框架；第二，介绍了典型的算法分类，设计原理、以及各个算法的优缺点。本论文提供了代码评论的质量评估概述，最后总结一些关于代码评论生成和评论质量检测未来的方向。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>代码评论主要是针对程序的功能与意义大致描述。不仅仅通过代码评论提高代码可理解性，有研究提出通过定义一个长的描述性的方法类名等，提示代码的用处。</p>
+<p>之前用于代码注释的方法是机器学习或者基于信息检索技术，评论的框架大致分为三个方面：数据准备；源代码表达；文本生成<br><img src="https://img-blog.csdnimg.cn/20191229162512154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>代码注释与注释的质量检测是相辅相成的，质量检测标注的指定是代码注释领域的一大挑战。<br>代码注释是软件工程与人工智能的交叉研究领域，发了好多顶会。本论文解决的问题：<strong>1.使研究人员能够访问具有代表性的算法目录，以进行自动注释生成，并使新研究人员对自动代码注释的最新算法有很好的了解； 2.总结现有研究的主要挑战和局限性</strong><br>第二部分提供了自动生成评论的动机，并讨论了技术挑战。 第三节讨论了注释生成技术的核心思想，并对各种技术进行了总结。 在第四节中，我们讨论了注释的质量评估问题，并以不同研究中使用的数据集为重点，并总结了代码注释的质量评估标准。 第五节将讨论自动代码注释生成的未来方向。在第六节中，我们总结了本文</p>
+<h2 id="自动生成代码注释的概述"><a href="#自动生成代码注释的概述" class="headerlink" title="自动生成代码注释的概述"></a>自动生成代码注释的概述</h2><p>A、问题陈述<br>代码注释生成主要就是将程序性语言转化为自然语言的描述，不仅描述了代码的功能也体现出编程者背后的思想。简单讲就是通过代码分析，揭示出设计意图，代码逻辑、程序功能、相关参数的含义。<br>B、代码自动生成与研究框架的挑战<br>目前的研究算法工作流程大致都和图一中的一致。<br>自动代码评论的过程通常分为三个方向：第一，将数据收集用于构建评论生成体系的数据集。这些被用于训练、验证、测试模型，提取代码与相对应的评论，或者提取评论生成系统中所需要的特殊规则。通常通过对开源社区或者网站爬取、下载等方式获得数据集。第二、通过确定的算法评论生成。<strong>第三节</strong>具体讲解。第三、评论质量检测。有俩种流行的方法：人工检测与自动化检测。这将会在<strong>第四节</strong>讲解。</p>
+<p>依据检测结果会有不同的进一步措施：评测结果令人满意，评论过程就会停止；否则，程序会回到第一步：准备更多的更合适的数据 或者调整源码处理算法，继续下面的过程。重复上述过程。</p>
+<p>1.）目前的挑战</p>
+<p>a：挑战一：代码自动注释算法<br>总结为三类算法;1.基于信息检索算法2.基于深度神经网络算法3.其他代码自动生成算法（详细见第三节）<br><code>源码模型：ASTs、 分析树、上下文token、CFGs、数据流等等</code><br>上述模型被分为三种目录：1.基于token的代码模型，从源码中提取关键词或者关于主题的词语,词袋模型（BoT）或者（Bow）.基于信息检索的算法主要通过模型去表示源码。2.基于句法规则的模型，主要是抽象语法树，基于深度神经网络3.其他模型。<br>缺少可以综合表示源码各种信息的复合模型。目前的困难就是寻找一个这种综合性 的模型。<br><code>文本生成：在代码评论的项目中，必须在构建自然语言注释之前先提取出代码语言的相关信息，这是一个难点</code><br>现存的文本生成算法可以分为三种：1.基于事先设定好的规则生成2.基于解码编码生成（encoder-decoder模型）3.基于文本检索，从语料库种查询现存的相似注解</p>
+<p>b、挑战二：注释质量检测<br>存在两个问题：<strong>验证测试算法需要统一的数据集</strong>；<strong>评估标准的选择</strong></p>
+<p><code>统一的数据集：需要将测试的数据集做一个统一，但是，由于每个特定的注释生成算法都具有语言依赖性，因此要统一数据集进行测试就具有挑战性。</code></p>
+<p><code>评估标准的选择：设计和制定适当的注释质量评估指标非常重要，这将促进自动代码注释生成的研究</code></p>
+<p>2.）research framework<br>目前，关于代码注释的研究文献主要集中在注释与代码可读性之间的关系，注释与代码可理解性之间的关系，代码注释的自动编程算法和质量评估等方面。<br>通常我们从两个方面总结目前的代码注释与相关研究<strong>：自动程序注释技术</strong>；<strong>代码注释的质量评估</strong>。我们会在本片论文种讨论分析注释的质量检测问题。另一种与代码注释相关的工作是在于引导开发者在何处进行正确的代码注释？？？这也能是一个方向？？，旨在提高代码的可读性。<br><img src="https://img-blog.csdnimg.cn/2019123015232778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>本文重点研究评论生成算法和评论质量评估算法。 这两条工作线相互依存，它们的关系如图2所示。</strong></p>
+<p>3.）代码注释技术领域的发展趋势<br>2010-2014大多数采用信息检索的方法；<br>近五年大多采用深度神经网络技术。<br>为了研究从最近十年发表的59篇论文中选出32篇代表性的论文阅读文献。<br><img src="https://img-blog.csdnimg.cn/2019123015234468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>图3</strong>显示了多年来根据论文中使用的算法类型分配的论文,本图印证了上面关于技术趋势的总结（信息检索和深度神经网络）。图3表明最近的研究主要集中在基于深度神经网络的评论技术上</p>
+<h2 id="代码注释的算法"><a href="#代码注释的算法" class="headerlink" title="代码注释的算法"></a>代码注释的算法</h2><p>本节主要展示代码注释的相关算法的分类：<br>A、算法分类<br>三类：如图<br><img src="https://img-blog.csdnimg.cn/20191230152852957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>B、基于信息检索的评论生成算法<br>给一个无注释的源码以及一个拥有注释的源码数据集，基于信息检索的算法可以计算出无注释源码与数据集的相关性，并精确的预测出无注释源码的相应注释。<br>基于信息检索技术的注释算法通常利用基于向量空间模型（VSM），潜在语义索引（LSI）和潜在狄利克雷分配（LDA）的技术或其他相关技术，例如代码克隆检测（代码查重）。信息检索（IR）技术在软件工程领域的早期应用之一是关于代码和注释之间的可追溯性。</p>
+<p>2003年，Marcusand Maletic [45]利用潜在语义索引（LSI）技术，对源代码和外部文档进行分析，以从程序和文档中提取语义信息，并进一步恢复了文档和源代码之间的链接。 尽管研究本身并不涉及自动注释生成的问题，但该方法可以应用于代码注释。在现有文献中，相似性比较不是直接以源代码文本的形式进行的。<br>大多数注释系统将源代码转换为<strong>解析树（parse tree）或抽象语法树（AST）</strong>的形式，然后将目标代码与数据集中的其他源代码进行比较，根据比较结果返回响应的matched代码。采用启发式规则对匹配码的对应注释进行过滤。最后获得最匹配的对应代码注释作为输入无注释源码的注释。总的来说，这些算法通常通过搜索或设计规则来生成评论文本。</p>
+<p>1）基于VSM/LSI 的代码注释生成算法</p>
+<pre><code>VSM（基于向量空间模型）/LSI （潜在语义索引）</code></pre><p>当我们使用VSM和/或LSI为源代码生成注释时，源代码文本或查询文本通常表示为向量，矩阵或元组。向量中的每个元素表示文档中单词的权重。在VSM中，有很多计算项权重的方法，而项频逆文档频率（tf-idf）是使用最广泛的加权方法。LSI利用奇异值分解（SVD），识别术语和概念之间的术语相关性，并提取文本的概念性主题。<strong>注释系统根据每个术语的权重值确定该术语是否应出现在源代码注释中</strong>，或计算查询文本向量与源代码文本之间的文本相似度。具有较高相似性的术语表示与代码段或查询主题相关性更高。基于查询的代码注释系统便根据这些高相关性的关键词组成目标源码的注释。<br>这些技术用于挖掘代码文本，并在源代码文本中找出关键字，以将自然语言描述构造为代码注释。这些注释常用于描述功能、特征或者源码的变量，例如类、方法、代码块等等。<br><strong>Haiduc的应用</strong>：采用VSM和LSI 的方法分析源码文本产生源码类或者方法的自然语言总结。首先，他们将源代码文档和程序包转换为文档集，称为语料库。 然后，他们将标识符名称中包含的术语以及来自源代码和文档的注释以矩阵形式表示出来。使用VSM生成源代码的摘要时，将根据选择的权重选择源代码文档中最相关的术语，同时还使用LSI技术计算语料库中每个术语的向量与向量之间的余弦相似度 源代码文档的摘要，然后生成高度相似的术语，这些术语不会出现在要概述的方法或类中，而是出现在语料库中。这样，他们分析了<strong>Java项目中的方法和类源代码</strong>，并为其生成了简短，准确的文本描述。<strong>Haiduce</strong>t等人做出了另一种贡献， <strong>仅利用LSI为开放源代码存储库中的Java类代码生成摘要注释</strong>。<br>Vassalloet等人利用相同的方法。 使用VSM模型来表示Stack Overflow上的问与答（Q＆A）中的源代码文本和开发人员讨论文本为矢量，并计算目标源代码文本和讨论文本之间的<strong>余弦相似度</strong>以查找映射。 推荐使用高度相似的段落文本作为目标源代码的注释。 结果，他们挖掘了众包知识以推荐评论方法。<br>同样，Panichellaet等人[57] 使用启发式和向量空间模型来处理和分析开发人员通信以进行方法描述。 开发人员交流主要是指与类，方法和参数有关的电子邮件和错误报告。 他们提取可追溯到源代码方法的段落文本，<strong>并通过计算文本段落和每种跟踪方法的文本之间的文本相似度（即余弦相似度）来识别相关段落</strong>（<strong><code>这句话没有明白</code></strong>）。 建议使用相似度高的相关段落作为方法说明。<br>这种技术的缺点在于，它仅考虑语料库或源代码文档中出现的术语，而不考虑源代码文档中包含的其他信息，例如程序调用，数据依赖性，源代码中的单词序列 。 因此，这些系统难以进一步提高所生成评论的准确性。（有较高的局限性。目前的应用层面依旧在数据挖掘中，个人猜测）</p>
+<p>2）基于代码克隆检测的注释生成算法<br>wong的案例： 提出一种基于编码克隆检测技术的方法，该方法可从大型编程问答网站（Q＆A）挖掘评论。来自Q＆A的关于Stack Overflow的帖子，包含代码片段以及相应的文本描述，被称为代码描述映射（即为代码和相应的文本描述是一一对应的），这种对应关系被提取出来作为数据库，然后找最大对应子字符串。。。。够狠！！这种办法生成的注释的数量和质量在很大程度上取决于为注释系统构建的数据集的规模和质量。</p>
+<p>这种方法的缺点是生成的评论数量少得多。 原因是生成的注释的数量很大程度上取决于数据库或GitHub的开源软件项目中包含的信息。 例如，如果从未在任何帖子中讨论过代码段，则评论系统将根本无法推荐任何评论。<br>3）基于LDA的注释生成算法</p>
+<p>基于LDA的注释生成算法涉及使用LDA模型构建源代码模型并为目标源代码生成注释。 换句话说，LDA可以提取源代码的特定功能。<br>另外，Movshovitz-Attias和Cohen [52]使用主题模型，LDA和n-gram模型来预测Java源代码的注释。 他们分别从多个训练数据集中，在相同的源代码文档上训练n-gram模型和LDA模型。 然后他们将文档视为具有两种实体类型（代码和文本令牌）的混合成员，并在文档上训练链接LDA模型。使用受过训练的模型，他们计算文档主题的后验概率，并进一步推断注释令牌的概率。 最后，建议将高概率的注释标记作为源代码文件的注释。<br>Rahmanet等人使用LDA [61]。 分析来自Stack Overflow问答站点的讨论，以为开源项目推荐有见地的评论。 他们利用不同于Wonget等人的基于启发式的技术[83]来挖掘众包知识以对开源项目发表评论。 生成的注释主要描述了源代码的不足，质量和范围，以改进源代码，并可以帮助维护工程师执行维护任务</p>
+<p>4） 其他的基于信息检索的注释生成算法</p>
+<p><code>暂略</code></p>
+<p><strong>C、基于深度神经网络的注释生成算法</strong>（<strong>重点部分</strong>！！！）</p>
+<p>代码注释生成可以被当作是一种翻译工作（程序语言与自然语言之间）</p>
+<p>主要由两个方向：基于循环神经网络算法与基于其他神经网络算法。深度神经网络分为三种：卷积神经网络（CNN），循环神经网络（RNN）和递归神经网络（RvNN？？不确定是啥。。）[60]。<br>卷积神经网络适合用于NLP，图像识别和语音处理等方向中。RNN常用于处理和预测顺序数据，在NLP和语音处理中应用较好；RNN和RvNN均可用于本论文场景–代码注释生成。</p>
+<ul>
+<li>两个重要的结构：<strong>encoder-decoder结构</strong>和<strong>attention机制</strong></li>
+</ul>
+<p><strong>a、encoder-decoder结构</strong></p>
+<p>在编码器-解码器的结构中，编码器起到将源代码编码为固定大小的矢量的作用； 解码器负责对源代码矢量进行解码并预测源代码的注释。各种编码器/解码器结构之间的差异在于输入形式和神经网络的类型。通常，编码器/解码器的内部结构可以选择RNN，CNN 和RNN的变体，例如门控循环单元（GRU）和长期短期记忆模型（LSTM）。</p>
+<p><strong>b、attention机制</strong></p>
+<p>它负责将较高的权重值动态分配给解码器输入序列中每个单词的更相关的标记。对于长序列情况下性能不佳的问题，这是一个很好的解决方案。由于基于深度神经网络的注释生成算法属于机器学习的类别，因此基于深度神经网络的注释生成系统需要包含代码和注释的高质量数据集来训练神经网络。<strong>数据集可以满足系统的所有数据需求，还提供用于训练以及验证和测试评论算法的数据</strong>，一集多用。。。</p>
+<p>1）基于RNN的注释生成算法</p>
+<p>RNN的另外两个重要变体是<strong>长期短期记忆模型（LSTM）</strong>和<strong>门控循环单元（GRU）</strong>。<br>LSTM的特点是它具有三门控制器结构并构造了可控制的记忆神经元，可解决传统RNN中的梯度下降和梯度爆炸。<br>与LSTM相比，GRU结构简单，克服了LSTM的缺点：结构复杂，实现复杂，执行效率低。GRU仅使用两个门：一个是更新门，另一个是复位门。<br>根据编码器中使用的RNN数量，将基于RNN的注释生成算法分为两类：<strong>基于单编码器的注释算法</strong>和<strong>基于多编码器的注释算法</strong><br>ａ、基于单编码器的注释算法</p>
+<p>编码器由一个RNN组成。这是一个典型的用于代码注释生成的编码解码结构。</p>
+<p>*<em>一篇比较先进的论文: RvNN ,parse tree,encoder-decoder(GRU based),attention:Y.Liang and K. Q. Zhu, ‘‘Automatic generation of text descriptive com-ments for code blocks,’’ *</em></p>
+<p>b.基于多编码器的注释生成算法</p>
+<p>RNN利用GRU或LSTM表示长输入序列之间的长距离特征。 CNN利用卷积注意或卷积层来收集和表示源代码的功能和位置模型</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/30/Progressive%20Self-Supervised%20Attention%20Learning%20forAspect-Level%20Sentiment%20Analysis%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="prev" title="<论文>Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis">
+      <i class="fa fa-chevron-left"></i> <论文>Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/30/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/" rel="next" title="<数据分析> 深度学习数据预处理（pandas篇）">
+      <数据分析> 深度学习数据预处理（pandas篇） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一篇关于自动生成源代码评论的报告"><span class="nav-number">1.</span> <span class="nav-text">一篇关于自动生成源代码评论的报告</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动生成代码注释的概述"><span class="nav-number">1.3.</span> <span class="nav-text">自动生成代码注释的概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码注释的算法"><span class="nav-number">1.4.</span> <span class="nav-text">代码注释的算法</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Henry-Chen"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Henry-Chen</p>
+  <div class="site-description" itemprop="description">我的小屋，喝茶，读书</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_43433969" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43433969" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="music163player">
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=28566359&auto=0&height=66"></iframe>
+	</div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry-Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'JEmsj82S3MAb2DHmn';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'M3WV2SFKlhIfoqEBet4LwYnQ-gzGzoHsz',
+      appKey     : 'bDG2lPWGAJTx0Rm4vIAmkTln',
+      placeholder: "给我说两句话吧，ballball你了",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":275,"height":550},"mobile":{"show":false},"log":false});</script></body>
+</html>

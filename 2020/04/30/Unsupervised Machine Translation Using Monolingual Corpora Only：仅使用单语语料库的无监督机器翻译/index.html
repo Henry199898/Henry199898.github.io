@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only作者： Guillaume Lample &#x2F; Ludovic Denoyer &#x2F;Marc Aurelio Ranzato发表时间：2018&#x2F;4&#x2F;30论文链接：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1711.00043v1.pdf代码链接：https:&#x2F;&#x2F;gi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文&gt; Unsupervised Machine Translation Using Monolingual Corpora Only">
+<meta property="og:url" content="http://yoursite.com/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/index.html">
+<meta property="og:site_name" content="Henry ’Blog">
+<meta property="og:description" content="论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only作者： Guillaume Lample &#x2F; Ludovic Denoyer &#x2F;Marc Aurelio Ranzato发表时间：2018&#x2F;4&#x2F;30论文链接：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;1711.00043v1.pdf代码链接：https:&#x2F;&#x2F;gi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404175037569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404175833601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404180401308.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404180819755.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404181923118.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404190059530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404184311342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200404185051800.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-04-30T11:00:56.551Z">
+<meta property="article:modified_time" content="2020-04-30T11:33:10.820Z">
+<meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文> Unsupervised Machine Translation Using Monolingual Corpora Only | Henry ’Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Henry199898" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Henry ’Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文> Unsupervised Machine Translation Using Monolingual Corpora Only
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-30 19:00:56 / 修改时间：19:33:10" itemprop="dateCreated datePublished" datetime="2020-04-30T19:00:56+08:00">2020-04-30</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only<br>作者： Guillaume Lample / Ludovic Denoyer /Marc Aurelio Ranzato<br>发表时间：2018/4/30<br>论文链接：<a href="https://arxiv.org/pdf/1711.00043v1.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00043v1.pdf</a><br>代码链接：<a href="https://github.com/facebookresearch/MUSE" target="_blank" rel="noopener">https://github.com/facebookresearch/MUSE</a> 以及 <a href="https://github.com/facebookresearch/fastText" target="_blank" rel="noopener">https://github.com/facebookresearch/fastText</a></p>
+<a id="more"></a>
+
+<p>发现一篇很详细的翻译笔记：<a href="https://blog.csdn.net/ljp1919/article/details/102728699?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158599074719726869003034%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158599074719726869003034&biz_id=0&utm_source=distribute.pc_search_result.none-task-blog-all_SOOPENSEARCH-3" target="_blank" rel="noopener">地址</a></p>
+<p>在此仅作自己的学习笔记总结：</p>
+<h1 id="1-论文概述"><a href="#1-论文概述" class="headerlink" title="1 论文概述"></a>1 论文概述</h1><p><strong>本文目的</strong>：希望不利用平行语料库实现机器翻译，本文提出的模型，仅需要两个语种各自的单语种语料数据集，并将2者映射到同一隐空间中。模型主要是学习通过从共享的隐特征向量空间中重建这两种语种。<br><strong>模型的两个原则</strong>：第一个原则：这个模型必须能够从一个带噪声的输入中重建出一个给定语种的句子，如标准去噪自动编码器。第二个原则：该模型能够在目标域中对带有噪声的翻译句子重建出源句，反之亦然。<br><strong>模型重要思想</strong>：关键思想是在两种语言（或领域）之间建立共同的潜在空间，并通过根据两个原则在两个领域中进行重构来学习翻译：（i）该模型必须能够从特定语言中重构给定语言的句子。 噪声版本，如标准降噪自动编码器中的那样（Vincent等，2008）。 （ii）在目标域中相同句子经过嘈杂翻译的情况下，该模型还学会重建任何源句，反之亦然。 对于（ii），翻译后的句子是通过使用反向翻译程序获得的（Sennrich et al。，2015），即 通过使用学习的模型将源句子翻译到目标域。 除了这些重建目标之外，我们使用对抗性正则化术语来约束源句和目标句的潜在表示形式以使其具有相同的分布，从而该模型尝试欺骗鉴别器，同时对鉴别器进行训练以识别给定潜在句子表示形式的语言（Ganin 等人，2016年）。 然后反复重复此过程，从而产生质量提高的翻译模型。 为了保持我们的方法完全不受监督，我们使用了一个简单的无监督翻译模型来初始化我们的算法，该模型基于一个句子的逐词翻译，并使用源自相同单语数据的双语词典（Conneau et al。，2017）。 通过仅使用单语数据，我们就可以将两种语言的句子编码到相同的特征空间中，并且从那里，我们还可以使用任何一种语言进行解码/翻译； 参见图1的说明：<br><img src="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>x和z分别代表encode和decode两端的输入：<br><img src="https://img-blog.csdnimg.cn/20200404175037569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在本文中，我们注意使用equence-to-sequence模型。 编码器是双向LSTM，它返回隐藏状态序列z =（z1，z2，…，zm）。 在每个步骤中，作为LSTM的解码器将采用先前的隐藏状态，当前字和上下文矢量由编码器状态上的加权总和给出。</p>
+<p><strong>方法总览</strong>：给定相同或其他域中相同句子的嘈杂版本，我们通过重构特定域中的句子来训练编码器和解码器。<br><img src="https://img-blog.csdnimg.cn/20200404175833601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="2-模型各个模块"><a href="#2-模型各个模块" class="headerlink" title="2 模型各个模块"></a>2 模型各个模块</h1><p><strong>噪声模型训练</strong>：<strong>如何通过噪声语句训练自动编码</strong><br>本文采用与去噪自编码器(DAE)相似的策略将噪声添加到输入句子中。<br>训练的目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404180401308.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200404180819755.png" alt="在这里插入图片描述"><br><strong>跨域训练</strong>：<br>如何实现源语句与翻译语句之间 的映射？<br> (1)从源语种中采样出一个句子x，在l2中生成此时的翻译结果。这个 翻译结果是基于当前翻译模型M生成的，所以可以表示为y=M(x)<br>(2)再对该翻译结果y进行加噪，得到corrupted的C(y)。目标是学习能够在C(y)中重建出x的encoder和decoder。所以这里的加噪在C(y)这里。<br>(3)根据C(y)重建x<br>此时的损失目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404181923118.png" alt="在这里插入图片描述"><br><strong>对抗训练</strong>：还未理解</p>
+<p>当 encoder 所输出的特征位于同一个空间而不管输入的句子是何语种时，那么 decoder 就有可能无视encoder中的输入句子而实现decode为特定语种。其实，隐空间就像是一个标准，在这个标准上可以任意转为其他格式(这里特指语种)，而其他语种需要统一转到该隐空间，进行标准统一。</p>
+<p>但是需要注意，decoder 在目标域中生成句子时仍然可能有错误的翻译。限制 encoder 在同一特征空间映射两种语言，并不意味着句子之间存在严格的对应关系。所幸的是，前面介绍的公式2中跨域训练的损失减轻了这种担忧。最近关于双语词典的研究表明，这种约束在词级别(word level)上是非常有效的，这表明只要这两种隐表征在特征空间上表现出较强的结构性，那么这种约束在句子层面( sentence level)上也可能有效。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200404190059530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>下图为本文最重点的图，描述了模型是如何工作的：<br><img src="https://img-blog.csdnimg.cn/20200404184311342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>模型主要包含原文重建和译文重建两个部分。图中上面是原文重建部分，使用的是自编码器，输入源语言最后的输出仍然是源语言。下面是译文重建部分，给定源语言之后，先经过M模型翻译为对应的译文，然后经过encoder-decoder模型翻译回原文</p>
+<h1 id="3-训练"><a href="#3-训练" class="headerlink" title="3 训练"></a>3 训练</h1><h2 id="3-1-迭代训练"><a href="#3-1-迭代训练" class="headerlink" title="3.1 迭代训练"></a>3.1 迭代训练</h2><p>最终学习算法在算法1中进行了描述，该模型的一般体系结构如图2所示。如前所述，我们的模型依赖于从初始翻译模型M（1）（第3行）开始的迭代算法。根据等式2的跨域损耗函数的需要，此函数用于转换可用的单语数据。在每次迭代中，通过最小化等式4 –的损耗来训练新的编码器和解码器（第7行）。 然后，通过组合生成的编码器和解码器来创建新的翻译模型M（t + 1），然后重复该过程。</p>
+<p>为快速启动该过程，M（1）使用学习到的并行词典对每个句子进行逐词翻译，使用Conneau等人提出的仅利用单语数据的无监督方法。<br><img src="https://img-blog.csdnimg.cn/20200404185051800.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h1><p><strong>数据集</strong>：WMT’14 English-French、WMT’14 English-French、Multi30k-Task1</p>
+<h2 id="4-1-Baselines"><a href="#4-1-Baselines" class="headerlink" title="4.1 Baselines"></a>4.1 Baselines</h2><p><strong>Word-by-word translation (WBW)</strong>：逐词翻译系统。该系统对相关语种，比如English-French 性能较好，但是在相距较远的语种如English-German表现较差。</p>
+<p><strong>Word reordering (WR)</strong>：WR系统是对WBW的结果用LSTM模型做了一次词序调整。由于难以穷尽一个句子中单词(有些句子单词量大于100个)的全部排列组合，这里仅仅考虑相邻单词之间的互换操作。在实验过程中选择最好的交换，迭代10次。这个baseline仅仅用于 WMT dataset ，这是因为 WMT dataset 有足够多的数据可以训练一个较好的语言模型。</p>
+<p><strong>Oracle Word Reordering (OWR)</strong>：使用参考，我们仅使用WBW给出的字词就能产生最佳的生成效果。 这种方法的性能是任何模型都可以完成的，而无需替换单词。</p>
+<p><strong>Supervised Learning</strong>：考虑了与我们完全相同的模型，但是在监督下进行训练，在原来的平行句上使用了标准的交叉熵损失。</p>
+<h1 id="5-相关工作"><a href="#5-相关工作" class="headerlink" title="5 相关工作"></a>5 相关工作</h1><p>与我们类似的工作是Shen等人的非平行文本样式转换方法。 作者考虑了序列到序列模型，在该模型中，赋予解码器的潜在状态也被馈送到鉴别器。 编码器与解码器一起训练以重建输入，但也愚弄了鉴别器。 作者还发现，训练两个鉴别器（一个用于源，一个用于目标域）是有益的。 然后，他们训练了解码器，以使在特定域中的句子解码过程中，根据各自的区分器无法区分出重复的隐藏状态。<br>在此之前，Hu等人训练了变分自动编码器（VAE），其中解码器输入是非结构化潜在向量的级联，以及表示要生成的句子属性的结构化代码。 鉴别器在解码器的顶部被训练以对所生成句子的标签进行分类，而解码器被训练为满足该鉴别器。 由于解码过程的不可微性，在每个步骤中，其解码器都将在上一步中预测的概率向量作为输入。<br>也许，最相关的先前工作是由He等人完成的。 （2016b），他实际上是直接针对3.2节中提出的模型选择指标进行了优化。 他们的方法的一个缺点（尚未应用到完全无人监督的环境中）是，它需要使用效率非常低的基于强化学习的方法，通过离散预测的顺序向后传播。 在这项工作中，我们改为建议a）使用对称体系结构，以及b）在训练目标与源之间的翻译时将源与目标之间的翻译冻结，反之亦然。通过交替此过程，我们使用完全可区分的模型进行操作，并且我们有效地收敛。</p>
+<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h1><p>我们提出了一种新的神经机器翻译方法，其中仅使用单语数据集学习翻译模型，而句子或文档之间没有任何对齐。 我们方法的原则是从简单的无监督逐词翻译模型开始，并基于<strong>重构损失</strong>来迭代地改进此模型，<strong>并使用鉴别器来对齐源语言和目标语言的潜在分布</strong>。 我们的实验表明，我们的方法无需任何形式的监督就能学习有效的翻译模型</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/30/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/" rel="prev" title="<数据分析> 深度学习数据预处理（pandas篇）">
+      <i class="fa fa-chevron-left"></i> <数据分析> 深度学习数据预处理（pandas篇）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-论文概述"><span class="nav-number">1.</span> <span class="nav-text">1 论文概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-模型各个模块"><span class="nav-number">2.</span> <span class="nav-text">2 模型各个模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-训练"><span class="nav-number">3.</span> <span class="nav-text">3 训练</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-迭代训练"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 迭代训练</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-实验"><span class="nav-number">4.</span> <span class="nav-text">4 实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-Baselines"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Baselines</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-相关工作"><span class="nav-number">5.</span> <span class="nav-text">5 相关工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-总结"><span class="nav-number">6.</span> <span class="nav-text">6 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Henry-Chen"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Henry-Chen</p>
+  <div class="site-description" itemprop="description">我的小屋，喝茶，读书</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_43433969" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43433969" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="music163player">
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=28566359&auto=0&height=66"></iframe>
+	</div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry-Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'JEmsj82S3MAb2DHmn';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'M3WV2SFKlhIfoqEBet4LwYnQ-gzGzoHsz',
+      appKey     : 'bDG2lPWGAJTx0Rm4vIAmkTln',
+      placeholder: "给我说两句话吧，ballball你了",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":275,"height":550},"mobile":{"show":false},"log":false});</script></body>
+</html>
