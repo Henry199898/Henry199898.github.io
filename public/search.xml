@@ -35,6 +35,40 @@
 ]]></content>
   </entry>
   <entry>
+    <title>&lt;springboot&gt;springboot获取参数集中方式</title>
+    <url>/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<p>1、通过json获取参数<br>2、请求路径参数@PathVariable<br>3、@RequestParam的使用<br>4、@RequestBody</p>
+<a id="more"></a>
+<h1 id="1-通过json获取参数"><a href="#1-通过json获取参数" class="headerlink" title="1 通过json获取参数"></a>1 通过json获取参数</h1><p>通过浏览器的url为后端控制层函数赋值,通过注解@responseBody 将java对象转换为json格式的数据返回给前端页面。</p>
+<p><strong>@ResponseBody</strong>注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，写入到response对象的body区，通常用来返回JSON数据或者是XML数据。一般在异步获取数据时使用【也就是AJAX】。</p>
+<p><strong>后端Controller层代码如下：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo1</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>前端浏览器请求为：</strong><br> <a href="http://localhost:8080/param?name=zhangsan&amp;age=14" target="_blank" rel="noopener">http://localhost:8080/param?name=zhangsan&amp;age=14</a></p>
+<p> <strong>之后前端返回的Json数据为</strong>：<br> {“name”：zhangsan，“age”：14}</p>
+<h1 id="2-请求路径参数-PathVariable"><a href="#2-请求路径参数-PathVariable" class="headerlink" title="2  请求路径参数@PathVariable"></a>2  请求路径参数@PathVariable</h1><p>获取路径参数。即前端浏览器发起url/{id}请求的这种形式。<br>后端Controller层代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param/&#123;name&#125;/&#123;age&#125;"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo2</span><span class="params">(@PathVariable(<span class="string">"name"</span>)</span> String name , @<span class="title">pathVariable</span><span class="params">(<span class="string">"age"</span>)</span> <span class="keyword">int</span> age)</span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中@PathVariable(value = “name”, required = false)中有value和required两个参数，第一个即为指定传递的参数，第二个为该参数是否必须，若为false则可以在前端不传入该参数，默认为null空值。</p>
+<h1 id="3-RequestParam的使用"><a href="#3-RequestParam的使用" class="headerlink" title="3 @RequestParam的使用"></a>3 @RequestParam的使用</h1><p>使用@RequestParm用于绑定controller上的参数,可以是多个参数，也可以是一个Map集合，GET，POST均可；</p>
+<p><strong>语法：</strong>@RequestParam(value=”参数名”,required=”true/false”,defaultValue=””)<br><strong>value</strong>：参数名<br><strong>required</strong>：是否包含该参数，默认为true，表示该请求路径中必须包含该参数，如果不包含就报错。<br><strong>defaultValue</strong>：默认参数值，如果设置了该值，required=true将失效，自动为false,如果没有传该参数，就使用默认值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param/&#123;name&#125;/&#123;age&#125;"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo2</span><span class="params">(@RequestParam(<span class="string">"name"</span>)</span> String name , @<span class="title">RequestParam</span><span class="params">(<span class="string">"age"</span>)</span> <span class="keyword">int</span> age)</span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>@RequestParam 和@PathVariable 之间的区别：</strong><br>        @RequestParam 用来获得静态URL中传入的参数，@PathVariable 用来获得动态URL中的参数</p>
+<h1 id="4-RequestBody"><a href="#4-RequestBody" class="headerlink" title="4 @RequestBody"></a>4 @RequestBody</h1><p>@RequestBody绑定的是一个对象实体，将 HTTP 请求正文插入方法中，使用适合的 HttpMessageConverter 将请求体写入某个对象。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1) 该注解用于读取Request请求的body部分数据，使用系统默认配置的HttpMessageConverter进行解析，然后把相应的数据绑定</span><br><span class="line">    到要返回的对象上； </span><br><span class="line">2) 再把HttpMessageConverter返回的对象数据绑定到 controller中方法的参数上。</span><br></pre></td></tr></table></figure>
+<p><strong>使用方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"user/login"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="comment">// 将ajax（datas）发出的请求写入 User 对象中</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">login</span><span class="params">(@RequestBody User user)</span> </span>&#123;   </span><br><span class="line"><span class="comment">// 这样就不会再被解析为跳转路径，而是直接将user对象写入 HTTP 响应正文中</span></span><br><span class="line">    <span class="keyword">return</span> user;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@PostMapping</span>(value = <span class="string">"requestBody"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">requestBody</span><span class="params">(@RequestBody  User user)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"user:"</span>+user.getName());</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>request的body部分的数据编码格式由header部分的Content-Type指定；</p>
+<p>@RequestBody不支持Get请求？（<strong>存疑</strong>）因为get请求没有HttpEntity。</p>
+]]></content>
+      <categories>
+        <category>springboot</category>
+      </categories>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>&lt;论文&gt;一篇关于自动生成源代码评论的报告</title>
     <url>/2020/04/30/A%20Survey%20of%20Automatic%20Generation%20of%20SourceCode%20Comments_%20Algorithms%20and%20Techniques%E7%BB%BC%E8%BF%B0%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>A Survey of Automatic Generation of SourceCode Comments_ Algorithms and Techniques综述论文阅读笔记</p>
@@ -83,6 +117,31 @@
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/2020/04/27/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<a id="more"></a>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>Testing</category>
+      </categories>
+      <tags>
+        <tag>TestingTag</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>&lt;论文&gt;Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis</title>
     <url>/2020/04/30/Progressive%20Self-Supervised%20Attention%20Learning%20forAspect-Level%20Sentiment%20Analysis%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</url>
     <content><![CDATA[<p>摘要：Progressive Self-Supervised Attention Learning forAspect-Level Sentiment Analysis翻译及理解</p>
@@ -128,152 +187,6 @@
 ]]></content>
       <tags>
         <tag>论文</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;论文&gt; Unsupervised Machine Translation Using Monolingual Corpora Only</title>
-    <url>/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/</url>
-    <content><![CDATA[<p>论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only<br>作者： Guillaume Lample / Ludovic Denoyer /Marc Aurelio Ranzato<br>发表时间：2018/4/30<br>论文链接：<a href="https://arxiv.org/pdf/1711.00043v1.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00043v1.pdf</a><br>代码链接：<a href="https://github.com/facebookresearch/MUSE" target="_blank" rel="noopener">https://github.com/facebookresearch/MUSE</a> 以及 <a href="https://github.com/facebookresearch/fastText" target="_blank" rel="noopener">https://github.com/facebookresearch/fastText</a></p>
-<a id="more"></a>
-
-<p>发现一篇很详细的翻译笔记：<a href="https://blog.csdn.net/ljp1919/article/details/102728699?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158599074719726869003034%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158599074719726869003034&biz_id=0&utm_source=distribute.pc_search_result.none-task-blog-all_SOOPENSEARCH-3" target="_blank" rel="noopener">地址</a></p>
-<p>在此仅作自己的学习笔记总结：</p>
-<h1 id="1-论文概述"><a href="#1-论文概述" class="headerlink" title="1 论文概述"></a>1 论文概述</h1><p><strong>本文目的</strong>：希望不利用平行语料库实现机器翻译，本文提出的模型，仅需要两个语种各自的单语种语料数据集，并将2者映射到同一隐空间中。模型主要是学习通过从共享的隐特征向量空间中重建这两种语种。<br><strong>模型的两个原则</strong>：第一个原则：这个模型必须能够从一个带噪声的输入中重建出一个给定语种的句子，如标准去噪自动编码器。第二个原则：该模型能够在目标域中对带有噪声的翻译句子重建出源句，反之亦然。<br><strong>模型重要思想</strong>：关键思想是在两种语言（或领域）之间建立共同的潜在空间，并通过根据两个原则在两个领域中进行重构来学习翻译：（i）该模型必须能够从特定语言中重构给定语言的句子。 噪声版本，如标准降噪自动编码器中的那样（Vincent等，2008）。 （ii）在目标域中相同句子经过嘈杂翻译的情况下，该模型还学会重建任何源句，反之亦然。 对于（ii），翻译后的句子是通过使用反向翻译程序获得的（Sennrich et al。，2015），即 通过使用学习的模型将源句子翻译到目标域。 除了这些重建目标之外，我们使用对抗性正则化术语来约束源句和目标句的潜在表示形式以使其具有相同的分布，从而该模型尝试欺骗鉴别器，同时对鉴别器进行训练以识别给定潜在句子表示形式的语言（Ganin 等人，2016年）。 然后反复重复此过程，从而产生质量提高的翻译模型。 为了保持我们的方法完全不受监督，我们使用了一个简单的无监督翻译模型来初始化我们的算法，该模型基于一个句子的逐词翻译，并使用源自相同单语数据的双语词典（Conneau et al。，2017）。 通过仅使用单语数据，我们就可以将两种语言的句子编码到相同的特征空间中，并且从那里，我们还可以使用任何一种语言进行解码/翻译； 参见图1的说明：<br><img src="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>x和z分别代表encode和decode两端的输入：<br><img src="https://img-blog.csdnimg.cn/20200404175037569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在本文中，我们注意使用equence-to-sequence模型。 编码器是双向LSTM，它返回隐藏状态序列z =（z1，z2，…，zm）。 在每个步骤中，作为LSTM的解码器将采用先前的隐藏状态，当前字和上下文矢量由编码器状态上的加权总和给出。</p>
-<p><strong>方法总览</strong>：给定相同或其他域中相同句子的嘈杂版本，我们通过重构特定域中的句子来训练编码器和解码器。<br><img src="https://img-blog.csdnimg.cn/20200404175833601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h1 id="2-模型各个模块"><a href="#2-模型各个模块" class="headerlink" title="2 模型各个模块"></a>2 模型各个模块</h1><p><strong>噪声模型训练</strong>：<strong>如何通过噪声语句训练自动编码</strong><br>本文采用与去噪自编码器(DAE)相似的策略将噪声添加到输入句子中。<br>训练的目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404180401308.png" alt="在这里插入图片描述"></p>
-<p><img src="https://img-blog.csdnimg.cn/20200404180819755.png" alt="在这里插入图片描述"><br><strong>跨域训练</strong>：<br>如何实现源语句与翻译语句之间 的映射？<br> (1)从源语种中采样出一个句子x，在l2中生成此时的翻译结果。这个 翻译结果是基于当前翻译模型M生成的，所以可以表示为y=M(x)<br>(2)再对该翻译结果y进行加噪，得到corrupted的C(y)。目标是学习能够在C(y)中重建出x的encoder和decoder。所以这里的加噪在C(y)这里。<br>(3)根据C(y)重建x<br>此时的损失目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404181923118.png" alt="在这里插入图片描述"><br><strong>对抗训练</strong>：还未理解</p>
-<p>当 encoder 所输出的特征位于同一个空间而不管输入的句子是何语种时，那么 decoder 就有可能无视encoder中的输入句子而实现decode为特定语种。其实，隐空间就像是一个标准，在这个标准上可以任意转为其他格式(这里特指语种)，而其他语种需要统一转到该隐空间，进行标准统一。</p>
-<p>但是需要注意，decoder 在目标域中生成句子时仍然可能有错误的翻译。限制 encoder 在同一特征空间映射两种语言，并不意味着句子之间存在严格的对应关系。所幸的是，前面介绍的公式2中跨域训练的损失减轻了这种担忧。最近关于双语词典的研究表明，这种约束在词级别(word level)上是非常有效的，这表明只要这两种隐表征在特征空间上表现出较强的结构性，那么这种约束在句子层面( sentence level)上也可能有效。</p>
-<p><img src="https://img-blog.csdnimg.cn/20200404190059530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<p>下图为本文最重点的图，描述了模型是如何工作的：<br><img src="https://img-blog.csdnimg.cn/20200404184311342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>模型主要包含原文重建和译文重建两个部分。图中上面是原文重建部分，使用的是自编码器，输入源语言最后的输出仍然是源语言。下面是译文重建部分，给定源语言之后，先经过M模型翻译为对应的译文，然后经过encoder-decoder模型翻译回原文</p>
-<h1 id="3-训练"><a href="#3-训练" class="headerlink" title="3 训练"></a>3 训练</h1><h2 id="3-1-迭代训练"><a href="#3-1-迭代训练" class="headerlink" title="3.1 迭代训练"></a>3.1 迭代训练</h2><p>最终学习算法在算法1中进行了描述，该模型的一般体系结构如图2所示。如前所述，我们的模型依赖于从初始翻译模型M（1）（第3行）开始的迭代算法。根据等式2的跨域损耗函数的需要，此函数用于转换可用的单语数据。在每次迭代中，通过最小化等式4 –的损耗来训练新的编码器和解码器（第7行）。 然后，通过组合生成的编码器和解码器来创建新的翻译模型M（t + 1），然后重复该过程。</p>
-<p>为快速启动该过程，M（1）使用学习到的并行词典对每个句子进行逐词翻译，使用Conneau等人提出的仅利用单语数据的无监督方法。<br><img src="https://img-blog.csdnimg.cn/20200404185051800.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h1><p><strong>数据集</strong>：WMT’14 English-French、WMT’14 English-French、Multi30k-Task1</p>
-<h2 id="4-1-Baselines"><a href="#4-1-Baselines" class="headerlink" title="4.1 Baselines"></a>4.1 Baselines</h2><p><strong>Word-by-word translation (WBW)</strong>：逐词翻译系统。该系统对相关语种，比如English-French 性能较好，但是在相距较远的语种如English-German表现较差。</p>
-<p><strong>Word reordering (WR)</strong>：WR系统是对WBW的结果用LSTM模型做了一次词序调整。由于难以穷尽一个句子中单词(有些句子单词量大于100个)的全部排列组合，这里仅仅考虑相邻单词之间的互换操作。在实验过程中选择最好的交换，迭代10次。这个baseline仅仅用于 WMT dataset ，这是因为 WMT dataset 有足够多的数据可以训练一个较好的语言模型。</p>
-<p><strong>Oracle Word Reordering (OWR)</strong>：使用参考，我们仅使用WBW给出的字词就能产生最佳的生成效果。 这种方法的性能是任何模型都可以完成的，而无需替换单词。</p>
-<p><strong>Supervised Learning</strong>：考虑了与我们完全相同的模型，但是在监督下进行训练，在原来的平行句上使用了标准的交叉熵损失。</p>
-<h1 id="5-相关工作"><a href="#5-相关工作" class="headerlink" title="5 相关工作"></a>5 相关工作</h1><p>与我们类似的工作是Shen等人的非平行文本样式转换方法。 作者考虑了序列到序列模型，在该模型中，赋予解码器的潜在状态也被馈送到鉴别器。 编码器与解码器一起训练以重建输入，但也愚弄了鉴别器。 作者还发现，训练两个鉴别器（一个用于源，一个用于目标域）是有益的。 然后，他们训练了解码器，以使在特定域中的句子解码过程中，根据各自的区分器无法区分出重复的隐藏状态。<br>在此之前，Hu等人训练了变分自动编码器（VAE），其中解码器输入是非结构化潜在向量的级联，以及表示要生成的句子属性的结构化代码。 鉴别器在解码器的顶部被训练以对所生成句子的标签进行分类，而解码器被训练为满足该鉴别器。 由于解码过程的不可微性，在每个步骤中，其解码器都将在上一步中预测的概率向量作为输入。<br>也许，最相关的先前工作是由He等人完成的。 （2016b），他实际上是直接针对3.2节中提出的模型选择指标进行了优化。 他们的方法的一个缺点（尚未应用到完全无人监督的环境中）是，它需要使用效率非常低的基于强化学习的方法，通过离散预测的顺序向后传播。 在这项工作中，我们改为建议a）使用对称体系结构，以及b）在训练目标与源之间的翻译时将源与目标之间的翻译冻结，反之亦然。通过交替此过程，我们使用完全可区分的模型进行操作，并且我们有效地收敛。</p>
-<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h1><p>我们提出了一种新的神经机器翻译方法，其中仅使用单语数据集学习翻译模型，而句子或文档之间没有任何对齐。 我们方法的原则是从简单的无监督逐词翻译模型开始，并基于<strong>重构损失</strong>来迭代地改进此模型，<strong>并使用鉴别器来对齐源语言和目标语言的潜在分布</strong>。 我们的实验表明，我们的方法无需任何形式的监督就能学习有效的翻译模型</p>
-]]></content>
-      <tags>
-        <tag>论文</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2020/04/27/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<a id="more"></a>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>Testing</category>
-      </categories>
-      <tags>
-        <tag>TestingTag</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;学习笔记&gt; word2vec笔记（Hierarchical Softmax）</title>
-    <url>/2020/04/30/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/</url>
-    <content><![CDATA[<h1 id="word2vec学习笔记-1"><a href="#word2vec学习笔记-1" class="headerlink" title="word2vec学习笔记#1"></a>word2vec学习笔记#1</h1><p>文章来自于<strong><a href="https://www.hankcs.com/nlp/word2vec.html" target="_blank" rel="noopener">码农场</a></strong>大佬的博文，做自己的摘抄笔记。</p>
-<a id="more"></a>
-<h2 id="word2vec"><a href="#word2vec" class="headerlink" title="word2vec"></a>word2vec</h2><pre><code>word2vec作为神经概率语言模型的输入，其本身其实是神经概率模型的副产品，是为了通
-过神经网络学习某个语言模型而产生的中间结果。具体来说，“某个语言模型”指的是
-“CBOW”和“Skip-gram”。具体学习过程会用到两个降低复杂度的近似方法——Hierarchical 
-Softmax或Negative Sampling。两个模型乘以两种方法，一共有四种实现。</code></pre><h2 id="Hierarchical-Softmax"><a href="#Hierarchical-Softmax" class="headerlink" title="Hierarchical Softmax"></a>Hierarchical Softmax</h2><p><strong>模型共同点</strong></p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png" alt="图一"><br><strong>两种模型的网络结构如下</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG82ZTVkOWxqMjE2YzBxa3doay5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上图中w(t)表示句子中t位置处的词语</p>
-<h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>原理：一种根据上下文词语预测当前空缺位置的概率的模型，如上左图。<br>学习目标是最大化下面的似然函数：<br><img src="https://img-blog.csdnimg.cn/20191212223414310.png" alt="在这里插入图片描述"><br>其中W为语料库中的认一个词。<br><strong>输入层</strong>是上下文的词语的词向量（现在是在训练CBOW模型，词向量只是个副产品，确切来说，是CBOW模型的一个参数。训练开始的时候，词向量是个<strong>随机值</strong>，随着训练的进行不断被更新）。<br><strong>输出层</strong>输出最可能的w。由于语料库中词汇量是固定的|C|个，所以上述过程其实可以看做一个多分类问题。给定特征，从|C|个分类中挑一个。</p>
-<p>由上输出层的分析可知，最后是对输出层的数据进行分类，下方用的<strong>Hierarchical Softmax</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d215NGpkbndqMjE0dzEyYTQydi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>非叶子节点就是一个分类器（感知机），用1或者0来代替分类的结果，每一个叶子节点即为语料库中的一个词语，可以通过上述的概率表述出条件概率   $P(w|context(w))$<br>引入下列符号：<br>1、$p^w$:从根节点到w对应的叶子节点的路径<br>2、$l^w$:路径包含的节点个数<br>3、$P_{1}^{w}$、$P_{2}^{w}$、$P_{3}^{w}$……$P_{l^w}^{w}$：为路径中的各个节点<br>4、$d_{2}^{w}$、$d_{3}^{w}$、$d_{4}^{w}$……$d_{l}^{w}$在零到一范围内，其中$d_{l}^{w}$表示第j个对应的编码（根节点无编码）<br>5、$\Theta _{1}^{w}$、$\Theta _{2}^{w}$、$\Theta _{3}^{w}$……$\Theta _{l^w}^{w}$为路径$p^w$中非叶节点对应的参数向量<br>得w的条件概率：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29oazNwaTdqMjBrYTA0MnQ5MS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>从根节点到叶节点经过了 $l^w$-1个节点，编码从下标2开始（根节点无编码），对应的参数向量下标从1开始（根节点为1）。</p>
-<p>每一项是一个逻辑斯谛回归：（即为每一个0或者1的选择都有着两个不同的概率，且二者的和为一）<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29xNW9lb2pqMjBwbTA1eXQ5YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上式两种情况综合到一个公式中去：（下式中$d_{l}^{w}$有两种取值：0或者1）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d293YzJvaTJqMjBxbTAybWpycy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>目标函数取对数似然：（一种结果转化方式？）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d295aWt5cDBqMjBmYzAza2dscy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上面几个公式结合得到如下：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AwbXdzNWdqMjB6aTA4NmduOS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>简化为：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上式就是结果似然函数，将其最大化则得到我们最初需要通过CBOW预测的结果，将上式各项都取到最大化<br>每一项有两个参数，一个是每个节点的参数向量$\Theta <em>{j-1}^{w}$，另一个是输出层的输入$X</em>{w}$（即是中间层的输出结果转变为Hierarchical Softmax的输入）对这两个值求偏导：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B0NHhnOHRqMjEyNjAzcTc1Ni5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>因为有如下的性质<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B1czMzM3FqMjBiaTAyZ214NS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所以带入上式即可得到<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B3aXhha25qMjBuZTAya3Q5My5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>最终结果为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B4ajYxd2pqMjBjbzAyazBzcy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$\Theta <em>{j-1}^{w}$的迭代公式即为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B6ajBtMHpqMjBsMjAyNnQ5MC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$X</em>{w}$偏导式为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所有直接将 $\Theta <em>{j-1}^{w}$的偏导数中的$\Theta _{j-1}^{w}$替换为$X</em>{w}$，得到关于$X_{w}$的偏导数<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3E1Y2Zxa25qMjBqZTAzcXQ5Mi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>得到的是$X_{w}$的更新迭代，因为$X_{w}$并不是输入的向量，而是一个中间产物，所以必须把该结果向上传递至每个单词的词向量中：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FjZGR3dzdqMjBxNjA0MndmNC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br><strong>重点：两个参数的更新伪代码</strong>：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FnejBlbHFqMjBwbTBxYXE1YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
-]]></content>
-      <tags>
-        <tag>word2vec</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;学习笔记&gt; word2vec是如何得到向量的（CBOW模型）</title>
-    <url>/2020/04/30/word2vec%E6%98%AF%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E5%90%91%E9%87%8F%E7%9A%84%EF%BC%88CBOW%E6%A8%A1%E5%9E%8B%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="学习笔记"><a href="#学习笔记" class="headerlink" title="学习笔记"></a>学习笔记</h1><p>只是自己的学习笔记，只把自己要记忆的知识写下来。<br>简单理解的链接： <a href="https://www.zhihu.com/question/44832436" target="_blank" rel="noopener">word2vec是如何得到向量的</a></p>
-<a id="more"></a>
-
-<p><strong>word2vec的准备操作</strong>：中文需要将每句话用工具分词（jieba等）</p>
-<p><strong>word2vec的作用</strong>：是将语料库中的词训练出各自的词向量，供NLP其他后续具体任务的使用。</p>
-<p><strong>word2vec的处理方法</strong>：两种训练方法<strong>CBOW</strong>模型和<strong>Skip-gram</strong>模型。]</p>
-<p><strong>word2vec的算法加速方法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
-<blockquote>
-<p>1.<strong>CBOW</strong>模型根据中心词W(t)周围的词来预测中心词<br>2.<strong>Skip-gram</strong>模型则根据中心词W(t)来预测周围词</p>
-</blockquote>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0wZjQzOWUxYmI0NGM3MWM4ZTY5NGNjNjVjYjUwOTI2M19oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
-<blockquote>
-<p>上图中两个矩阵是CBOW模型要不断学习迭代的:$W_{v<em>n}$与$W_{n</em>v}^{‘}$</p>
-</blockquote>
-<p><strong>输入层</strong>是被预测那个词的上下文词的one-hot向量（该向量是针对语料库中所有分词的）</p>
-<p><strong>第一个权重矩阵</strong>：$W_{v<em>n}$为输入权重矩阵，（V</em>N矩阵，V为自己设定的数，一般为50-300，好像是，N为one-hot向量的维数，初始化权重矩阵W）。<strong>这里的V与N具体指代的内容存疑。</strong></p>
-<p><strong>接下来的步骤</strong>：将上下文单词的one-hot向量分别与输入权重矩阵相乘，得到第一次迭代的词向量（后面需要不断的迭代词向量，通过学习输入权重矩阵）；将所有上下文“词向量”相加取平均值即可得到神经网络中间层。</p>
-<p><strong>第二个权重矩阵</strong>：$W_{n*v}^{‘}$为输出权重矩阵，这个矩阵中N为one-hot向量的维度，v为自己取得数字。</p>
-<p><strong>接下来的步骤</strong>：运用softmax将预测结果规整到一定范围内。这里就可以用到前面提到的两个加速算法了，因为仅仅依靠softmax太慢。</p>
-<p><strong>加速算法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
-<p>如下图<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWM0LnpoaW1nLmNvbS84MC92Mi0xNzEzNDUwZmEyYTBmMzdjOGNiY2NlNGZmZWYwNGJhYV9oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
-<p>最最重要的：<strong>任何一个单词的one-hot表示乘以这个矩阵都将得到自己的word embedding。</strong>（word2vec的目的）</p>
-]]></content>
-      <tags>
-        <tag>word2vec</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>&lt;数据分析&gt; 深度学习数据预处理（pandas篇）</title>
-    <url>/2020/04/30/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/</url>
-    <content><![CDATA[<p>摘要：数据预处理的四种技术：数据合并，数据清洗，数据标准化，数据转换</p>
-<a id="more"></a>
-<p>只是做自己的学习笔记使用，如有错误请评论区指出。<br>数据预处理的四种技术：<strong>数据合并，数据清洗，数据标准化，数据转换</strong></p>
-<h1 id="导包和数据集"><a href="#导包和数据集" class="headerlink" title="导包和数据集"></a>导包和数据集</h1><p>工具使用pandas和numpy</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train_df =pd.read_csv(<span class="string">'../datas/train.csv'</span>)  <span class="comment"># train set</span></span><br><span class="line">test_df  = pd.read_csv(<span class="string">'../datas/test.csv'</span>)   <span class="comment"># test  set</span></span><br><span class="line">combine  = [train_df, test_df]</span><br></pre></td></tr></table></figure>
-<h1 id="查看数据维度以及类型"><a href="#查看数据维度以及类型" class="headerlink" title="查看数据维度以及类型"></a>查看数据维度以及类型</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看前五条数据</span></span><br><span class="line"><span class="keyword">print</span> train_df.head(<span class="number">5</span>)  </span><br><span class="line"><span class="comment">#查看每列数据类型以及nan情况</span></span><br><span class="line"><span class="keyword">print</span> train_df.info()  </span><br><span class="line"><span class="comment">#获得所有object属性</span></span><br><span class="line"><span class="keyword">print</span> train_data.describe(include=[<span class="string">'O'</span>]).columns</span><br></pre></td></tr></table></figure>
-<h1 id="操作训练集中的信息"><a href="#操作训练集中的信息" class="headerlink" title="操作训练集中的信息"></a>操作训练集中的信息</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#统计Title单列元素对应的个数</span></span><br><span class="line"><span class="keyword">print</span> train_df[<span class="string">'Title'</span>].value_counts() </span><br><span class="line"><span class="comment">#属性列删除(针对Name和Passengerld两列操作)</span></span><br><span class="line">train_df = train_df.drop([<span class="string">'Name'</span>, <span class="string">'PassengerId'</span>], axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<h1 id="1-合并数据"><a href="#1-合并数据" class="headerlink" title="1.合并数据"></a>1.合并数据</h1><pre><code>建立关系表： 
-data1 = pd.DataFrame({&apos;key1&apos;:list(&apos;aavde&apos;),&apos;key2&apos;:list(&apos;asdfs&apos;),&apos;key3&apos;:list(str(12345))})</code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215122841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<pre><code>data1 = pd.DataFrame(np.random.rand(3,3),index = list(&apos;abc&apos;),columns = list(&apos;ABC&apos;)) </code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215330416.png" alt="在这里插入图片描述"></p>
-<h2 id="堆叠"><a href="#堆叠" class="headerlink" title="堆叠"></a>堆叠</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法一：</span></span><br><span class="line">pd.concat(objs,join=‘outer’, join_axes=<span class="literal">None</span>,ignore_index=<span class="literal">False</span>, </span><br><span class="line">keys=<span class="literal">None</span>, levels=<span class="literal">None</span>, names=<span class="literal">None</span>, verify_interity=<span class="literal">False</span>, copy=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
-<p><strong>objs</strong>    接受用于合并的series,dataframe的组合。以列表的形式，eg：[data1,data2]其中data1和data2为两个二维表<br><strong>axis</strong>    表示堆叠的轴向，默认axis为0，表示纵向堆叠，以行为主的堆叠方式<br><strong>join</strong>    接受inner或outer。表示其他轴向上的索引是按交集还是并集进行合并，默认为outer；<strong>outer</strong>表示并集，不存在的关系其值用NaN代替；<strong>inner</strong>表示交集，结果仅返回无空值的行或者列（此处由axis的取值决定，0：列中无空值；1：行中无空值）<br><strong>ignore_index</strong>    接受boolean.表示是否不保留连接轴上的索引，产生一组新索引range(toatal_length)默认为False<br><strong>verify_intergrity</strong>    接受boolean，检查新连接的轴是否包含重复项。如果发现重复项，则引发异常。默认为False</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法二:利用append实现纵向堆叠，前提是合并的两张表列名应该一致</span></span><br><span class="line">data1.append(data2,ignore_index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="通过主键合并数据"><a href="#通过主键合并数据" class="headerlink" title="通过主键合并数据"></a>通过主键合并数据</h2><p>具体实例可见 <a href="https://blog.csdn.net/moshanghuali/article/details/89764552?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479591419726869037198%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479591419726869037198&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">链接</a><br>    主键合并就是通过一个或者多个键将两个数据集的行连接起来。类似于sql中的join。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">pd.merge(left,right,how,on,left_on,right_on,left_index,right_index,sort,suffixes)  </span><br><span class="line"></span><br><span class="line"><span class="comment">#例如;此时data_1与data_2的共同列名为key2.将其传给on。作为合并主键，进行交集合并,其中inner和outer的含义同上</span></span><br><span class="line">pd.merge(data_1,data_2,on = <span class="string">'key2'</span>,how = <span class="string">'inner'</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20200321213611755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="你还好吗"><br><strong>可以通过主键合并的情况如下：</strong><br><strong>1</strong> 左右数据有共同的列名，用共同的列名作为主键。此时使用on参数，传入共同的列名。合并后的数据列数为原来数据的列数和减去连接键的数量<br><strong>2</strong> 使用不同列名主键进行合并<br><strong>3</strong> 赋予left_index和right_index参数。使用原本数据的index(行索引)作为主键进行合并</p>
-<p>还可以通过<strong>不同的列名作为主键</strong>进行融合</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_on = <span class="string">'key1'</span>,right_on = <span class="string">'key2'</span>) <span class="comment"># 左右的合并主键分别是key1和key2。</span></span><br></pre></td></tr></table></figure>
-<p>通过<strong>索引</strong>为主键</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_index = <span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
-<p><strong>join方法</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">dataframe.join(self,other,on=<span class="literal">None</span>,how=‘left’,lsuffix=’’,resuffix=’’,sort=<span class="literal">False</span>)</span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_1.join(data_2,on = <span class="string">'key2'</span>,lsuffix=<span class="string">' '</span>,rsuffix=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20200321221302628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h1 id="2-清洗数据"><a href="#2-清洗数据" class="headerlink" title="2.清洗数据"></a>2.清洗数据</h1><h2 id="检测重复值"><a href="#检测重复值" class="headerlink" title="检测重复值"></a>检测重复值</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.drop_duplicates(subset=<span class="literal">None</span>,keep=‘first’,inplace=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_repeat.drop_duplicates(subset=<span class="string">'key2'</span>)</span><br><span class="line">data_repeat.drop_duplicates(subset=[<span class="string">'key1'</span>,<span class="string">'key2'</span>])</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20200321221838894.png" alt="在这里插入图片描述"></p>
-<h2 id="检测与处理缺失值"><a href="#检测与处理缺失值" class="headerlink" title="检测与处理缺失值"></a>检测与处理缺失值</h2><p><strong>检测</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data_null = pd.DataFrame(&#123;<span class="string">'key1'</span>:[np.nan,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,np.nan],<span class="string">'key2'</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,np.nan]&#125;)</span><br><span class="line"></span><br><span class="line">data_null.isnull()   <span class="comment"># 以true或者false来表示是否是缺失值。</span></span><br><span class="line">data_null.isnull().sum()   <span class="comment"># 统计一下缺失值数目，结果将按列缺失值的个数</span></span><br></pre></td></tr></table></figure>
-<p><strong>处理</strong><br>    处理缺失值的方法主要有：<strong>删除法，替换法，插值法。</strong></p>
-<p><strong>删除缺失值</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#其中subset指出需要删除空值的列名，与how属性联动才可以使用</span></span><br><span class="line">dataframe.dropna(axis = <span class="number">0</span>,how = ‘any’,thresh=<span class="literal">None</span>,subset=<span class="literal">None</span>,inplace = <span class="literal">None</span>)</span><br><span class="line"><span class="comment"># thresh属性 表示能够容忍生下来的非缺失值的个数。</span></span><br></pre></td></tr></table></figure>
-<p><em>上面的thresh属性存在疑问</em><br><img src="https://img-blog.csdnimg.cn/20200321222833377.png" alt="在这里插入图片描述"><br><strong>替换缺失值</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.fillna(value = <span class="literal">None</span>,method=<span class="literal">None</span>,axis=<span class="literal">None</span>,inpalce=<span class="literal">False</span>,limit=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如：使用111代替缺失值</span></span><br><span class="line">data_null.fillna(<span class="number">111</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20200321223611745.png" alt="在这里插入图片描述"></p>
-<h1 id="3-数据的标准化"><a href="#3-数据的标准化" class="headerlink" title="3.数据的标准化"></a>3.数据的标准化</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/93162100?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">数据标准化</a></p>
-<h1 id="4-数据的转换"><a href="#4-数据的转换" class="headerlink" title="4.数据的转换"></a>4.数据的转换</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/92831389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158480195419724848323709%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158480195419724848323709&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">见链接</a></p>
-<h1 id="numpy操作数据"><a href="#numpy操作数据" class="headerlink" title="numpy操作数据"></a><a href="https://blog.csdn.net/weixin_45252110/article/details/96027968?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479622919724811821089%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479622919724811821089&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">numpy操作数据</a></h1>]]></content>
-      <tags>
-        <tag>pandas</tag>
       </tags>
   </entry>
   <entry>
@@ -360,6 +273,54 @@ data1 = pd.DataFrame({&apos;key1&apos;:list(&apos;aavde&apos;),&apos;key2&apos;:
       </tags>
   </entry>
   <entry>
+    <title>&lt;论文&gt; Unsupervised Machine Translation Using Monolingual Corpora Only</title>
+    <url>/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/</url>
+    <content><![CDATA[<p>论文名称：Unsupervised Machine Translation Using Monolingual Corpora Only<br>作者： Guillaume Lample / Ludovic Denoyer /Marc Aurelio Ranzato<br>发表时间：2018/4/30<br>论文链接：<a href="https://arxiv.org/pdf/1711.00043v1.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1711.00043v1.pdf</a><br>代码链接：<a href="https://github.com/facebookresearch/MUSE" target="_blank" rel="noopener">https://github.com/facebookresearch/MUSE</a> 以及 <a href="https://github.com/facebookresearch/fastText" target="_blank" rel="noopener">https://github.com/facebookresearch/fastText</a></p>
+<a id="more"></a>
+
+<p>发现一篇很详细的翻译笔记：<a href="https://blog.csdn.net/ljp1919/article/details/102728699?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158599074719726869003034%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158599074719726869003034&biz_id=0&utm_source=distribute.pc_search_result.none-task-blog-all_SOOPENSEARCH-3" target="_blank" rel="noopener">地址</a></p>
+<p>在此仅作自己的学习笔记总结：</p>
+<h1 id="1-论文概述"><a href="#1-论文概述" class="headerlink" title="1 论文概述"></a>1 论文概述</h1><p><strong>本文目的</strong>：希望不利用平行语料库实现机器翻译，本文提出的模型，仅需要两个语种各自的单语种语料数据集，并将2者映射到同一隐空间中。模型主要是学习通过从共享的隐特征向量空间中重建这两种语种。<br><strong>模型的两个原则</strong>：第一个原则：这个模型必须能够从一个带噪声的输入中重建出一个给定语种的句子，如标准去噪自动编码器。第二个原则：该模型能够在目标域中对带有噪声的翻译句子重建出源句，反之亦然。<br><strong>模型重要思想</strong>：关键思想是在两种语言（或领域）之间建立共同的潜在空间，并通过根据两个原则在两个领域中进行重构来学习翻译：（i）该模型必须能够从特定语言中重构给定语言的句子。 噪声版本，如标准降噪自动编码器中的那样（Vincent等，2008）。 （ii）在目标域中相同句子经过嘈杂翻译的情况下，该模型还学会重建任何源句，反之亦然。 对于（ii），翻译后的句子是通过使用反向翻译程序获得的（Sennrich et al。，2015），即 通过使用学习的模型将源句子翻译到目标域。 除了这些重建目标之外，我们使用对抗性正则化术语来约束源句和目标句的潜在表示形式以使其具有相同的分布，从而该模型尝试欺骗鉴别器，同时对鉴别器进行训练以识别给定潜在句子表示形式的语言（Ganin 等人，2016年）。 然后反复重复此过程，从而产生质量提高的翻译模型。 为了保持我们的方法完全不受监督，我们使用了一个简单的无监督翻译模型来初始化我们的算法，该模型基于一个句子的逐词翻译，并使用源自相同单语数据的双语词典（Conneau et al。，2017）。 通过仅使用单语数据，我们就可以将两种语言的句子编码到相同的特征空间中，并且从那里，我们还可以使用任何一种语言进行解码/翻译； 参见图1的说明：<br><img src="https://img-blog.csdnimg.cn/20200404173425817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>x和z分别代表encode和decode两端的输入：<br><img src="https://img-blog.csdnimg.cn/20200404175037569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在本文中，我们注意使用equence-to-sequence模型。 编码器是双向LSTM，它返回隐藏状态序列z =（z1，z2，…，zm）。 在每个步骤中，作为LSTM的解码器将采用先前的隐藏状态，当前字和上下文矢量由编码器状态上的加权总和给出。</p>
+<p><strong>方法总览</strong>：给定相同或其他域中相同句子的嘈杂版本，我们通过重构特定域中的句子来训练编码器和解码器。<br><img src="https://img-blog.csdnimg.cn/20200404175833601.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="2-模型各个模块"><a href="#2-模型各个模块" class="headerlink" title="2 模型各个模块"></a>2 模型各个模块</h1><p><strong>噪声模型训练</strong>：<strong>如何通过噪声语句训练自动编码</strong><br>本文采用与去噪自编码器(DAE)相似的策略将噪声添加到输入句子中。<br>训练的目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404180401308.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200404180819755.png" alt="在这里插入图片描述"><br><strong>跨域训练</strong>：<br>如何实现源语句与翻译语句之间 的映射？<br> (1)从源语种中采样出一个句子x，在l2中生成此时的翻译结果。这个 翻译结果是基于当前翻译模型M生成的，所以可以表示为y=M(x)<br>(2)再对该翻译结果y进行加噪，得到corrupted的C(y)。目标是学习能够在C(y)中重建出x的encoder和decoder。所以这里的加噪在C(y)这里。<br>(3)根据C(y)重建x<br>此时的损失目标函数为：<br><img src="https://img-blog.csdnimg.cn/20200404181923118.png" alt="在这里插入图片描述"><br><strong>对抗训练</strong>：还未理解</p>
+<p>当 encoder 所输出的特征位于同一个空间而不管输入的句子是何语种时，那么 decoder 就有可能无视encoder中的输入句子而实现decode为特定语种。其实，隐空间就像是一个标准，在这个标准上可以任意转为其他格式(这里特指语种)，而其他语种需要统一转到该隐空间，进行标准统一。</p>
+<p>但是需要注意，decoder 在目标域中生成句子时仍然可能有错误的翻译。限制 encoder 在同一特征空间映射两种语言，并不意味着句子之间存在严格的对应关系。所幸的是，前面介绍的公式2中跨域训练的损失减轻了这种担忧。最近关于双语词典的研究表明，这种约束在词级别(word level)上是非常有效的，这表明只要这两种隐表征在特征空间上表现出较强的结构性，那么这种约束在句子层面( sentence level)上也可能有效。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200404190059530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>下图为本文最重点的图，描述了模型是如何工作的：<br><img src="https://img-blog.csdnimg.cn/20200404184311342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>模型主要包含原文重建和译文重建两个部分。图中上面是原文重建部分，使用的是自编码器，输入源语言最后的输出仍然是源语言。下面是译文重建部分，给定源语言之后，先经过M模型翻译为对应的译文，然后经过encoder-decoder模型翻译回原文</p>
+<h1 id="3-训练"><a href="#3-训练" class="headerlink" title="3 训练"></a>3 训练</h1><h2 id="3-1-迭代训练"><a href="#3-1-迭代训练" class="headerlink" title="3.1 迭代训练"></a>3.1 迭代训练</h2><p>最终学习算法在算法1中进行了描述，该模型的一般体系结构如图2所示。如前所述，我们的模型依赖于从初始翻译模型M（1）（第3行）开始的迭代算法。根据等式2的跨域损耗函数的需要，此函数用于转换可用的单语数据。在每次迭代中，通过最小化等式4 –的损耗来训练新的编码器和解码器（第7行）。 然后，通过组合生成的编码器和解码器来创建新的翻译模型M（t + 1），然后重复该过程。</p>
+<p>为快速启动该过程，M（1）使用学习到的并行词典对每个句子进行逐词翻译，使用Conneau等人提出的仅利用单语数据的无监督方法。<br><img src="https://img-blog.csdnimg.cn/20200404185051800.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h1><p><strong>数据集</strong>：WMT’14 English-French、WMT’14 English-French、Multi30k-Task1</p>
+<h2 id="4-1-Baselines"><a href="#4-1-Baselines" class="headerlink" title="4.1 Baselines"></a>4.1 Baselines</h2><p><strong>Word-by-word translation (WBW)</strong>：逐词翻译系统。该系统对相关语种，比如English-French 性能较好，但是在相距较远的语种如English-German表现较差。</p>
+<p><strong>Word reordering (WR)</strong>：WR系统是对WBW的结果用LSTM模型做了一次词序调整。由于难以穷尽一个句子中单词(有些句子单词量大于100个)的全部排列组合，这里仅仅考虑相邻单词之间的互换操作。在实验过程中选择最好的交换，迭代10次。这个baseline仅仅用于 WMT dataset ，这是因为 WMT dataset 有足够多的数据可以训练一个较好的语言模型。</p>
+<p><strong>Oracle Word Reordering (OWR)</strong>：使用参考，我们仅使用WBW给出的字词就能产生最佳的生成效果。 这种方法的性能是任何模型都可以完成的，而无需替换单词。</p>
+<p><strong>Supervised Learning</strong>：考虑了与我们完全相同的模型，但是在监督下进行训练，在原来的平行句上使用了标准的交叉熵损失。</p>
+<h1 id="5-相关工作"><a href="#5-相关工作" class="headerlink" title="5 相关工作"></a>5 相关工作</h1><p>与我们类似的工作是Shen等人的非平行文本样式转换方法。 作者考虑了序列到序列模型，在该模型中，赋予解码器的潜在状态也被馈送到鉴别器。 编码器与解码器一起训练以重建输入，但也愚弄了鉴别器。 作者还发现，训练两个鉴别器（一个用于源，一个用于目标域）是有益的。 然后，他们训练了解码器，以使在特定域中的句子解码过程中，根据各自的区分器无法区分出重复的隐藏状态。<br>在此之前，Hu等人训练了变分自动编码器（VAE），其中解码器输入是非结构化潜在向量的级联，以及表示要生成的句子属性的结构化代码。 鉴别器在解码器的顶部被训练以对所生成句子的标签进行分类，而解码器被训练为满足该鉴别器。 由于解码过程的不可微性，在每个步骤中，其解码器都将在上一步中预测的概率向量作为输入。<br>也许，最相关的先前工作是由He等人完成的。 （2016b），他实际上是直接针对3.2节中提出的模型选择指标进行了优化。 他们的方法的一个缺点（尚未应用到完全无人监督的环境中）是，它需要使用效率非常低的基于强化学习的方法，通过离散预测的顺序向后传播。 在这项工作中，我们改为建议a）使用对称体系结构，以及b）在训练目标与源之间的翻译时将源与目标之间的翻译冻结，反之亦然。通过交替此过程，我们使用完全可区分的模型进行操作，并且我们有效地收敛。</p>
+<h1 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h1><p>我们提出了一种新的神经机器翻译方法，其中仅使用单语数据集学习翻译模型，而句子或文档之间没有任何对齐。 我们方法的原则是从简单的无监督逐词翻译模型开始，并基于<strong>重构损失</strong>来迭代地改进此模型，<strong>并使用鉴别器来对齐源语言和目标语言的潜在分布</strong>。 我们的实验表明，我们的方法无需任何形式的监督就能学习有效的翻译模型</p>
+]]></content>
+      <tags>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;学习笔记&gt; word2vec笔记（Hierarchical Softmax）</title>
+    <url>/2020/04/30/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/</url>
+    <content><![CDATA[<h1 id="word2vec学习笔记-1"><a href="#word2vec学习笔记-1" class="headerlink" title="word2vec学习笔记#1"></a>word2vec学习笔记#1</h1><p>文章来自于<strong><a href="https://www.hankcs.com/nlp/word2vec.html" target="_blank" rel="noopener">码农场</a></strong>大佬的博文，做自己的摘抄笔记。</p>
+<a id="more"></a>
+<h2 id="word2vec"><a href="#word2vec" class="headerlink" title="word2vec"></a>word2vec</h2><pre><code>word2vec作为神经概率语言模型的输入，其本身其实是神经概率模型的副产品，是为了通
+过神经网络学习某个语言模型而产生的中间结果。具体来说，“某个语言模型”指的是
+“CBOW”和“Skip-gram”。具体学习过程会用到两个降低复杂度的近似方法——Hierarchical 
+Softmax或Negative Sampling。两个模型乘以两种方法，一共有四种实现。</code></pre><h2 id="Hierarchical-Softmax"><a href="#Hierarchical-Softmax" class="headerlink" title="Hierarchical Softmax"></a>Hierarchical Softmax</h2><p><strong>模型共同点</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png" alt="图一"><br><strong>两种模型的网络结构如下</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG82ZTVkOWxqMjE2YzBxa3doay5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上图中w(t)表示句子中t位置处的词语</p>
+<h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>原理：一种根据上下文词语预测当前空缺位置的概率的模型，如上左图。<br>学习目标是最大化下面的似然函数：<br><img src="https://img-blog.csdnimg.cn/20191212223414310.png" alt="在这里插入图片描述"><br>其中W为语料库中的认一个词。<br><strong>输入层</strong>是上下文的词语的词向量（现在是在训练CBOW模型，词向量只是个副产品，确切来说，是CBOW模型的一个参数。训练开始的时候，词向量是个<strong>随机值</strong>，随着训练的进行不断被更新）。<br><strong>输出层</strong>输出最可能的w。由于语料库中词汇量是固定的|C|个，所以上述过程其实可以看做一个多分类问题。给定特征，从|C|个分类中挑一个。</p>
+<p>由上输出层的分析可知，最后是对输出层的数据进行分类，下方用的<strong>Hierarchical Softmax</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d215NGpkbndqMjE0dzEyYTQydi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>非叶子节点就是一个分类器（感知机），用1或者0来代替分类的结果，每一个叶子节点即为语料库中的一个词语，可以通过上述的概率表述出条件概率   $P(w|context(w))$<br>引入下列符号：<br>1、$p^w$:从根节点到w对应的叶子节点的路径<br>2、$l^w$:路径包含的节点个数<br>3、$P_{1}^{w}$、$P_{2}^{w}$、$P_{3}^{w}$……$P_{l^w}^{w}$：为路径中的各个节点<br>4、$d_{2}^{w}$、$d_{3}^{w}$、$d_{4}^{w}$……$d_{l}^{w}$在零到一范围内，其中$d_{l}^{w}$表示第j个对应的编码（根节点无编码）<br>5、$\Theta _{1}^{w}$、$\Theta _{2}^{w}$、$\Theta _{3}^{w}$……$\Theta _{l^w}^{w}$为路径$p^w$中非叶节点对应的参数向量<br>得w的条件概率：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29oazNwaTdqMjBrYTA0MnQ5MS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>从根节点到叶节点经过了 $l^w$-1个节点，编码从下标2开始（根节点无编码），对应的参数向量下标从1开始（根节点为1）。</p>
+<p>每一项是一个逻辑斯谛回归：（即为每一个0或者1的选择都有着两个不同的概率，且二者的和为一）<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29xNW9lb2pqMjBwbTA1eXQ5YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上式两种情况综合到一个公式中去：（下式中$d_{l}^{w}$有两种取值：0或者1）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d293YzJvaTJqMjBxbTAybWpycy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>目标函数取对数似然：（一种结果转化方式？）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d295aWt5cDBqMjBmYzAza2dscy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上面几个公式结合得到如下：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AwbXdzNWdqMjB6aTA4NmduOS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>简化为：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上式就是结果似然函数，将其最大化则得到我们最初需要通过CBOW预测的结果，将上式各项都取到最大化<br>每一项有两个参数，一个是每个节点的参数向量$\Theta <em>{j-1}^{w}$，另一个是输出层的输入$X</em>{w}$（即是中间层的输出结果转变为Hierarchical Softmax的输入）对这两个值求偏导：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B0NHhnOHRqMjEyNjAzcTc1Ni5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>因为有如下的性质<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B1czMzM3FqMjBiaTAyZ214NS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所以带入上式即可得到<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B3aXhha25qMjBuZTAya3Q5My5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>最终结果为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B4ajYxd2pqMjBjbzAyazBzcy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$\Theta <em>{j-1}^{w}$的迭代公式即为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B6ajBtMHpqMjBsMjAyNnQ5MC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$X</em>{w}$偏导式为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所有直接将 $\Theta <em>{j-1}^{w}$的偏导数中的$\Theta _{j-1}^{w}$替换为$X</em>{w}$，得到关于$X_{w}$的偏导数<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3E1Y2Zxa25qMjBqZTAzcXQ5Mi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>得到的是$X_{w}$的更新迭代，因为$X_{w}$并不是输入的向量，而是一个中间产物，所以必须把该结果向上传递至每个单词的词向量中：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FjZGR3dzdqMjBxNjA0MndmNC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br><strong>重点：两个参数的更新伪代码</strong>：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FnejBlbHFqMjBwbTBxYXE1YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+]]></content>
+      <tags>
+        <tag>word2vec</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第一个博客</title>
     <url>/2020/04/27/%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<a id="more"></a>
@@ -367,6 +328,79 @@ data1 = pd.DataFrame({&apos;key1&apos;:list(&apos;aavde&apos;),&apos;key2&apos;:
 ]]></content>
       <tags>
         <tag>TestingTag</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;学习笔记&gt; word2vec是如何得到向量的（CBOW模型）</title>
+    <url>/2020/04/30/word2vec%E6%98%AF%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E5%90%91%E9%87%8F%E7%9A%84%EF%BC%88CBOW%E6%A8%A1%E5%9E%8B%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="学习笔记"><a href="#学习笔记" class="headerlink" title="学习笔记"></a>学习笔记</h1><p>只是自己的学习笔记，只把自己要记忆的知识写下来。<br>简单理解的链接： <a href="https://www.zhihu.com/question/44832436" target="_blank" rel="noopener">word2vec是如何得到向量的</a></p>
+<a id="more"></a>
+
+<p><strong>word2vec的准备操作</strong>：中文需要将每句话用工具分词（jieba等）</p>
+<p><strong>word2vec的作用</strong>：是将语料库中的词训练出各自的词向量，供NLP其他后续具体任务的使用。</p>
+<p><strong>word2vec的处理方法</strong>：两种训练方法<strong>CBOW</strong>模型和<strong>Skip-gram</strong>模型。]</p>
+<p><strong>word2vec的算法加速方法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
+<blockquote>
+<p>1.<strong>CBOW</strong>模型根据中心词W(t)周围的词来预测中心词<br>2.<strong>Skip-gram</strong>模型则根据中心词W(t)来预测周围词</p>
+</blockquote>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0wZjQzOWUxYmI0NGM3MWM4ZTY5NGNjNjVjYjUwOTI2M19oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>上图中两个矩阵是CBOW模型要不断学习迭代的:$W_{v<em>n}$与$W_{n</em>v}^{‘}$</p>
+</blockquote>
+<p><strong>输入层</strong>是被预测那个词的上下文词的one-hot向量（该向量是针对语料库中所有分词的）</p>
+<p><strong>第一个权重矩阵</strong>：$W_{v<em>n}$为输入权重矩阵，（V</em>N矩阵，V为自己设定的数，一般为50-300，好像是，N为one-hot向量的维数，初始化权重矩阵W）。<strong>这里的V与N具体指代的内容存疑。</strong></p>
+<p><strong>接下来的步骤</strong>：将上下文单词的one-hot向量分别与输入权重矩阵相乘，得到第一次迭代的词向量（后面需要不断的迭代词向量，通过学习输入权重矩阵）；将所有上下文“词向量”相加取平均值即可得到神经网络中间层。</p>
+<p><strong>第二个权重矩阵</strong>：$W_{n*v}^{‘}$为输出权重矩阵，这个矩阵中N为one-hot向量的维度，v为自己取得数字。</p>
+<p><strong>接下来的步骤</strong>：运用softmax将预测结果规整到一定范围内。这里就可以用到前面提到的两个加速算法了，因为仅仅依靠softmax太慢。</p>
+<p><strong>加速算法</strong>：<strong>Negative Sample</strong>与<strong>Hierarchical Softmax</strong></p>
+<p>如下图<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWM0LnpoaW1nLmNvbS84MC92Mi0xNzEzNDUwZmEyYTBmMzdjOGNiY2NlNGZmZWYwNGJhYV9oZC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+<p>最最重要的：<strong>任何一个单词的one-hot表示乘以这个矩阵都将得到自己的word embedding。</strong>（word2vec的目的）</p>
+]]></content>
+      <tags>
+        <tag>word2vec</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>&lt;数据分析&gt; 深度学习数据预处理（pandas篇）</title>
+    <url>/2020/04/30/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/</url>
+    <content><![CDATA[<p>摘要：数据预处理的四种技术：数据合并，数据清洗，数据标准化，数据转换</p>
+<a id="more"></a>
+<p>只是做自己的学习笔记使用，如有错误请评论区指出。<br>数据预处理的四种技术：<strong>数据合并，数据清洗，数据标准化，数据转换</strong></p>
+<h1 id="导包和数据集"><a href="#导包和数据集" class="headerlink" title="导包和数据集"></a>导包和数据集</h1><p>工具使用pandas和numpy</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">train_df =pd.read_csv(<span class="string">'../datas/train.csv'</span>)  <span class="comment"># train set</span></span><br><span class="line">test_df  = pd.read_csv(<span class="string">'../datas/test.csv'</span>)   <span class="comment"># test  set</span></span><br><span class="line">combine  = [train_df, test_df]</span><br></pre></td></tr></table></figure>
+<h1 id="查看数据维度以及类型"><a href="#查看数据维度以及类型" class="headerlink" title="查看数据维度以及类型"></a>查看数据维度以及类型</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#查看前五条数据</span></span><br><span class="line"><span class="keyword">print</span> train_df.head(<span class="number">5</span>)  </span><br><span class="line"><span class="comment">#查看每列数据类型以及nan情况</span></span><br><span class="line"><span class="keyword">print</span> train_df.info()  </span><br><span class="line"><span class="comment">#获得所有object属性</span></span><br><span class="line"><span class="keyword">print</span> train_data.describe(include=[<span class="string">'O'</span>]).columns</span><br></pre></td></tr></table></figure>
+<h1 id="操作训练集中的信息"><a href="#操作训练集中的信息" class="headerlink" title="操作训练集中的信息"></a>操作训练集中的信息</h1><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#统计Title单列元素对应的个数</span></span><br><span class="line"><span class="keyword">print</span> train_df[<span class="string">'Title'</span>].value_counts() </span><br><span class="line"><span class="comment">#属性列删除(针对Name和Passengerld两列操作)</span></span><br><span class="line">train_df = train_df.drop([<span class="string">'Name'</span>, <span class="string">'PassengerId'</span>], axis=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="1-合并数据"><a href="#1-合并数据" class="headerlink" title="1.合并数据"></a>1.合并数据</h1><pre><code>建立关系表： 
+data1 = pd.DataFrame({&apos;key1&apos;:list(&apos;aavde&apos;),&apos;key2&apos;:list(&apos;asdfs&apos;),&apos;key3&apos;:list(str(12345))})</code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215122841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<pre><code>data1 = pd.DataFrame(np.random.rand(3,3),index = list(&apos;abc&apos;),columns = list(&apos;ABC&apos;)) </code></pre><p><img src="https://img-blog.csdnimg.cn/20200321215330416.png" alt="在这里插入图片描述"></p>
+<h2 id="堆叠"><a href="#堆叠" class="headerlink" title="堆叠"></a>堆叠</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法一：</span></span><br><span class="line">pd.concat(objs,join=‘outer’, join_axes=<span class="literal">None</span>,ignore_index=<span class="literal">False</span>, </span><br><span class="line">keys=<span class="literal">None</span>, levels=<span class="literal">None</span>, names=<span class="literal">None</span>, verify_interity=<span class="literal">False</span>, copy=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>objs</strong>    接受用于合并的series,dataframe的组合。以列表的形式，eg：[data1,data2]其中data1和data2为两个二维表<br><strong>axis</strong>    表示堆叠的轴向，默认axis为0，表示纵向堆叠，以行为主的堆叠方式<br><strong>join</strong>    接受inner或outer。表示其他轴向上的索引是按交集还是并集进行合并，默认为outer；<strong>outer</strong>表示并集，不存在的关系其值用NaN代替；<strong>inner</strong>表示交集，结果仅返回无空值的行或者列（此处由axis的取值决定，0：列中无空值；1：行中无空值）<br><strong>ignore_index</strong>    接受boolean.表示是否不保留连接轴上的索引，产生一组新索引range(toatal_length)默认为False<br><strong>verify_intergrity</strong>    接受boolean，检查新连接的轴是否包含重复项。如果发现重复项，则引发异常。默认为False</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#方法二:利用append实现纵向堆叠，前提是合并的两张表列名应该一致</span></span><br><span class="line">data1.append(data2,ignore_index=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="通过主键合并数据"><a href="#通过主键合并数据" class="headerlink" title="通过主键合并数据"></a>通过主键合并数据</h2><p>具体实例可见 <a href="https://blog.csdn.net/moshanghuali/article/details/89764552?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479591419726869037198%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479591419726869037198&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">链接</a><br>    主键合并就是通过一个或者多个键将两个数据集的行连接起来。类似于sql中的join。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">pd.merge(left,right,how,on,left_on,right_on,left_index,right_index,sort,suffixes)  </span><br><span class="line"></span><br><span class="line"><span class="comment">#例如;此时data_1与data_2的共同列名为key2.将其传给on。作为合并主键，进行交集合并,其中inner和outer的含义同上</span></span><br><span class="line">pd.merge(data_1,data_2,on = <span class="string">'key2'</span>,how = <span class="string">'inner'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321213611755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="你还好吗"><br><strong>可以通过主键合并的情况如下：</strong><br><strong>1</strong> 左右数据有共同的列名，用共同的列名作为主键。此时使用on参数，传入共同的列名。合并后的数据列数为原来数据的列数和减去连接键的数量<br><strong>2</strong> 使用不同列名主键进行合并<br><strong>3</strong> 赋予left_index和right_index参数。使用原本数据的index(行索引)作为主键进行合并</p>
+<p>还可以通过<strong>不同的列名作为主键</strong>进行融合</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_on = <span class="string">'key1'</span>,right_on = <span class="string">'key2'</span>) <span class="comment"># 左右的合并主键分别是key1和key2。</span></span><br></pre></td></tr></table></figure>
+<p>通过<strong>索引</strong>为主键</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pd.merge(data_1,data_2,how = <span class="string">'inner'</span>,left_index = <span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>join方法</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通用表达</span></span><br><span class="line">dataframe.join(self,other,on=<span class="literal">None</span>,how=‘left’,lsuffix=’’,resuffix=’’,sort=<span class="literal">False</span>)</span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_1.join(data_2,on = <span class="string">'key2'</span>,lsuffix=<span class="string">' '</span>,rsuffix=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321221302628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="2-清洗数据"><a href="#2-清洗数据" class="headerlink" title="2.清洗数据"></a>2.清洗数据</h1><h2 id="检测重复值"><a href="#检测重复值" class="headerlink" title="检测重复值"></a>检测重复值</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.drop_duplicates(subset=<span class="literal">None</span>,keep=‘first’,inplace=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如</span></span><br><span class="line">data_repeat.drop_duplicates(subset=<span class="string">'key2'</span>)</span><br><span class="line">data_repeat.drop_duplicates(subset=[<span class="string">'key1'</span>,<span class="string">'key2'</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321221838894.png" alt="在这里插入图片描述"></p>
+<h2 id="检测与处理缺失值"><a href="#检测与处理缺失值" class="headerlink" title="检测与处理缺失值"></a>检测与处理缺失值</h2><p><strong>检测</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">data_null = pd.DataFrame(&#123;<span class="string">'key1'</span>:[np.nan,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,np.nan],<span class="string">'key2'</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,np.nan]&#125;)</span><br><span class="line"></span><br><span class="line">data_null.isnull()   <span class="comment"># 以true或者false来表示是否是缺失值。</span></span><br><span class="line">data_null.isnull().sum()   <span class="comment"># 统计一下缺失值数目，结果将按列缺失值的个数</span></span><br></pre></td></tr></table></figure>
+<p><strong>处理</strong><br>    处理缺失值的方法主要有：<strong>删除法，替换法，插值法。</strong></p>
+<p><strong>删除缺失值</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#其中subset指出需要删除空值的列名，与how属性联动才可以使用</span></span><br><span class="line">dataframe.dropna(axis = <span class="number">0</span>,how = ‘any’,thresh=<span class="literal">None</span>,subset=<span class="literal">None</span>,inplace = <span class="literal">None</span>)</span><br><span class="line"><span class="comment"># thresh属性 表示能够容忍生下来的非缺失值的个数。</span></span><br></pre></td></tr></table></figure>
+<p><em>上面的thresh属性存在疑问</em><br><img src="https://img-blog.csdnimg.cn/20200321222833377.png" alt="在这里插入图片描述"><br><strong>替换缺失值</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataframe.fillna(value = <span class="literal">None</span>,method=<span class="literal">None</span>,axis=<span class="literal">None</span>,inpalce=<span class="literal">False</span>,limit=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#例如：使用111代替缺失值</span></span><br><span class="line">data_null.fillna(<span class="number">111</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20200321223611745.png" alt="在这里插入图片描述"></p>
+<h1 id="3-数据的标准化"><a href="#3-数据的标准化" class="headerlink" title="3.数据的标准化"></a>3.数据的标准化</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/93162100?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">数据标准化</a></p>
+<h1 id="4-数据的转换"><a href="#4-数据的转换" class="headerlink" title="4.数据的转换"></a>4.数据的转换</h1><p><a href="https://blog.csdn.net/g_optimistic/article/details/92831389?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158480195419724848323709%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158480195419724848323709&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">见链接</a></p>
+<h1 id="numpy操作数据"><a href="#numpy操作数据" class="headerlink" title="numpy操作数据"></a><a href="https://blog.csdn.net/weixin_45252110/article/details/96027968?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522158479622919724811821089%2522%252C%2522scm%2522%253A%252220140713.130056874..%2522%257D&request_id=158479622919724811821089&biz_id=0&utm_source=distribute.pc_search_result.none-task" target="_blank" rel="noopener">numpy操作数据</a></h1>]]></content>
+      <tags>
+        <tag>pandas</tag>
       </tags>
   </entry>
 </search>

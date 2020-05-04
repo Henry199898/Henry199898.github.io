@@ -20,22 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="关于Bert的相关笔记：">
+  <meta name="description" content="1、通过json获取参数2、请求路径参数@PathVariable3、@RequestParam的使用4、@RequestBody">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Bert简单理解——原理与介绍">
-<meta property="og:url" content="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:title" content="&lt;springboot&gt;springboot获取参数集中方式">
+<meta property="og:url" content="http://yoursite.com/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Henry ’Blog">
-<meta property="og:description" content="关于Bert的相关笔记：">
+<meta property="og:description" content="1、通过json获取参数2、请求路径参数@PathVariable3、@RequestParam的使用4、@RequestBody">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvOGEvN2QvOGFmOTgyZmNkN2UzMGJjYWU5MWZmM2JiMzAwODgxN2QucG5n?x-oss-process=image/format,png">
-<meta property="article:published_time" content="2020-04-28T08:19:54.164Z">
-<meta property="article:modified_time" content="2020-04-28T09:21:10.143Z">
+<meta property="article:published_time" content="2020-05-04T04:42:31.696Z">
+<meta property="article:modified_time" content="2020-05-04T04:45:23.946Z">
 <meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="springboot">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png">
 
-<link rel="canonical" href="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/">
+<link rel="canonical" href="http://yoursite.com/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">
 
 
 <script id="page-configurations">
@@ -48,7 +46,7 @@
   };
 </script>
 
-  <title>Bert简单理解——原理与介绍 | Henry ’Blog</title>
+  <title><springboot>springboot获取参数集中方式 | Henry ’Blog</title>
   
 
 
@@ -201,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpg">
@@ -214,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Bert简单理解——原理与介绍
+          <springboot>springboot获取参数集中方式
         </h1>
 
         <div class="post-meta">
@@ -225,7 +223,16 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-04-28 16:19:54 / 修改时间：17:21:10" itemprop="dateCreated datePublished" datetime="2020-04-28T16:19:54+08:00">2020-04-28</time>
+              <time title="创建时间：2020-05-04 12:42:31 / 修改时间：12:45:23" itemprop="dateCreated datePublished" datetime="2020-05-04T12:42:31+08:00">2020-05-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springboot/" itemprop="url" rel="index"><span itemprop="name">springboot</span></a>
+                </span>
             </span>
 
           
@@ -237,8 +244,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/04/springboot%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -253,35 +260,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>关于Bert的相关笔记：</p>
+        <p>1、通过json获取参数<br>2、请求路径参数@PathVariable<br>3、@RequestParam的使用<br>4、@RequestBody</p>
 <a id="more"></a>
-<h1 id="1-BERT的作用"><a href="#1-BERT的作用" class="headerlink" title="1.BERT的作用"></a>1.BERT的作用</h1><p>学习参考链接：<a href="https://www.infoq.cn/article/HBS5tZGyqzaxtCSvz3pJ" target="_blank" rel="noopener">infoQ</a>  <a href="https://www.infoq.cn/article/UhS0UsctOQ2pbiXL3SAY" target="_blank" rel="noopener">infoQ2</a></p>
-<p>因为在NLP任务中我们需要大量的任务专有数据，通常情况下只能将文本分成字段，得到几百或者几十万个人工标注的数据，这远远不够NLP任务中所用的训练数据。</p>
-<p>所以开发一系列训练通用得语言模型，使用网上爬虫获取的文本（未注释）作为模型输入，得到大量的专有任务需要的数据集,该过程也成为<strong>预训练</strong>。</p>
-<p>Bert就是这样的一个训练通用语言模型的工具。(自己理解意义上的)</p>
-<h1 id="2-BERT核心思想"><a href="#2-BERT核心思想" class="headerlink" title="2.BERT核心思想"></a>2.BERT核心思想</h1><p><strong>Masked LM</strong> 新技术：它随机 mask 句子中的单词，然后尝试预测它们。mask 意味着模型将从两个方向观察，它使用句子的全部上下文，包括左边和右边的环境，来预测被 mask 的词(将某个词盖住，并预测该词)。与之前的语言模型不同，它会同时考虑前一个和下一个标记。现有的基于 LSTM 的从左到右和从右到左的组合模型缺少这个“相同时间的部分”。（更准确地说，BERT 是没有方向性的。）</p>
-<h1 id="3-BERT的工作原理"><a href="#3-BERT的工作原理" class="headerlink" title="3.BERT的工作原理"></a>3.BERT的工作原理</h1><p>BERT 依附于“Transformer”（一种标注机制，用来学习文本中单词之间的上下文关系）。<br><strong>Transformer简介</strong>：一个基本的 Transformer 包括一个编码器，用来读取文本输入，一个解码器，用来产生关于任务的预测。<br><strong>BERT中仅需要一个编码器的部分</strong><br><strong>BERT 是一个用 Transformers 作为特征抽取器的深度双向预训练语言理解模型</strong><br><strong>word2vec是一个上下文无关的模型，为词汇表中的每个词都找到各自的词向量</strong></p>
-<p>Transformer 工作时力求执行一个少的、恒定数量的步骤。在每个步骤中，它应用一个<strong>标注机制</strong>来<strong>理解句子中所有单词之间的关系，而不管它们的位置</strong>。例如，对于句子“ I arrived at the bank after crossing the river”，需要确定“bank”这个词是指一条河的岸边，而不是一个金融机构，Transformer 可以很快根据“river”这个词进行标注，只用一步就实现了目的。</p>
-<h2 id="3-1BERT预训练的输入"><a href="#3-1BERT预训练的输入" class="headerlink" title="3.1BERT预训练的输入"></a>3.1BERT预训练的输入</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
-<blockquote>
-<p><strong>1.</strong>词嵌入后的 Token Embedding，每次输入总以符号 [CLS] 的 embedding 开始，如果是两个句子，则句之间用 [SEP] 隔开。<br><strong>2.</strong>句子类别的符号。将表示句子 A 或句子 B 的标记添加到每个 token 中。这可以在不同的句子间区分编码器。<br><strong>3.</strong>Position Embedding，同Transformer 中的一致。将positional embedding 添加到每个 token 中，以标示其在句子中的位置</p>
-</blockquote>
-<p>将上述的<strong>三个向量相加</strong>即为<strong>BERT预训练的输入</strong></p>
-<h2 id="3-2-Masked-Language-Model（核心思想）"><a href="#3-2-Masked-Language-Model（核心思想）" class="headerlink" title="3.2 Masked Language Model（核心思想）"></a>3.2 Masked Language Model（核心思想）</h2><p>BERT在训练的时候将遮盖住语料中的15%的词语，用[MASK]代替，通过预测这部分的词语（与true word相比较）学习句子中的语义、句法和语义信息。（这是一个不断迭代的过程，参考word2vec的训练过程）</p>
-<blockquote>
-<p><strong>其指导思想是“简单”</strong>：使用（ MASK） token 随机 mask 15% 的单词输入，之后运行基于编码器的 BERT 标注，然后基于所提供的上下文中的其他 non-masked 词序列预测被 mask 的单词含义。然而，这种原始的 mask 方法有一个问题——模型只在 [ MASK]token 出现在输入中时才尝试预测，而我们希望模型不管输入中出现了什么 tokens 都能够尝试预测正确的 tokens 。为了解决这个问题，我们选择 mask15% 的 tokens：（如果标记都用[MASK]表示会影响模型，所以在随机mask的时候采用下面的策略。<br><strong>1</strong>.实际上 80% 的 tokens 被替换为 token [MASK].。<br>eg、my dog is hairy → my dog is [MASK]<br><strong>2</strong>.10% 的 token 被替换为随机 token。<br>eg、my dog is hairy → my dog is apple<br><strong>3</strong>.10% 的 token 保持不变。<br>eg、my dog is hairy → my dog is hairy</p>
-</blockquote>
-<p>训练 BERT 损失函数时，只考虑 mask token 的预测，而忽略非 mask token 的预测。这会导致模型的收敛速度比从左到右或从右到左的模型慢得多</p>
-<h2 id="3-3-Next-Sentence-Prediction（一个预训练中的任务）"><a href="#3-3-Next-Sentence-Prediction（一个预训练中的任务）" class="headerlink" title="3.3 Next Sentence Prediction（一个预训练中的任务）"></a>3.3 Next Sentence Prediction（一个预训练中的任务）</h2><p>该任务是指将两个句子作为输入，做一个判断任务，即第二句话是不是第一句话的下一个任务。<br><strong>该任务可以得到句子的向量（句向量）</strong></p>
-<p>正如我们前面看到的，BERT 用一个特殊的（SEP）token 来分隔句子。在训练过程中，模型一次输入两个句子:</p>
-<p>1.有 50% 的可能性，第二句话在第一句之后。<br>2.有 50% 的可能性，它是一个来自完整语料库的随机句子。</p>
-<p>之后 BERT 就要预测第二个句子是否是随机的，并假设这个随机的句子与第一个句子是断开的：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvOGEvN2QvOGFmOTgyZmNkN2UzMGJjYWU5MWZmM2JiMzAwODgxN2QucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>预测第二句与第一句是否是连接的，基本上完整的输入序列经过 Transformer 模型，再用一个简单的分类器层将（CLS）token 的输出转换为 2×1 的向量，并使用 softmax 分配 IsNext-Label。</p>
-<p>该模型结合了 Masked LM 神经网络和下一句预测进行训练。这是为了最小化两种策略的组合损失函数——所谓的“合作共赢”。（还未理解）</p>
-<h1 id="4-BERT的学习内容"><a href="#4-BERT的学习内容" class="headerlink" title="4. BERT的学习内容"></a>4. BERT的学习内容</h1><p><strong>语义信息</strong>（玄学解释），学习到统计学意义上的信息（个人理解）</p>
-<h1 id="5-BERT的优点"><a href="#5-BERT的优点" class="headerlink" title="5.BERT的优点"></a>5.BERT的优点</h1><p>BERT 是一个强大的预训练，因其超大的参数量和较强的特征提取能力，能够从海量的语料中学习到一些语言学和一定程度的语义信息。</p>
-<h1 id="6-BERT的应用场景"><a href="#6-BERT的应用场景" class="headerlink" title="6.BERT的应用场景"></a>6.BERT的应用场景</h1><p><strong>BERT</strong> 在<strong>自然语言推理</strong>、<strong>情感分析</strong>、<strong>问题问答</strong>、<strong>意译检测</strong>和<strong>语言可接受性</strong>等一般语言理解的各种任务场景。</p>
-<p><strong>eg</strong>、BERT应用在问答场景时：给定一个问题和一个上下文段落，该模型预测该段落中最有可能回答该问题的开始和结束标记。这意味着我们可以使用 BERT 模型通过学习两个额外的向量来训练我们的应用程序，这两个向量分别表示答案的开头和结尾。</p>
+<h1 id="1-通过json获取参数"><a href="#1-通过json获取参数" class="headerlink" title="1 通过json获取参数"></a>1 通过json获取参数</h1><p>通过浏览器的url为后端控制层函数赋值,通过注解@responseBody 将java对象转换为json格式的数据返回给前端页面。</p>
+<p><strong>@ResponseBody</strong>注解的作用是将controller的方法返回的对象通过适当的转换器转换为指定的格式之后，写入到response对象的body区，通常用来返回JSON数据或者是XML数据。一般在异步获取数据时使用【也就是AJAX】。</p>
+<p><strong>后端Controller层代码如下：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo1</span><span class="params">(String name,<span class="keyword">int</span> age)</span></span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>前端浏览器请求为：</strong><br> <a href="http://localhost:8080/param?name=zhangsan&amp;age=14" target="_blank" rel="noopener">http://localhost:8080/param?name=zhangsan&amp;age=14</a></p>
+<p> <strong>之后前端返回的Json数据为</strong>：<br> {“name”：zhangsan，“age”：14}</p>
+<h1 id="2-请求路径参数-PathVariable"><a href="#2-请求路径参数-PathVariable" class="headerlink" title="2  请求路径参数@PathVariable"></a>2  请求路径参数@PathVariable</h1><p>获取路径参数。即前端浏览器发起url/{id}请求的这种形式。<br>后端Controller层代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param/&#123;name&#125;/&#123;age&#125;"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo2</span><span class="params">(@PathVariable(<span class="string">"name"</span>)</span> String name , @<span class="title">pathVariable</span><span class="params">(<span class="string">"age"</span>)</span> <span class="keyword">int</span> age)</span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中@PathVariable(value = “name”, required = false)中有value和required两个参数，第一个即为指定传递的参数，第二个为该参数是否必须，若为false则可以在前端不传入该参数，默认为null空值。</p>
+<h1 id="3-RequestParam的使用"><a href="#3-RequestParam的使用" class="headerlink" title="3 @RequestParam的使用"></a>3 @RequestParam的使用</h1><p>使用@RequestParm用于绑定controller上的参数,可以是多个参数，也可以是一个Map集合，GET，POST均可；</p>
+<p><strong>语法：</strong>@RequestParam(value=”参数名”,required=”true/false”,defaultValue=””)<br><strong>value</strong>：参数名<br><strong>required</strong>：是否包含该参数，默认为true，表示该请求路径中必须包含该参数，如果不包含就报错。<br><strong>defaultValue</strong>：默认参数值，如果设置了该值，required=true将失效，自动为false,如果没有传该参数，就使用默认值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/param/&#123;name&#125;/&#123;age&#125;"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String,Object&gt; <span class="title">demo2</span><span class="params">(@RequestParam(<span class="string">"name"</span>)</span> String name , @<span class="title">RequestParam</span><span class="params">(<span class="string">"age"</span>)</span> <span class="keyword">int</span> age)</span>&#123;</span><br><span class="line">	Map&lt;String,Object&gt; paramMap=<span class="keyword">new</span> HashMap&lt;String,Object&gt;();</span><br><span class="line">	paramMap.put(<span class="string">"name"</span>,name);</span><br><span class="line">	paramMap.put(<span class="string">"age"</span>,age);</span><br><span class="line">	<span class="keyword">return</span> paramMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>@RequestParam 和@PathVariable 之间的区别：</strong><br>        @RequestParam 用来获得静态URL中传入的参数，@PathVariable 用来获得动态URL中的参数</p>
+<h1 id="4-RequestBody"><a href="#4-RequestBody" class="headerlink" title="4 @RequestBody"></a>4 @RequestBody</h1><p>@RequestBody绑定的是一个对象实体，将 HTTP 请求正文插入方法中，使用适合的 HttpMessageConverter 将请求体写入某个对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1) 该注解用于读取Request请求的body部分数据，使用系统默认配置的HttpMessageConverter进行解析，然后把相应的数据绑定</span><br><span class="line">    到要返回的对象上； </span><br><span class="line">2) 再把HttpMessageConverter返回的对象数据绑定到 controller中方法的参数上。</span><br></pre></td></tr></table></figure>
+<p><strong>使用方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"user/login"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="comment">// 将ajax（datas）发出的请求写入 User 对象中</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">login</span><span class="params">(@RequestBody User user)</span> </span>&#123;   </span><br><span class="line"><span class="comment">// 这样就不会再被解析为跳转路径，而是直接将user对象写入 HTTP 响应正文中</span></span><br><span class="line">    <span class="keyword">return</span> user;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping</span>(value = <span class="string">"requestBody"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">requestBody</span><span class="params">(@RequestBody  User user)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"user:"</span>+user.getName());</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>request的body部分的数据编码格式由header部分的Content-Type指定；</p>
+<p>@RequestBody不支持Get请求？（<strong>存疑</strong>）因为get请求没有HttpEntity。</p>
 
     </div>
 
@@ -290,6 +291,9 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+          </div>
 
         
 
@@ -297,13 +301,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/27/%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8D%9A%E5%AE%A2/" rel="prev" title="第一个博客">
-      <i class="fa fa-chevron-left"></i> 第一个博客
+    <a href="/2020/04/30/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/" rel="prev" title="<论文> Unsupervised Machine Translation Using Monolingual Corpora Only">
+      <i class="fa fa-chevron-left"></i> <论文> Unsupervised Machine Translation Using Monolingual Corpora Only
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/30/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/" rel="next" title="<学习笔记> word2vec笔记（Hierarchical Softmax）">
-      <学习笔记> word2vec笔记（Hierarchical Softmax） <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -363,7 +364,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-BERT的作用"><span class="nav-number">1.</span> <span class="nav-text">1.BERT的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-BERT核心思想"><span class="nav-number">2.</span> <span class="nav-text">2.BERT核心思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-BERT的工作原理"><span class="nav-number">3.</span> <span class="nav-text">3.BERT的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1BERT预训练的输入"><span class="nav-number">3.1.</span> <span class="nav-text">3.1BERT预训练的输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Masked-Language-Model（核心思想）"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Masked Language Model（核心思想）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Next-Sentence-Prediction（一个预训练中的任务）"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 Next Sentence Prediction（一个预训练中的任务）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-BERT的学习内容"><span class="nav-number">4.</span> <span class="nav-text">4. BERT的学习内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-BERT的优点"><span class="nav-number">5.</span> <span class="nav-text">5.BERT的优点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-BERT的应用场景"><span class="nav-number">6.</span> <span class="nav-text">6.BERT的应用场景</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-通过json获取参数"><span class="nav-number">1.</span> <span class="nav-text">1 通过json获取参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-请求路径参数-PathVariable"><span class="nav-number">2.</span> <span class="nav-text">2  请求路径参数@PathVariable</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-RequestParam的使用"><span class="nav-number">3.</span> <span class="nav-text">3 @RequestParam的使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-RequestBody"><span class="nav-number">4.</span> <span class="nav-text">4 @RequestBody</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
