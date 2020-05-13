@@ -20,22 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="关于Bert的相关笔记：">
+  <meta name="description" content="摘要：16 数值的整数次方18 删除链表的节点">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Bert简单理解——原理与介绍">
-<meta property="og:url" content="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:title" content="&lt;剑指offer&gt; 剑指offer 16、18">
+<meta property="og:url" content="http://yoursite.com/2020/05/13/%E5%89%91%E6%8C%87offer[16%E3%80%8118]/index.html">
 <meta property="og:site_name" content="Henry ’Blog">
-<meta property="og:description" content="关于Bert的相关笔记：">
+<meta property="og:description" content="摘要：16 数值的整数次方18 删除链表的节点">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png">
-<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvOGEvN2QvOGFmOTgyZmNkN2UzMGJjYWU5MWZmM2JiMzAwODgxN2QucG5n?x-oss-process=image/format,png">
-<meta property="article:published_time" content="2020-04-28T08:19:54.164Z">
-<meta property="article:modified_time" content="2020-04-28T09:21:10.143Z">
+<meta property="article:published_time" content="2020-05-13T07:46:31.395Z">
+<meta property="article:modified_time" content="2020-05-13T07:50:12.474Z">
 <meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="剑指offer">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png">
 
-<link rel="canonical" href="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/">
+<link rel="canonical" href="http://yoursite.com/2020/05/13/%E5%89%91%E6%8C%87offer[16%E3%80%8118]/">
 
 
 <script id="page-configurations">
@@ -48,7 +46,7 @@
   };
 </script>
 
-  <title>Bert简单理解——原理与介绍 | Henry ’Blog</title>
+  <title><剑指offer> 剑指offer 16、18 | Henry ’Blog</title>
   
 
 
@@ -201,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/13/%E5%89%91%E6%8C%87offer[16%E3%80%8118]/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpg">
@@ -214,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Bert简单理解——原理与介绍
+          <剑指offer> 剑指offer 16、18
         </h1>
 
         <div class="post-meta">
@@ -225,7 +223,16 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-04-28 16:19:54 / 修改时间：17:21:10" itemprop="dateCreated datePublished" datetime="2020-04-28T16:19:54+08:00">2020-04-28</time>
+              <time title="创建时间：2020-05-13 15:46:31 / 修改时间：15:50:12" itemprop="dateCreated datePublished" datetime="2020-05-13T15:46:31+08:00">2020-05-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%91%E6%8C%87offer/" itemprop="url" rel="index"><span itemprop="name">剑指offer</span></a>
+                </span>
             </span>
 
           
@@ -237,8 +244,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/04/28/Bert%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3%E2%80%94%E2%80%94%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BB%8B%E7%BB%8D/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/05/13/%E5%89%91%E6%8C%87offer%5B16%E3%80%8118%5D/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/13/%E5%89%91%E6%8C%87offer%5B16%E3%80%8118%5D/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -253,35 +260,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>关于Bert的相关笔记：</p>
+        <p>摘要：<br>16 数值的整数次方<br>18 删除链表的节点</p>
 <a id="more"></a>
-<h1 id="1-BERT的作用"><a href="#1-BERT的作用" class="headerlink" title="1.BERT的作用"></a>1.BERT的作用</h1><p>学习参考链接：<a href="https://www.infoq.cn/article/HBS5tZGyqzaxtCSvz3pJ" target="_blank" rel="noopener">infoQ</a>  <a href="https://www.infoq.cn/article/UhS0UsctOQ2pbiXL3SAY" target="_blank" rel="noopener">infoQ2</a></p>
-<p>因为在NLP任务中我们需要大量的任务专有数据，通常情况下只能将文本分成字段，得到几百或者几十万个人工标注的数据，这远远不够NLP任务中所用的训练数据。</p>
-<p>所以开发一系列训练通用得语言模型，使用网上爬虫获取的文本（未注释）作为模型输入，得到大量的专有任务需要的数据集,该过程也成为<strong>预训练</strong>。</p>
-<p>Bert就是这样的一个训练通用语言模型的工具。(自己理解意义上的)</p>
-<h1 id="2-BERT核心思想"><a href="#2-BERT核心思想" class="headerlink" title="2.BERT核心思想"></a>2.BERT核心思想</h1><p><strong>Masked LM</strong> 新技术：它随机 mask 句子中的单词，然后尝试预测它们。mask 意味着模型将从两个方向观察，它使用句子的全部上下文，包括左边和右边的环境，来预测被 mask 的词(将某个词盖住，并预测该词)。与之前的语言模型不同，它会同时考虑前一个和下一个标记。现有的基于 LSTM 的从左到右和从右到左的组合模型缺少这个“相同时间的部分”。（更准确地说，BERT 是没有方向性的。）</p>
-<h1 id="3-BERT的工作原理"><a href="#3-BERT的工作原理" class="headerlink" title="3.BERT的工作原理"></a>3.BERT的工作原理</h1><p>BERT 依附于“Transformer”（一种标注机制，用来学习文本中单词之间的上下文关系）。<br><strong>Transformer简介</strong>：一个基本的 Transformer 包括一个编码器，用来读取文本输入，一个解码器，用来产生关于任务的预测。<br><strong>BERT中仅需要一个编码器的部分</strong><br><strong>BERT 是一个用 Transformers 作为特征抽取器的深度双向预训练语言理解模型</strong><br><strong>word2vec是一个上下文无关的模型，为词汇表中的每个词都找到各自的词向量</strong></p>
-<p>Transformer 工作时力求执行一个少的、恒定数量的步骤。在每个步骤中，它应用一个<strong>标注机制</strong>来<strong>理解句子中所有单词之间的关系，而不管它们的位置</strong>。例如，对于句子“ I arrived at the bank after crossing the river”，需要确定“bank”这个词是指一条河的岸边，而不是一个金融机构，Transformer 可以很快根据“river”这个词进行标注，只用一步就实现了目的。</p>
-<h2 id="3-1BERT预训练的输入"><a href="#3-1BERT预训练的输入" class="headerlink" title="3.1BERT预训练的输入"></a>3.1BERT预训练的输入</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvZjYvZmEvZjZiYjI2MDBkODhiNWM2MDM3MTBhZGI3YTAyZmU5ZmEucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
-<blockquote>
-<p><strong>1.</strong>词嵌入后的 Token Embedding，每次输入总以符号 [CLS] 的 embedding 开始，如果是两个句子，则句之间用 [SEP] 隔开。<br><strong>2.</strong>句子类别的符号。将表示句子 A 或句子 B 的标记添加到每个 token 中。这可以在不同的句子间区分编码器。<br><strong>3.</strong>Position Embedding，同Transformer 中的一致。将positional embedding 添加到每个 token 中，以标示其在句子中的位置</p>
-</blockquote>
-<p>将上述的<strong>三个向量相加</strong>即为<strong>BERT预训练的输入</strong></p>
-<h2 id="3-2-Masked-Language-Model（核心思想）"><a href="#3-2-Masked-Language-Model（核心思想）" class="headerlink" title="3.2 Masked Language Model（核心思想）"></a>3.2 Masked Language Model（核心思想）</h2><p>BERT在训练的时候将遮盖住语料中的15%的词语，用[MASK]代替，通过预测这部分的词语（与true word相比较）学习句子中的语义、句法和语义信息。（这是一个不断迭代的过程，参考word2vec的训练过程）</p>
-<blockquote>
-<p><strong>其指导思想是“简单”</strong>：使用（ MASK） token 随机 mask 15% 的单词输入，之后运行基于编码器的 BERT 标注，然后基于所提供的上下文中的其他 non-masked 词序列预测被 mask 的单词含义。然而，这种原始的 mask 方法有一个问题——模型只在 [ MASK]token 出现在输入中时才尝试预测，而我们希望模型不管输入中出现了什么 tokens 都能够尝试预测正确的 tokens 。为了解决这个问题，我们选择 mask15% 的 tokens：（如果标记都用[MASK]表示会影响模型，所以在随机mask的时候采用下面的策略。<br><strong>1</strong>.实际上 80% 的 tokens 被替换为 token [MASK].。<br>eg、my dog is hairy → my dog is [MASK]<br><strong>2</strong>.10% 的 token 被替换为随机 token。<br>eg、my dog is hairy → my dog is apple<br><strong>3</strong>.10% 的 token 保持不变。<br>eg、my dog is hairy → my dog is hairy</p>
-</blockquote>
-<p>训练 BERT 损失函数时，只考虑 mask token 的预测，而忽略非 mask token 的预测。这会导致模型的收敛速度比从左到右或从右到左的模型慢得多</p>
-<h2 id="3-3-Next-Sentence-Prediction（一个预训练中的任务）"><a href="#3-3-Next-Sentence-Prediction（一个预训练中的任务）" class="headerlink" title="3.3 Next Sentence Prediction（一个预训练中的任务）"></a>3.3 Next Sentence Prediction（一个预训练中的任务）</h2><p>该任务是指将两个句子作为输入，做一个判断任务，即第二句话是不是第一句话的下一个任务。<br><strong>该任务可以得到句子的向量（句向量）</strong></p>
-<p>正如我们前面看到的，BERT 用一个特殊的（SEP）token 来分隔句子。在训练过程中，模型一次输入两个句子:</p>
-<p>1.有 50% 的可能性，第二句话在第一句之后。<br>2.有 50% 的可能性，它是一个来自完整语料库的随机句子。</p>
-<p>之后 BERT 就要预测第二个句子是否是随机的，并假设这个随机的句子与第一个句子是断开的：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9zdGF0aWMwMDEuaW5mb3EuY24vcmVzb3VyY2UvaW1hZ2UvOGEvN2QvOGFmOTgyZmNkN2UzMGJjYWU5MWZmM2JiMzAwODgxN2QucG5n?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>预测第二句与第一句是否是连接的，基本上完整的输入序列经过 Transformer 模型，再用一个简单的分类器层将（CLS）token 的输出转换为 2×1 的向量，并使用 softmax 分配 IsNext-Label。</p>
-<p>该模型结合了 Masked LM 神经网络和下一句预测进行训练。这是为了最小化两种策略的组合损失函数——所谓的“合作共赢”。（还未理解）</p>
-<h1 id="4-BERT的学习内容"><a href="#4-BERT的学习内容" class="headerlink" title="4. BERT的学习内容"></a>4. BERT的学习内容</h1><p><strong>语义信息</strong>（玄学解释），学习到统计学意义上的信息（个人理解）</p>
-<h1 id="5-BERT的优点"><a href="#5-BERT的优点" class="headerlink" title="5.BERT的优点"></a>5.BERT的优点</h1><p>BERT 是一个强大的预训练，因其超大的参数量和较强的特征提取能力，能够从海量的语料中学习到一些语言学和一定程度的语义信息。</p>
-<h1 id="6-BERT的应用场景"><a href="#6-BERT的应用场景" class="headerlink" title="6.BERT的应用场景"></a>6.BERT的应用场景</h1><p><strong>BERT</strong> 在<strong>自然语言推理</strong>、<strong>情感分析</strong>、<strong>问题问答</strong>、<strong>意译检测</strong>和<strong>语言可接受性</strong>等一般语言理解的各种任务场景。</p>
-<p><strong>eg</strong>、BERT应用在问答场景时：给定一个问题和一个上下文段落，该模型预测该段落中最有可能回答该问题的开始和结束标记。这意味着我们可以使用 BERT 模型通过学习两个额外的向量来训练我们的应用程序，这两个向量分别表示答案的开头和结尾。</p>
+<h1 id="面试题16-数值的整数次方"><a href="#面试题16-数值的整数次方" class="headerlink" title="面试题16 数值的整数次方"></a>面试题16 数值的整数次方</h1><h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>实现函数double Power(double base, int exponent)，求base的exponent次方。不得使用库函数，同时不需要考虑大数问题。</p>
+<h2 id="解法："><a href="#解法：" class="headerlink" title="解法："></a>解法：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">myPow</span><span class="params">(<span class="keyword">double</span> x, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(x==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">double</span> res=<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//Java 代码中 int32 变量 n \in [-2147483648, 2147483647]n∈[−2147483648,2147483647] ，</span></span><br><span class="line">        <span class="comment">//因此当 n = -2147483648n=−2147483648 时执行 n = -nn=−n 会因越界而赋值出错。</span></span><br><span class="line">        <span class="comment">//解决方法是先将 nn 存入 long 变量 bb ，后面用 bb 操作即可。</span></span><br><span class="line">        <span class="keyword">long</span> b=n;</span><br><span class="line">        <span class="keyword">if</span>(b&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            x=<span class="number">1</span>/x;</span><br><span class="line">            b=-b;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(b&gt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(b%<span class="number">2</span>==<span class="number">1</span>)&#123;</span><br><span class="line">                res=res*x;</span><br><span class="line">            &#125;</span><br><span class="line">            x=x*x;</span><br><span class="line">            b=b/<span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">myPow</span><span class="params">(self, x: float, n: int)</span> -&gt; float:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> x: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        res=<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> n&lt;<span class="number">0</span>:</span><br><span class="line">            x=<span class="number">1</span>/x</span><br><span class="line">            n=-n</span><br><span class="line">        <span class="keyword">while</span> n&gt;<span class="number">0</span>:</span><br><span class="line">            <span class="keyword">if</span> n%<span class="number">2</span>==<span class="number">1</span>:</span><br><span class="line">                res=res*x</span><br><span class="line">            x=x**<span class="number">2</span></span><br><span class="line">            n//=<span class="number">2</span></span><br><span class="line">        <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+
+<h1 id="面试题18-删除链表的节点"><a href="#面试题18-删除链表的节点" class="headerlink" title="面试题18 删除链表的节点"></a>面试题18 删除链表的节点</h1><h2 id="题目：-1"><a href="#题目：-1" class="headerlink" title="题目："></a>题目：</h2><p>给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。</p>
+<p>返回删除后的链表的头节点。</p>
+<h2 id="解法：-1"><a href="#解法：-1" class="headerlink" title="解法："></a>解法：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * public class ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) &#123; val = x; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">deleteNode</span><span class="params">(ListNode head, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(head.val==val) <span class="keyword">return</span> head.next;</span><br><span class="line">        ListNode pre=head;</span><br><span class="line">        ListNode cur=head.next;</span><br><span class="line">        <span class="keyword">while</span>(cur!=<span class="keyword">null</span>&amp;&amp;cur.val!=val)&#123;</span><br><span class="line">            pre=cur;</span><br><span class="line">            cur=cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(cur!=<span class="keyword">null</span>)&#123;</span><br><span class="line">            pre.next=cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">deleteNode</span><span class="params">(self, head: ListNode, val: int)</span> -&gt; ListNode:</span></span><br><span class="line">        <span class="keyword">if</span> head.val==val: <span class="keyword">return</span> head.next</span><br><span class="line">        pre=head</span><br><span class="line">        cur=head.next</span><br><span class="line">        <span class="keyword">while</span> cur <span class="keyword">and</span> cur.val!=val:</span><br><span class="line">            pre=cur</span><br><span class="line">            cur=cur.next</span><br><span class="line">        <span class="keyword">if</span> cur:</span><br><span class="line">            pre.next=cur.next</span><br><span class="line">        <span class="keyword">return</span> head</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -290,6 +278,9 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%89%91%E6%8C%87offer/" rel="tag"># 剑指offer</a>
+          </div>
 
         
 
@@ -297,13 +288,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/27/%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8D%9A%E5%AE%A2/" rel="prev" title="第一个博客">
-      <i class="fa fa-chevron-left"></i> 第一个博客
+    <a href="/2020/05/13/%E5%89%91%E6%8C%87offer%5B14-1%E3%80%8114-2%E3%80%8115%5D/" rel="prev" title="<剑指offer> 剑指offer 14-1、14-2、15">
+      <i class="fa fa-chevron-left"></i> <剑指offer> 剑指offer 14-1、14-2、15
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/30/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/" rel="next" title="<学习笔记> word2vec笔记（Hierarchical Softmax）">
-      <学习笔记> word2vec笔记（Hierarchical Softmax） <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -363,7 +351,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-BERT的作用"><span class="nav-number">1.</span> <span class="nav-text">1.BERT的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-BERT核心思想"><span class="nav-number">2.</span> <span class="nav-text">2.BERT核心思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-BERT的工作原理"><span class="nav-number">3.</span> <span class="nav-text">3.BERT的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1BERT预训练的输入"><span class="nav-number">3.1.</span> <span class="nav-text">3.1BERT预训练的输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Masked-Language-Model（核心思想）"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Masked Language Model（核心思想）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-Next-Sentence-Prediction（一个预训练中的任务）"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 Next Sentence Prediction（一个预训练中的任务）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-BERT的学习内容"><span class="nav-number">4.</span> <span class="nav-text">4. BERT的学习内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-BERT的优点"><span class="nav-number">5.</span> <span class="nav-text">5.BERT的优点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-BERT的应用场景"><span class="nav-number">6.</span> <span class="nav-text">6.BERT的应用场景</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#面试题16-数值的整数次方"><span class="nav-number">1.</span> <span class="nav-text">面试题16 数值的整数次方</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目："><span class="nav-number">1.1.</span> <span class="nav-text">题目：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解法："><span class="nav-number">1.2.</span> <span class="nav-text">解法：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#面试题18-删除链表的节点"><span class="nav-number">2.</span> <span class="nav-text">面试题18 删除链表的节点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目：-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解法：-1"><span class="nav-number">2.2.</span> <span class="nav-text">解法：</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
