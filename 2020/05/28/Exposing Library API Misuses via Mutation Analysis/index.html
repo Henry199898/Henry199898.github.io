@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="摘要：论文题目：Exposing Library API Misuses via Mutation Analysis论文作者：Ming Wen, Yepang Liu, Rongxin Wu, Xuan Xie, Shing-Chi Cheung and Zhendong Su论文发表：2019 IEEE&#x2F;ACM 41st International Conference on Software">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文&gt;Exposing Library API Misuses via Mutation Analysis">
+<meta property="og:url" content="http://yoursite.com/2020/05/28/Exposing%20Library%20API%20Misuses%20via%20Mutation%20Analysis/index.html">
+<meta property="og:site_name" content="Henry ’Blog">
+<meta property="og:description" content="摘要：论文题目：Exposing Library API Misuses via Mutation Analysis论文作者：Ming Wen, Yepang Liu, Rongxin Wu, Xuan Xie, Shing-Chi Cheung and Zhendong Su论文发表：2019 IEEE&#x2F;ACM 41st International Conference on Software">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516153208528.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516154804935.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516155315386.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516163343315.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516163631134.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516164219236.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516164753820.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516164808300.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516165157336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170157721.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170059680.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170117164.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020051617044054.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170453671.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170915914.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516170931365.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516171135715.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516171933368.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516172441258.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516172943966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516173551892.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516173622429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516173941817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516174130354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200516174351382.png">
+<meta property="article:published_time" content="2020-05-28T02:47:13.614Z">
+<meta property="article:modified_time" content="2020-05-28T02:48:45.878Z">
+<meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200516153208528.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/28/Exposing%20Library%20API%20Misuses%20via%20Mutation%20Analysis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文>Exposing Library API Misuses via Mutation Analysis | Henry ’Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Henry199898" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Henry ’Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/Exposing%20Library%20API%20Misuses%20via%20Mutation%20Analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文>Exposing Library API Misuses via Mutation Analysis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-28 10:47:13 / 修改时间：10:48:45" itemprop="dateCreated datePublished" datetime="2020-05-28T10:47:13+08:00">2020-05-28</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/28/Exposing%20Library%20API%20Misuses%20via%20Mutation%20Analysis/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/28/Exposing%20Library%20API%20Misuses%20via%20Mutation%20Analysis/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>摘要：<br>论文题目：Exposing Library API Misuses via Mutation Analysis<br>论文作者：Ming Wen, Yepang Liu, Rongxin Wu, Xuan Xie, Shing-Chi Cheung and Zhendong Su<br>论文发表：2019 IEEE/ACM 41st International Conference on Software Engineering(ICSE)<br>论文地址：<a href="http://www.cse.ust.hk/~mwenaa/paper/ICSE2019A.pdf" target="_blank" rel="noopener">http://www.cse.ust.hk/~mwenaa/paper/ICSE2019A.pdf</a></p>
+<a id="more"></a>
+<p>注意：<br><strong>仅作本人参考笔记，机器翻译质量较低。</strong><br>本翻译中的<strong>API滥用</strong>是指<strong>API误用</strong>，比较麻烦就没改。</p>
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>API库的误用会导致软件崩溃以及一些脆弱性问题（鲁棒性较差）。目前存在一些静态分析工具检测误用API问题，通过从正确的API使用样例中挖掘patterns。由于过于简化的假设，即与pattern稍有偏差表示滥用，所以这些系统精度往往较低【6】。</p>
+<p>我们对API滥用模式的调查有两个观察结果：<strong>1.API滥用可以表示为相应正确用法的变体；2.可以通过针对测试套件执行突变并分析执行信息来验证突变是否会导致滥用</strong>。基于以上观察，开发了<strong>MUTAPI</strong>，<strong>第一个通过突变分析检测API误用patterns的方法</strong>。为了有效地基于API使用模仿出API误用，我们首先设计八种有效的变异算子，这些变异算子受API滥用的共同特征启发。MUTAPI通过将这些突变运算子应用于一组客户项目来生成突变体，并收集mutant-killing测试以及相关的堆栈跟踪。基于收集得到的信息，从被击杀的mutants中发现误用模式，并根据造成API滥用的可能性对mutants进行排序。我们针对73种流行的Java API在16个客户端项目上应用了MUTAPI。<strong>结果表明，MUTAPI能够以0.78的高精度发现大量的API滥用模式。 它还使MUBENCH基准达到0.49的召回率，优于最新技术。</strong></p>
+<p><strong>Index Terms: Mutation Analysis,Library API Misuses</strong></p>
+<h1 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h1><p>java项目中第三方库的使用非常常见【1】。Maven仓库中包含8.77milions的第三方库。</p>
+<p><strong>问题</strong>：第三方库API的正确使用没有较好的文档规范，或者API更新之后未及时修改。导致API误用普遍存在，最终影响成为软件bug（性能问题，软件崩溃，漏洞问题等等【6-11】）。为了检测API误用，出现一些静态检测工具【12-20】，从软件库中挖掘API使用的pattern。这些pattern被作为API正确使用的样例，而与此类模式的偏差被视为滥用。</p>
+<p>由于过于简化的假设，即与pattern稍有偏差表示滥用，所以在实际环境中召回率和准确性较低【6】。一项研究提出解决这两个问题的建议：1.为了提高召回率，现有的检测器需要从更正确的API使用示例中挖掘频繁的模式。但这种情况比较难实现，特别是对于新发型 的API库；2.为了提高精度，探测器需要超越过度简化的假设，即偏离频繁使用模式是一种误用。API的不常见用法不一定是不正确的用法。<strong>更加精确的设计误用检测规则</strong></p>
+<p><strong>本篇研究中，我们建议通过突变分析从新的角度解决API滥用模式的发现问题。</strong>突变分析在软件调试和测试中得到了广泛的应用【21】。首先，它通过对具有一组定义明确的变异运算符的程序进行小的修改来创建大量变异，这些变异运算符模仿了各种编程错误。其次，它在突变体上运行给定的测试套件，并收集执行信息以进行各种质量分析[22]-[26]。</p>
+<p>我们的解决方法源于两个观察：首先，可以将API的各种误用视为该API正确用法的变体。 因此，可以通过在正确的API用法上应用专门设计的变异运算符来<strong>创建API滥用</strong>。这些突变算子的设计可以通过常见的API滥用模式的特征来指导，这些特征已被现有研究[4]，[6]进行了深入研究。(<strong>自己制作API误用的例子，从这些例子中出发找到API误用的pattern，着手解决</strong>)。例如，一种滥用模式就是缺少异常处理[6]。许多API可能会引发异常，并且这些API的正确用法需要适当的异常处理。 给定此类API的正确用法，我们可以主动违反正确用法（例如，（运算子的工作）通过删除异常处理程序）来创建API误用。可以通过应用某些mutation operators（例如删除方法调用）类似地创建API滥用（例如，缺少方法调用[6]）的模式。 这样，我们可以根据API的正确用法获得大量的突变体。与现有工作[12] – [20]不同，<strong>我们的解决方案不需要从大量正确的API使用中进行模式挖掘。</strong>（<strong>反向操作</strong>）取而代之的是，它积极创建大量模仿API滥用不同模式的突变体。但是，<strong>决定一个这样创建的mutant是否是一个API误用是一个挑战，因为不同的API误用的表现形式是有分歧的</strong>。解决这个挑战的方法是，<strong>通过针对正确用法的测试套件执行突变体并分析执行信息，我们可以验证突变体是否引入了API误用</strong>。此方法受以下启发：对维护良好的项目进行大量测试（42.8％）会在执行期间触发库的使用（第II-C节）。因此，我们推测可以通过运行客户端项目的测试套件来暴露和验证库API的滥用（在第V-A节中确认）。这样，我们的解决方案就不会做出上面的简单假设：与高频率API使用模式不同就是误用。</p>
+<p>在本文中，我们提出了MUTAPI，这是一种利用MUTation分析来发现API滥用模式的自动方法。 为了有效地发现API滥用模式，MUTAPI解决了以下三个挑战。</p>
+<p>首先，发现API滥用模式需要MUTAPI生成违反现有正确用法的突变体，因此，<strong>如何有效生成模仿API滥用的突变体</strong>是关键。 传统的突变算子，如PIT [27]所定义的算子，不太可能达到这一目标（第V-C节）。 为了解决这一挑战，我们首先研究如何对正确的API用法进行建模，然后系统地打破建模的用法。 受最新研究[4]的启发，MUTAPI根据预先定义的语法将正确的API用法建模为结构化调用序列。 然后，我们<strong>设计了八种类型的新颖变异算子，其目的是以系统的方式主动违反此类修饰用法</strong>（第<strong>III-A</strong>节）。 使用这些突变运算符，MUTAPI通过将其应用于使用目标API的某些客户端项目上来生成大量的突变体。之后MUTAPI将这些突变体针对客户端项目的测试套件运行并收集killing relations（报错原因），其中包括killed mutants和相应的killing tests。 如果突变体的测试输出与原始程序的输出不同，则将其杀死（检测报错）。</p>
+<p>其次，<strong>如何验证突变体是否确实引入了API滥用</strong>是另一个挑战。 一种可能的方法是检查突变体是否已被测试套件杀死，但是由于多种原因（例如，与任何API滥用无关的逻辑错误），可以杀死突变体。 如何准确地识别由API滥用引起的那些致命关系是一个关键的挑战。 MUTAPI <strong>通过分析终止测试的失败堆栈跟踪</strong>（表示为终止堆栈跟踪）来解决这一难题。 具体来说，它根据<strong>以下观察结果</strong>，利用终止堆栈跟踪来优先确定终止关系。1. 首先，给出杀死堆栈的跟踪信息，故障的根本原因更接近故障点[28]。 因此，如果终止堆栈跟踪的顶部框架是库函数，则很可能是由API滥用引起的（即，根本原因位于API调用中）。 2.其次，终止目标API的堆栈跟踪应特定于此API。 如果在其他API的突变分析中也观察到杀死堆栈的痕迹，则不太可能由目标API的滥用引起。3. 第三，杀死目标API的堆栈跟踪不应特定于某种用法。 <strong>如果仅在特定项目的突变分析中观察到杀死堆栈的痕迹，则很可能是由该项目特定的错误引起的，而不是普遍滥用目标API</strong>。MutAPI平衡三个观察去区分观察到的Killing relations（错误原因），并假定那些排名靠前的是由滥用目标API引起的。</p>
+<p>第三，如何在识别出由于滥用API而导致的一系列杀害关系之后<strong>如何有效地提取API滥用模式</strong>也是一个挑战。 为了应对这一挑战，MUTAPI从大量已确定killing relation的已杀死突变体中提取API滥用。 具体来说，首先根据最近的研究[4]，[6]，<strong>将API滥用建模为一对违规类型和一个API使用要素</strong>。 然后，它<strong>选择那些最常观察到的违规对作为API滥用模式</strong>。</p>
+<p>为了评估MUTAPI，我们选择了最近研究[4]，[6]收集的73个流行的Java API，以及从GitHub上的流行存储库收集的16个客户端项目。 评估结果表明，MUTAPI在发现流行API的实际滥用模式方面能够达到0.78的高精度。与最新技术相比，它在基准数据集MUBENCH [6]上具有更高的召回率。</p>
+<p>本文贡献如下：</p>
+<ul>
+<li>独创性：据我们所知，这是第一项将突变分析用于发现API滥用模式的研究，经验证据表明，它在暴露和发现API滥用模式方面是有效的。</li>
+<li>实施：我们将方法MUTAPI实施为可检测Java库的API滥用模式的工具，它采用了一组新的变异运算符，已证明在发现不同的API滥用模式方面有效。</li>
+<li>评估：我们的评估结果表明，MUTAPI可以发现高精度的流行Java API的实际滥用模式。 与现有方法相比，它还能在基准数据集MUBENCH上检测到更多的滥用实例。</li>
+</ul>
+<h1 id="2-RELATEDWORK-AND-PRELIMINARIES"><a href="#2-RELATEDWORK-AND-PRELIMINARIES" class="headerlink" title="2. RELATEDWORK AND PRELIMINARIES"></a>2. RELATEDWORK AND PRELIMINARIES</h1><p>在本节中，我们首先介绍有关突变分析和API滥用检测的相关工作。 然后，我们介绍了这项研究的动机及其挑战。</p>
+<h2 id="A-Mutation-Analysis"><a href="#A-Mutation-Analysis" class="headerlink" title="A. Mutation Analysis"></a>A. Mutation Analysis</h2><p>给定一个程序P以及一组突变算子O，突变分析的关键思想是生成实质性的突变M，其中每个突变m都是p（正确程序）的变体。 然后生成的突变体将针对p的测试套件T执行。如果存在test t∈T，它针对m和p执行，若结果不同，则该突变体将被杀死（<strong>突变体导致bug</strong>）。变体分析有许多应用（例如[22]，[24] – [26]，[29] – [32]），例如评估测试套件的质量（例如[22]），测试套件的减少（例如 ，[30]），改进故障定位（例如[23]，[26]），安全性分析（例如[24]，[25]），程序修复（例如[31]，[32]）等 。 例如，为了评估测试套件T [22]的质量，通过计算突变得分，M中被杀死的突变体的比例。 突变得分越高，T越有可能检测到真正的错误，因此测试套件的质量也越高。据我们所知，<strong>我们是第一个在发现API滥用模式时应用 突变分析 的方法</strong>。在本研究中，我们使用k表示突变体被test t杀死的关系。通过对所有突变体M进行测试T，我们得到了一组致死关系K。<br><img src="https://img-blog.csdnimg.cn/20200516153208528.png" alt="在这里插入图片描述"></p>
+<h2 id="B-Library-API-Misuse-Detection"><a href="#B-Library-API-Misuse-Detection" class="headerlink" title="B. Library API Misuse Detection"></a>B. Library API Misuse Detection</h2><p>库API的使用通常受到诸如呼叫顺序和呼叫条件之类的约束[6]。 不幸的是，API的文档[3]并没有充分说明这些限制。 结果，开发人员还参考非正式参考，例如Stack Overflow，以了解API的用法[33]。 但是，正如最近的一项研究[4]所揭示的那样，即使对于那些较高赞成的答案，Stack Overflow上的代码片段也可能是不可靠的。 违反本应满足的约束条件可能会导致软件错误[6] – [11]（例如，崩溃和安全问题）。因此，它激发了对自动挖掘和检测API滥用的研究的热情[12] – [20]。过于简化的假设，即与pattern（pattern即为从正确的API使用样例中总结的规律）稍有偏差表示滥用。 它们之间的区别主要在于如何编码API用法和模型频率。 例如，<strong>PR-MINER</strong>将API用法编码为在同一方法中调用的一组函数调用，然后利用频繁的项目集挖掘来识别模式，并至少支持15种用法[12]。<strong>JADET</strong>基于方法调用顺序和调用接收者构建有向图[14]。 在图模型中，节点代表方法调用，边代表控制流关系。 <strong>GROUPMINER</strong>创建一个基于图形的对象用法表示形式，以对每种方法的modelAPI用法进行建模。 然后，它利用子图挖掘技术以6的最小支持检测频繁使用的模式[16]。 <strong>DMMC</strong>在由对象触发的一组方法调用中检测丢失的呼叫[7]。 <strong>TIKANGA</strong>构建在JADET之上[20]。 它将呼叫订单的属性扩展到对象用法的通用计算树逻辑公式。 然后，它利用模型检查来识别给定代码库中最小支持20的那些公式。</p>
+<h2 id="C-Observation-and-Motivation"><a href="#C-Observation-and-Motivation" class="headerlink" title="C. Observation and Motivation"></a>C. Observation and Motivation</h2><p>在本研究中，我们旨在采用这种哲学来检测API滥用模式，这是程序错误的一种常见类型。该想法受到以下两个观察的启发。</p>
+<ul>
+<li>various   misuses   of   an   API   can   be   representedas   mutants   of   its   correct   usages.<br><img src="https://img-blog.csdnimg.cn/20200516154804935.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+<li>a program’s test suite can be leveraged to validate whether a generated mutant of the program indeed misuses an API<br>为了研究利用此观察结果的可行性，我们在GitHub上随机选择了五个受欢迎的项目，并分析了相关测试套件的执行是否会触发受欢迎的API调用。 具体来说，我们选择了一项现有研究收集的100种流行的API [4]。 表I显示了结果。 平均而言，执行42.8％的测试类（即对于不同的项目，范围从32.4％到57.3％）会触发这些API中的至少一个。对于每个测试类，我们进一步研究了这些API的调用次数。 图2显示了结果，表明大量库API由测试执行触发。 此外，这些API中有60.0％会抛出异常，其中超过85.0％是未经检查的异常。<strong>研究结果表明，如果我们通过应用变异算子违反了这些API的正确用法，则很可能会出现代表API滥用的变异 由关联的测试套件以运行时异常的形式检测到</strong>。例如，可以通过抛出NumberFormatException由test NumberUtilsTest.testToFloatStringF（）杀死Mutant＃2。 相应的失败堆栈跟踪如图3b所示。</li>
+</ul>
+<p>基于以上观察，本研究的动机是在野外对多个开源项目进行突变分析，以发现API滥用模式。<br><img src="https://img-blog.csdnimg.cn/20200516155315386.png" alt="在这里插入图片描述"></p>
+<h2 id="D-Challenges"><a href="#D-Challenges" class="headerlink" title="D. Challenges"></a>D. Challenges</h2><p>应用突变分析发现API滥用模式需要解决三个挑战。 首先，如何设计可有效模仿API滥用的诱变运算符仍然未知。 其次，<strong>区分引起API滥用的突变体与不引起突变的突变体很重要</strong>。 如前所述，我们可以利用测试信息来确定突变体是否引入了API滥用。 但是，测试可能由于多种原因而失败。 图1中所示的Mutant＃1示例（不是API滥用）也可以通过具有图3a中所示的堆栈跟踪的test testToFloatStringF（）杀死。<br><img src="https://img-blog.csdnimg.cn/20200516163343315.png" alt="在这里插入图片描述"><br>因此，我们不能简单地通过检查原始程序设计的测试是否消除了变体而引入了API滥用。 从概念上讲，killing relations可以由三种原因引起。第一类驻留在库中（类型1），该类表明测试由于API的错误实现而失败。 另外两种类型的原因驻留在客户端项目中，这表明在应用了变异运算符后，客户端程序是“笨拙的”。 其中，一种“错误”是由于滥用API（类型2）引起的，而另一种原因不是（类型3）错误。有用的API滥用模式只能从类型2“错误”中获取（例如，图1中的Mutant＃2），而从类型3“错误”中获取的模式（例如，图1中的Mutant＃1）将导致错误肯定。 辨别killing relations的根本原因是具有挑战性的。 第三，即使我们能够成功地识别出一系列引入API滥用的突变体，将这些突变体推广到API滥用模式也不是一件容易的事。<br><img src="https://img-blog.csdnimg.cn/20200516163631134.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="3-MUTAPI-APPROACH"><a href="#3-MUTAPI-APPROACH" class="headerlink" title="3. MUTAPI APPROACH"></a>3. MUTAPI APPROACH</h1><p>本节介绍了我们的方法，其概述如图4所示。MUTAPI的输入是一组客户端项目（即，包括源代码和相关的测试套件）和一组目标API。 分析过程包括三个主要步骤。 首先，MUTAPI通过在客户端项目中对targetAPI的用法应用一组预定义的突变运算符来生成突变，然后运行测试。其次，它收集终止关系并针对每个目标API优先考虑这些关系。第三，它从相关的被杀死的突变体中选择排名最高的杀死关系并挖掘API滥用模式。 MUTAPIisa的输出列出了目标API的滥用情况。 以下小节介绍了每个步骤的详细信息。 为了简化表述，表II总结了本研究中使用的符号。</p>
+<h2 id="A、Conducting-Mutation-Testing"><a href="#A、Conducting-Mutation-Testing" class="headerlink" title="A、Conducting Mutation Testing"></a>A、Conducting Mutation Testing</h2><p>为了应用突变分析来发现API滥用模式，需要一套可以系统地违反正确API使用方法的变异算子。 传统的诱变算子（例如，在PIT [27]中定义的算子）不太可能实现该目标。 例如，一种主要类型的API滥用导致缺少控制语句[4]，[6]，例如，缺少异常处理或检查语句。常规运算符的重点是对条件数学运算符进行变异[27]，不旨在操纵此类控制语句。因此，它们不能有效地模仿这种误用模式。<br><img src="https://img-blog.csdnimg.cn/20200516164219236.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>根据最近的一项研究[4]，MUTAPI将正确的API使用建模为结构化的调用序列，以有效地模仿各种类型的API滥用。 这种结构化的调用序列可以抽象化语法细节（例如变量名），而以紧凑的方式保留API调用的时间顺序，控制结构和检查器[4]。我们采用研究[4]定义的语法来表示结构化的调用序列，如表III所示。 一个结构化的调用序列由几个API调用组成，每个API调用都可以由结构语句（例如，try-catch）或由检查器语句（例如，空指针检查器）保护。 通过考虑参数及其类型来区分重载的API调用。 图5显示了Iterator类的用法。 假设我们的目标API（即atarget）是第5行中的Iterator &lt;&gt;.next（）。为了对目标的使用进行建模，MUTAPI首先确定在其上调用目标的对象（例如迭代器），然后在相同方法中标识该对象调用的其他API。 在本示例中，在模型序列中将包含第4行触发的APIIterator &lt;&gt;.hasNext（）。MUTAPI进行程序切片[35]（向后和向前）以根据其API调用的每个调用提取这些结构和检查器语句 接收器变量v_rev（例如，value是第5行的接收器变量）和参数v_i。结果，第7行的语句也将包含在建模序列中。 请注意，MUTAPI只标识那些直接依赖于API调用中涉及的变量的语句，因为根据现有工作，这种设置能够在为误用检测使用的API使用建模中获得最佳性能[4]。 结果，第9行的ifchecker将不会被切片为结构化序列，因为被检查的变量结果并不直接取决于我们目标API的接收者变量值。因此，图5中API使用的建模结构化序列为“ if（hasNext（））{; r_rev = next（）;}; if（r rev）{};”。 分隔符“；” 这是语法中的分隔符，与Java中使用的分号不同。</p>
+<p>基于对a_target正确使用的建模结构化序列，MUTAPI试图通过系统地应用变异算子来模拟各种API滥用打破这种用法。具体来说，我们按照API滥用模式[4]，[6]的共同特征设计了八种类型的突变算子，如表IV所示。对于API调用顺序不正确的情况[4]，MUTAPI会交换两个调用序列的顺序（ 类型1），删除API调用（类型2）并插入新的API调用（类型3）。 对于缺少checkers [6]的情况，MUTAPI将删除一个checker（类型4）。 对于缺少控制结构[4]，[6]的情况，MUTAPI删除结构但保留enclosingAPI调用（类型5）或将结构与封闭的API调用一起删除（类型6）。对于缺少正确条件[4]，[6]的情况，在检查器或无状态语句中，MUTAPI会用其他条件表达式或布尔值（类型7）随机替换条件表达式。MUTAPI还会更改API调用的参数（类型8）。 用其他兼容变量（Type8.1）替换API调用的参数，插入参数（Type8.2）或deletesan参数（Type8.3），以将原始方法调用更改为重载方法的调用。</p>
+<p>MUTAPI采用一种进化过程来随机生成突变体，如算法1所述。具体地说，它最多将Nmutation运算符应用于原始程序以生成突变体。 某些运算符（例如，用另一种替换一种条件）需要必要的代码成分。 在这种情况下，MUTAPI从原始程序中搜索以随机选择适当的代码元素。 默认情况下，N设置为1，第VI-A节讨论Nis的影响。<br><img src="https://img-blog.csdnimg.cn/20200516164753820.png" alt="在这里插入图片描述"></p>
+<h2 id="B、Prioritizing-Killing-Relations"><a href="#B、Prioritizing-Killing-Relations" class="headerlink" title="B、Prioritizing Killing Relations"></a>B、Prioritizing Killing Relations</h2><p><img src="https://img-blog.csdnimg.cn/20200516164808300.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200516165157336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在对所有变体M执行测试套件后，MUTAPI会收集大量的终止关系K。 具体来说，<strong>如果客户端程序p的一个API a相关的变体m被p的测试用例t杀死之后，就收集到了一种killing关系k。特别是，k也表示为k &lt;p，a，m，t&gt;</strong>。 如第II-D节所述，<strong>存在多种导致杀伤关系的诱导因素，并确定是否因为由滥用靶标API a_target引起的测试用例错误具有挑战性</strong>。为了解决此问题，MUTAPI利用终止堆栈跟踪来优先考虑由API滥用引起的终止关系。 例如，图3分别显示了图1中所示的两个突变体的两个杀死堆栈轨迹的前10个框架。其中一个是由API误用导致的（例如，缺少异常处理），而且由于java.lang. numberformatexception而失败。另一个是由与API误用无关的一般错误引起的，并且由于java.lang.AssertionError导致的bug。MUTAPI可以将那些由于API滥用而导致的杀戮堆栈跟踪与那些不是通过基于堆栈跟踪进行优先级排序的堆栈跟踪区别开来</p>
+<p><strong>优先级排序</strong>基于对从多个客户端项目P中收集到的大量杀害堆栈跟踪的分析. 为了启用此类跨项目分析，MUTAPI预处理这些堆栈跟踪以删除与客户端项目相关的框架（例如，图3b中的第4帧）或JUnit框架（例如，框架 图3a）中的图1所示，<strong>因为这些帧不太可能表征由于滥用库API而引起的堆栈跟踪的模式</strong>。 结果，仅保留那些在图3中以蓝色背景显示的帧以供进一步分析。失败的标记（例如java.lang.AssertionErrororjava.lang.NumberFormatException）对于理解失败原因也很重要。 因此，我们还将此类信息保留在已处理的堆栈跟踪中。 但是，特定于项目的信息（例如，堆栈跟踪＃1中的toFloat（）或堆栈跟踪＃2中的输入字符串：“ a”）已被滤除。 如果两个killing堆栈跟踪的失败签名和已处理的框架相同，则视为相同。</p>
+<p><strong>在对每个终止堆栈跟踪进行预处理之后，MUTAPI获得一组唯一的跟踪S。MUTAPI将终止堆栈跟踪相同的终止关系分组</strong>。 对于a_target，MUTAP会根据以下见解，通过优先级确定在S中由目标滥用（表示为目标API滥用引起的杀死堆栈跟踪）引起的那些杀死堆栈跟踪。<br><img src="https://img-blog.csdnimg.cn/20200516170157721.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>目标API滥用引起的杀死堆栈跟踪不应特定于某种用法。</strong>如果确实是由于滥用$a_{target}$引起的killing堆栈路径，则应在跨不同项目的多种$a_{target}$多次使用的突变分析中观察到它。否则，这样的堆栈跟踪很可能是由特定项目特定用途的API使用的错误引起的，而不是因为$a_{target}$的误用。因此，MUTAPI测量其突变分析已观察到终止堆栈跟踪s的使用比率，以确定s是否由$a_{target}$误用引起，如下所示：<br><img src="https://img-blog.csdnimg.cn/20200516170059680.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200516170117164.png" alt="在这里插入图片描述"><br><strong>目标API滥用引起的终止堆栈跟踪应特定于此API。</strong>如果由于滥用目标API导致了杀死堆栈，则不应在其他API的变异分析中观察到它。 否则，这样的堆栈跟踪不太可能由目标API的滥用引起，因为它对于多个不同的API是通用的。 因此，MUTAPI测量s的倒数频率，它是在$a_{target}$突变分析中观察到的s数与所有目标API  A之比，如下所示：<br><img src="https://img-blog.csdnimg.cn/2020051617044054.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200516170453671.png" alt="在这里插入图片描述"><br><strong>目标API滥用引起的killingstack跟踪的顶部框架应该是目标库的功能。</strong>现有研究表明，在堆栈跟踪中，根本原因所在的功能似乎更接近故障点[28]。 图3a中显示的堆栈跟踪＃2的顶部框架是来自包含目标APIjava.lang.Float.parseFloat的库中的函数。 但是，堆栈跟踪＃1的顶部框架是那些与JUnit框架相关的功能。 在这里，我们检查原始堆栈轨迹而不是处理堆栈轨迹，以调查故障时每帧的位置。 因此，杀死API 2.lang.Float.parseFloat可能导致杀死堆栈跟踪2。受这些观察的启发，对于给定的堆栈跟踪，我们建议使用目标库中那些框架的等级来近似估计由于滥用​​库API而引起的可能性。<br><img src="https://img-blog.csdnimg.cn/20200516170915914.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20200516170931365.png" alt="在这里插入图片描述"><br>MUTAPI通过为每个堆栈跟踪计算以下分数，相对于目标API atarget对所有唯一堆栈跟踪S进行优先级排序。<br><img src="https://img-blog.csdnimg.cn/20200516171135715.png" alt="在这里插入图片描述"></p>
+<h2 id="C、Discovering-API-Misuse-Patterns"><a href="#C、Discovering-API-Misuse-Patterns" class="headerlink" title="C、Discovering API Misuse Patterns"></a>C、Discovering API Misuse Patterns</h2><p>对于S中的每个唯一的终止堆栈跟踪s，MUTAPI将相对于$a_{target}$分配其分数。MUTAPI重新检索所有终止堆栈跟踪相同的终止关系。 让K_s表示这样的一组杀死关系，其中K_s = {k |k∈K，s_k = s}。MUTAPI从那些与K_s相关的死亡突变体M_s中提取API滥用模式。为了有效地提取API滥用，MUTAPI在最近的工作[6]之后将API滥用建模为违规对，p = &lt;违规类型，API用法元素&gt;。 具体来说，<strong>根据现有研究，共有三种违规类型：缺失，冗余和不正确</strong>[4]，[6]。 API使用元素可以引用方法调用，空检查器，条件，异常处理，迭代，参数等[4]，[6]。 具体而言，MUTAPI利用以下规则通过研究所应用的突变算子从突变体中提取违规对。<strong>MUTAPI从由突变运算符＃3，＃4，＃5，＃6和＃8.3创建的突变体中提取类型缺失的违规对，因为它们删除了代码元素； 从突变运算符＃2和＃8.2创建的突变体中提取类型冗余的违规对，因为它们添加了代码元素； 突变运算符＃1，＃7和＃8.1提取了类型错误和违规对，因为它们将现有的代码元素替换为其他代码元素。</strong>对于API用法元素，MUTAPI通过分析已突变的代码元素来将其提取。 例如，图1所示的第二个突变体是通过应用突变运算符＃5生成的。 因此，违反类型丢失。 发生突变的代码元素为 try-catch statement。 结果，提炼的违规对是<strong>&lt;missing，exception handling&gt;</strong> 。</p>
+<p>可以基于这些突变M_s来提取多个违规对。 因此，MUTAPI会根据它们的频率进一步确定它们的优先级。 具体而言，MUTAPI基于M_s标识一组唯一的P_M_s对，它记录在P_M_s中的每个v_p的出现次数（即，记为count（vp））。 然后，MUTAPI根据违规配对在所有对中的出现情况排列优先顺序:<br><img src="https://img-blog.csdnimg.cn/20200516171933368.png" alt="在这里插入图片描述"><br>其中得分用于衡量a_target滥用所导致的，具有相同堆栈跟踪的那些杀死关系Ks的可能性，而ratio（vp）衡量从与K_s相关的被杀突变体中提取的所有违规对中，违规对vp的出现频率。</p>
+<h1 id="4-EXPERIMENT-SETUP"><a href="#4-EXPERIMENT-SETUP" class="headerlink" title="4.EXPERIMENT SETUP"></a>4.EXPERIMENT SETUP</h1><p>本节介绍了我们的实验设置和要研究的研究问题。</p>
+<h2 id="A、Target-APIs-Selection"><a href="#A、Target-APIs-Selection" class="headerlink" title="A、Target APIs Selection"></a>A、Target APIs Selection</h2><p><strong>为了评估MUTAPI的有效性</strong>，我们选择了最近的一项研究[4]收集的73种流行的Java API。 其中有43个是堆栈溢出中讨论最频繁的API（例如Iterator &lt;&gt;。next（））。 这些API通常在实践中使用，并且开发人员经常因其用法而感到困惑。 其余30个API来自MUBENCH [6]，这是API滥用的基准数据集。 这些API位于不同的领域，其中大多数来自四类：通用库（例如，数学，集合，时间，xml），GUI（例如，Swing），安全性（例如，java.security.Cipher（））和 数据库。</p>
+<h2 id="B、Client-Projects-Selection"><a href="#B、Client-Projects-Selection" class="headerlink" title="B、Client Projects Selection"></a>B、Client Projects Selection</h2><p>为了发现API滥用模式，MUTAPI需要一组客户端项目来执行突变分析。 在本研究中，我们从四个不同的类别中选择了16个开源Java项目，如表V所示。<strong>这些项目是从GitHub中随机选择的，它们满足以下两个条件</strong>。 首先，它涵盖的唯一目标API的数量应大于15。由于MUTAPI旨在检测与所选目标API有关的滥用，因此所选客户端项目应包含尽可能多的这些API用法。 很难找到触发所有73个目标API的客户端项目，因为这些API来自不同的领域。因此，我们将合理的阈值设置为15。我们的第二个标准是，客户项目的突变覆盖率（使用PIT [27]测量）应大于0.70。我们设置此阈值以确保测试套件的质量[39]，因为MUTAPI依赖于 相关的测试套件，以验证突变体是否引入了API滥用。 我们将在第六节中进一步讨论测试套件质量对MUTAPI性能的影响。 根据这两个条件，我们从通常来自73个API的四个类别的领域（即GUI，库，安全性和数据库）中随机选择了四个Java项目。客户项目的分类基于Apache官方定义[40]和GitHub主题[41]。 总共选择的16个项目涵盖了选择的73个API中的55个不同的API。 其余18个API并未涵盖，因为它们很少被大型且受欢迎的项目使用（例如，jsoup.Jsoup.connect（））。<br><img src="https://img-blog.csdnimg.cn/20200516172441258.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="C、Research-Questions"><a href="#C、Research-Questions" class="headerlink" title="C、Research Questions"></a>C、Research Questions</h2><p>我们研究三个研究问题以评估MUTAPI：</p>
+<ul>
+<li>RQ1：MUTAPI可以发现API滥用模式吗？ 它可以更容易地发现哪些滥用模式？<br>MUTAPI生成API滥用模式的排名列表。在RQ1中，我们调查了MUTAPI检测到的那些排名最高的API滥用模式是否为真阳性。 具体来说，我们使用metricPrecision @ N来评估MUTAPI的性能。Precision@ ​​N会报告MUTAPI所报告的topNAPI滥用模式（N = 1、5、10，…）中真实阳性的百分比。 为了判断检测到的滥用模式是否为真正的阳性，我们遵循现有研究采用的策略[4]。 具体来说，我们根据在线文档（即是否已在线记录滥用情况）和现有文献（例如，现有研究是否已报告滥用方式）进行了人工检查。 然后，通过检查相关的Java文档，调查MUTAPI已检测到滥用模式的API的特性。</li>
+<li>RQ2：MUTAPI是否可以检测最新基准数据集MUBENCH上的API滥用实例？<br>根据发现的滥用模式（即违规对），MUTAPI能够检测到滥用实例。 具体来说，MUTAPI应用与第III-A节所述相同的分析，以结构化API调用序列的形式对API的使用进行建模。 然后，它检查建模序列是否违反了已确认的滥用模式。 我们将MU-TAPI应用于MUBENCH [6]，以查看它是否可以检测基准数据集中的API滥用。 具体来说，我们调查了MUTAPI的调用，即MUTAPI可以在MUBENCHwork [6]中的实验R中使用的53个真实实例中检测到的API滥用比率。 我们在实验R中选择了这些滥用行为，因为它们都是从开源项目中发现的真正的滥用行为实例。 为了与现有方法进行比较，我们选择了四个基线（即JADET [14]，GROUPMINER [16]，DMMC [7]和TIKANGA [20]），这些基线已通过现有研究进行了系统评估[6]。</li>
+<li>RQ3:与传统的变异算子相比，我们提出的变异算子在检测API滥用模式方面表现如何？<br>在这项工作中，我们提出了针对API滥用检测的八种类型的突变算子，这些突变算子在突变分析中被MUTAPI所采用。 在这个研究问题中，我们使用两个指标将建议的突变算子与PIT [27]中使用的传统算子进行比较：（1）效率（即，突变分析所需的时间）和（2）有效性（即，API的数量） 检测到滥用模式）。<br><img src="https://img-blog.csdnimg.cn/20200516172943966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li>
+</ul>
+<h1 id="5-EXPERIMENTAL-RESULTS"><a href="#5-EXPERIMENTAL-RESULTS" class="headerlink" title="5. EXPERIMENTAL RESULTS"></a>5. EXPERIMENTAL RESULTS</h1><h2 id="A、RQ1-Effectiveness-of-MUTAPI"><a href="#A、RQ1-Effectiveness-of-MUTAPI" class="headerlink" title="A、RQ1:Effectiveness of MUTAPI"></a>A、RQ1:Effectiveness of MUTAPI</h2><p>我们将MUTAPI应用于所有客户端项目，以发现所选目标API的滥用模式。 MUTAPI生成了大量的突变体，并收集了与相关的杀灭堆栈痕迹有关的大量杀灭关系。 表VI显示了统计信息。具体而言，MUTAPI生成了3266个突变体，并且每个客户项目收集了13465个终止关系。 在处理终止堆栈跟踪（即删除客户端项目框架）之后，它为每个客户端项目获得了65个唯一的堆栈跟踪。 然后，MUTAPI分析了不同客户项目之间的致命关系，并提炼了大约300种API滥用模式（即违规对）。 我们按照第IV-C节中所述的程序手动检查了前50个模式。 图6显示了Precision @ N的结果。 结果表明，MUTAPI在前十名候选对象中实现了0.90的高精度。 在前50位中，精度略降至0.78。 表VII列出了一些被选为排名最高的违规对，它们是真正的API滥用模式，涵盖了以下几种类型：缺少检查程序，缺少调用，缺少异常，错误条件和冗余调用。 这些结果表明，MUTAPI可以高精度地发现实际的API滥用模式。</p>
+<p>在检测到的模式中，APILine.intersection（）的接收器上缺少必需的checkerif（rev == null）排在第一位。 对于此API在代码库中的两种正确用法，其中之一如图7所示，由MUTAPI生成的突变体（即删除检查程序）被关联的测试套件使用NullPointerException杀死。杀死堆栈跟踪是此API唯一的（即，倒数频率很高），其顶部帧是来自目标库的方法调用（即，可能性很高）。此外，在突变分析中对于两种正确用法（即，频率很高）都观察到了杀伤堆栈痕迹。 结果，错过检查器被认为是滥用Line.intersection（）的可能性很高。 现有文献已经证实了这种滥用[6]。 图8显示了另一个示例，该示例显示了APIIterator &lt;&gt;。next（）的正确用法，以及删除包含API callIterator &lt;&gt;。hasNext（）的结构后相关的终止堆栈跟踪。 在对不同客户项目（例如，jfreechart，commons-bcelandcommons-math）的多种正确用法进行突变分析时，观察到了这种杀戮堆栈痕迹。</p>
+<p>我们进一步调查了MUTAPI发现其滥用模式的API文档，以了解它们是否具有相似的特征。 我们发现其中的78.9％将抛出未经检查的异常。 图9显示了这些未经检查的异常的分布。 请注意，所有异常的分布总和大于1，因为API可能会抛出多种类型的异常。 以上结果表明，MUTAPI在检测那些会引发未经检查的异常的API的滥用方面更有效，这是因为代表此类滥用的那些突变体更有可能以运行时异常的形式被杀死（即，杀死它们不需要强大的测试Oracle）。 还有其他类型的API，其MUTAPI不太可能检测到误用（请参阅第VI-B节）。</p>
+<h2 id="B、RQ2-Performance-of-MUTAPI-on-MUBENCH-Benchmark"><a href="#B、RQ2-Performance-of-MUTAPI-on-MUBENCH-Benchmark" class="headerlink" title="B、RQ2:Performance of MUTAPI on MUBENCH Benchmark"></a>B、RQ2:Performance of MUTAPI on MUBENCH Benchmark</h2><p>图10显示了MUTAPI的召回以及MUBENCH基准的基准。 基线结果直接从先前的研究中提取[6]。 请注意，基线方法有两个实验设置。 一个实用的设置，不包含任何手工制作的API用法（在图10中表示为Recall＃Practical）。 其他设置涉及手工制作的API正确用法（在图10中表示为Recall＃Crafted）。<br><img src="https://img-blog.csdnimg.cn/20200516173551892.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>现有研究[6]中详细解释了这两种设置，我们在此研究中不做进一步解释。 MUTAPI未在人工设置下进行评估，因为人工API使用示例未配备突变分析所需的测试套件。</p>
+<p>如图10所示，MUTAPI能够检测出53种实际API滥用中的26种。 它实现了0.49的最高召回率。 在实际设置中，MUTAPI的性能明显优于所有基线方法。 第二好的方法是DMMC，其召回率为0.21。GROUPMINER无法检测基准测试中的任何API滥用。 限制现有方法检测更多API滥用的主要原因之一是，代码库中的用法示例数量太少（低于现有模式挖掘方法所需的最小支持值）。 例如，GROUPMINER [16]检测到最小支持为6的频繁使用模式，而TIKANGA [14]将最小支持设置为20。这意味着它们在代码库中至少需要6或20个使用示例。 在精心设置的环境中，由于已手动将更多正确的用法示例添加到了代码库中，因此，对现有方法的调用也得到了相应的改善。 尽管如此，在实际设置下获得的MUTAPI的结果仍胜过在这种精心设置的设置下所有基线方法。</p>
+<p>我们进一步调查了MUTAPI无法检测到某些模式的API滥用实例的原因，并发现了三种主要类型的原因：没有正确使用API​​，没有突变体覆盖和测试套件不足（请参阅第VI-B节）。 我们计划将来在MUBENCH之外的更多数据集上评估MUTAPI [6]，因为此处结果有效性的一个威胁是突变算子的设计部分受此基准研究的启发。</p>
+<h2 id="C、RQ3-Efficiency-and-Effectiveness-of-Mutation-Operators"><a href="#C、RQ3-Efficiency-and-Effectiveness-of-Mutation-Operators" class="headerlink" title="C、RQ3:Efficiency and Effectiveness of Mutation Operators"></a>C、RQ3:Efficiency and Effectiveness of Mutation Operators</h2><p>表VI分别在#Mutants和#PitMutants列中显示了由MU-TAPI和PIT产生的突变体的数量。 请注意，在使用PIT生成变体时，我们仅针对那些涉及选定目标API用法的源文件。<br><img src="https://img-blog.csdnimg.cn/20200516173622429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>如表所示，平均而言，PIT产生的突变体是MUTAPI的2.39倍。 突变分析在计算上是昂贵的，因为它需要编译突变体并根据相关测试套件执行它们[58]，[59]。 结果，MUTAPI平均需要9.87分钟才能完成每个项目的分析，而传统突变算子则需要20.93分钟。<br><img src="https://img-blog.csdnimg.cn/20200516173941817.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>我们将由PIT产生的突变体以及与其相关的杀伤关系喂给MUTAPI。 我们按照RQ1中采用的相同程序，手动检查了排名前50位的结果。 图11显示了PIT检测到的实际API滥用模式（即真实肯定）的数量。 总体而言，PIT仅能检测到5种条件不正确且呼叫遗漏的真阳性。 这是因为传统的变异运算符集中于变异算术运算符和条件运算符[27]，这大多会导致所有客户项目普遍存在断言错误。 因此，很难利用它们来提炼实际的API滥用。 传统的突变运算符还可以突变条件（例如，将条件强制设置为假或假）并删除无效方法调用。 这就解释了为什么PIT发现5种真正的API滥用。</p>
+<p>这些结果表明，我们提出的突变算子在发现API滥用模式方面比传统方法更有效，这反映了需要为Discovertof API滥用模式提出特定于域的突变算子。 图11还显示了MUTAPI检测到的不同类型的滥用模式的分布。 它表示缺少检查程序，缺少异常和调用丢失是最常见的检查器。 这与现有研究的结果一致[4]，[6]。</p>
+<h1 id="6、DISCUSSIONS"><a href="#6、DISCUSSIONS" class="headerlink" title="6、DISCUSSIONS"></a>6、DISCUSSIONS</h1><h2 id="A、Effects-of-the-Number-of-Applied-Mutation-Operators"><a href="#A、Effects-of-the-Number-of-Applied-Mutation-Operators" class="headerlink" title="A、Effects of the Number of Applied Mutation Operators"></a>A、Effects of the Number of Applied Mutation Operators</h2><p>MUTAPI可以在生成突变体时应用Nmutation运算符（请参见算法1）。 默认情况下，Nis设置为1。 突变操纵子最大数目的影响能否应用于MUTAPI的有效性尚不清楚。 我们将在本小节中研究此类影响。<br><img src="https://img-blog.csdnimg.cn/20200516174130354.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>图12显示了当Nis设置为1到5时产生的突变体的数量。我们可以看到，随着N的增加，产生的突变体的数量显着增加。 因此，进行突变分析变得更加昂贵。但是，我们观察到，唯一的故障堆栈迹线的数量随Ngrows的增加而略有增加。 例如，当N = 1时，唯一堆栈跟踪的总数为543。 当N = 2时，该数目仅增加5，而对于16个客户项目，其突变总数总共增加20,501。这表明应用单个突变算子足以发现大多数错误空间（即，以失败的堆栈跟踪形式）以暴露 库滥用。</p>
+<h2 id="B、Limitations-of-MUTAPI"><a href="#B、Limitations-of-MUTAPI" class="headerlink" title="B、Limitations of MUTAPI"></a>B、Limitations of MUTAPI</h2><p>阻碍MUTAPI发现目标API滥用模式的三个主要原因。</p>
+<p><strong>没有正确的用法</strong>。 如果输入客户端项目中没有正确使用目标API，则MUTAPI无法通过突变分析发现相应的滥用。 例如，在我们的实验中，我们发现所有16个客户端项目中都没有APIorg.kohsuke.args4j.api.Parameters.getParameter（）的正确用法。 为了保证我们的结果和发现的通用性，我们没有选择使用该API正确用法的其他项目。因此，MUTAPI并未发现此API的任何滥用模式。 如前所述，现有方法也受到此限制的影响，更糟糕的是，与我们的方法相比，它们需要更多的正确用法。</p>
+<p><strong>没有突变体覆盖</strong>。 我们观察到某些API滥用模式需要使用我们的方法无法发现的特定值。 例如，javax.crypto.Cipher（“ DES”）被滥用，因为它不应与DES模式一起使用[60]。 但是，MUTAPI仅在替换参数或条件时从同一源文件中搜索，以便找到适当的代码元素。 结果，如果在同一源文件中没有字符串“ DES”，则MUTAPI无法创建代表此API滥用的变量。 对于其他API，例如String.getBytes（），也观察到类似情况。</p>
+<p><strong>测试套件不足</strong>。 MUTAPI的有效性取决于相关测试套件的质量。 即使MU-TAPI生成了代表真实API滥用的突变体，但如果关联的测试套件无法杀死该突变体，它仍然没有机会检测到滥用。 例如，对于MUBENCH中API StatisticalCategoryDataset.getDtDevValue（）的滥用，MUTAPI成功创建了一个模仿滥用的变量。 不幸的是，它不能被相关的测试套件杀死。 结果，不能检测到滥用模式。 对于其他与I / O相关的API，例如InputStream（）或File.open（），缺少的方法callFile.close（）是常见的滥用类型。<br><img src="https://img-blog.csdnimg.cn/20200516174351382.png" alt="在这里插入图片描述"><br>但是，代表这种滥用的突变体几乎不能被测试套件杀死。 原因是这种滥用很可能导致性能问题。 客户项目的测试用例很少配备适当的oracle来识别此类问题。 但是，我们的经验结果（第V-A节）已经确认，可以通过突变分析检测到大量真实的API滥用模式。</p>
+<h2 id="C、Threats-to-Validity"><a href="#C、Threats-to-Validity" class="headerlink" title="C、Threats to Validity"></a>C、Threats to Validity</h2><p>本研究的有效性受到以下威胁的影响：首先，我们的研究仅限于73个Java API，因此对其他API的通用性可能会构成威胁。 然而，这些API很流行（即在Stack Overflow [4]中经常讨论），并通过现有研究对其进行系统地评估[6]。 因此，我们认为它们是代表性的Java API。 第二，我们的实验仅涉及16个客户项目，因此结果可能无法推广到其他项目。但是，这些项目是根据IV-B部分所述的标准随机选择的。 它们是流行的且来自不同领域。 还值得一提的是，这些项目仅涵盖了73个所选API中的55个。 为了确保我们实验的普遍性，我们没有故意选择更多项目来覆盖其余18个API。</p>
+<h1 id="7、CONCLUSION-AND-FUTURE-WORK"><a href="#7、CONCLUSION-AND-FUTURE-WORK" class="headerlink" title="7、CONCLUSION AND FUTURE WORK"></a>7、CONCLUSION AND FUTURE WORK</h1><p>我们在这项研究中提出了MUTAPI，这是利用突变分析发现API滥用模式的第一种方法。 与现有方法相比，它提供了两个主要好处。首先，它不需要大量正确的API使用示例。 因此，它可以用于检测新发布的API的滥用模式，这些使用模式可能受到限制，而现有方法在这种情况下不太可能起作用。 其次，它超越了简单的假设，即偏离最常见的模式是一种滥用。由于这种假设，现有方法的精度较低。 我们针对73个流行的API在16个客户端项目上应用了MUTAPI。 结果表明，MUTAPI可检测大量的API滥用模式。 它还在MUBENCH基准数据集[6]上实现了0.49的调用率，大大优于现有方法。</p>
+<p>将来，我们计划将MUTAPI应用于不那么常用的API（例如，来自新发布的库的API），而不是流行的API，以调查MUTAPI是否可以检测未知的API滥用模式。 我们还计划系统地研究测试套件质量对我们方法有效性的影响。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/28/%E5%89%91%E6%8C%87offer%5B19%5D/" rel="prev" title="<剑指offer> 剑指offer 19">
+      <i class="fa fa-chevron-left"></i> <剑指offer> 剑指offer 19
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/28/A%20Systematic%20Evaluation%20of%20StaticAPI-Misuse%20Detectors/" rel="next" title="<论文>A Systematic Evaluation of StaticAPI-Misuse Detectors">
+      <论文>A Systematic Evaluation of StaticAPI-Misuse Detectors <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Introduction"><span class="nav-number">2.</span> <span class="nav-text">1. Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-RELATEDWORK-AND-PRELIMINARIES"><span class="nav-number">3.</span> <span class="nav-text">2. RELATEDWORK AND PRELIMINARIES</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Mutation-Analysis"><span class="nav-number">3.1.</span> <span class="nav-text">A. Mutation Analysis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Library-API-Misuse-Detection"><span class="nav-number">3.2.</span> <span class="nav-text">B. Library API Misuse Detection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Observation-and-Motivation"><span class="nav-number">3.3.</span> <span class="nav-text">C. Observation and Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Challenges"><span class="nav-number">3.4.</span> <span class="nav-text">D. Challenges</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-MUTAPI-APPROACH"><span class="nav-number">4.</span> <span class="nav-text">3. MUTAPI APPROACH</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A、Conducting-Mutation-Testing"><span class="nav-number">4.1.</span> <span class="nav-text">A、Conducting Mutation Testing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B、Prioritizing-Killing-Relations"><span class="nav-number">4.2.</span> <span class="nav-text">B、Prioritizing Killing Relations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C、Discovering-API-Misuse-Patterns"><span class="nav-number">4.3.</span> <span class="nav-text">C、Discovering API Misuse Patterns</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-EXPERIMENT-SETUP"><span class="nav-number">5.</span> <span class="nav-text">4.EXPERIMENT SETUP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A、Target-APIs-Selection"><span class="nav-number">5.1.</span> <span class="nav-text">A、Target APIs Selection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B、Client-Projects-Selection"><span class="nav-number">5.2.</span> <span class="nav-text">B、Client Projects Selection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C、Research-Questions"><span class="nav-number">5.3.</span> <span class="nav-text">C、Research Questions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-EXPERIMENTAL-RESULTS"><span class="nav-number">6.</span> <span class="nav-text">5. EXPERIMENTAL RESULTS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A、RQ1-Effectiveness-of-MUTAPI"><span class="nav-number">6.1.</span> <span class="nav-text">A、RQ1:Effectiveness of MUTAPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B、RQ2-Performance-of-MUTAPI-on-MUBENCH-Benchmark"><span class="nav-number">6.2.</span> <span class="nav-text">B、RQ2:Performance of MUTAPI on MUBENCH Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C、RQ3-Efficiency-and-Effectiveness-of-Mutation-Operators"><span class="nav-number">6.3.</span> <span class="nav-text">C、RQ3:Efficiency and Effectiveness of Mutation Operators</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6、DISCUSSIONS"><span class="nav-number">7.</span> <span class="nav-text">6、DISCUSSIONS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A、Effects-of-the-Number-of-Applied-Mutation-Operators"><span class="nav-number">7.1.</span> <span class="nav-text">A、Effects of the Number of Applied Mutation Operators</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B、Limitations-of-MUTAPI"><span class="nav-number">7.2.</span> <span class="nav-text">B、Limitations of MUTAPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C、Threats-to-Validity"><span class="nav-number">7.3.</span> <span class="nav-text">C、Threats to Validity</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7、CONCLUSION-AND-FUTURE-WORK"><span class="nav-number">8.</span> <span class="nav-text">7、CONCLUSION AND FUTURE WORK</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Henry-Chen"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Henry-Chen</p>
+  <div class="site-description" itemprop="description">我的小屋，喝茶，读书</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_43433969" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43433969" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="music163player">
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=28566359&auto=0&height=66"></iframe>
+	</div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry-Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'JEmsj82S3MAb2DHmn';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'M3WV2SFKlhIfoqEBet4LwYnQ-gzGzoHsz',
+      appKey     : 'bDG2lPWGAJTx0Rm4vIAmkTln',
+      placeholder: "给我说两句话吧，ballball你了",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":275,"height":550},"mobile":{"show":false},"log":false});</script></body>
+</html>

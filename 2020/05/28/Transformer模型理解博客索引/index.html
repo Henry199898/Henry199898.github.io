@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="我的小屋，喝茶，读书">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Henry ’Blog">
-<meta property="og:url" content="http://yoursite.com/categories/%E8%AE%BA%E6%96%87/index.html">
+  <meta name="description" content="1. 详解Transformer （Attention Is All You Need）2. The Illustrated Transformer3.The Illustrated Transformer【译】4.Transformer 模型详解5.从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;Transformer&gt;Transformer模型理解博客索引">
+<meta property="og:url" content="http://yoursite.com/2020/05/28/Transformer%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%8D%9A%E5%AE%A2%E7%B4%A2%E5%BC%95/index.html">
 <meta property="og:site_name" content="Henry ’Blog">
-<meta property="og:description" content="我的小屋，喝茶，读书">
+<meta property="og:description" content="1. 详解Transformer （Attention Is All You Need）2. The Illustrated Transformer3.The Illustrated Transformer【译】4.Transformer 模型详解5.从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-28T02:44:20.989Z">
+<meta property="article:modified_time" content="2020-05-28T02:45:56.899Z">
 <meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="Transformer">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/categories/%E8%AE%BA%E6%96%87/">
+<link rel="canonical" href="http://yoursite.com/2020/05/28/Transformer%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%8D%9A%E5%AE%A2%E7%B4%A2%E5%BC%95/">
 
 
 <script id="page-configurations">
@@ -38,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>分类: 论文 | Henry ’Blog</title>
+  <title><Transformer>Transformer模型理解博客索引 | Henry ’Blog</title>
   
 
 
@@ -189,57 +192,112 @@
         <div class="content-wrap">
           
 
-          <div class="content category">
+          <div class="content post posts-expand">
             
 
+    
   
   
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/Transformer%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%8D%9A%E5%AE%A2%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <Transformer>Transformer模型理解博客索引
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-28 10:44:20 / 修改时间：10:45:56" itemprop="dateCreated datePublished" datetime="2020-05-28T10:44:20+08:00">2020-05-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Transformer/" itemprop="url" rel="index"><span itemprop="name">Transformer</span></a>
+                </span>
+            </span>
+
+          
   
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">论文
-          <small>分类</small>
-        </h2>
-      </div>
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/05/28/Transformer%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%8D%9A%E5%AE%A2%E7%B4%A2%E5%BC%95/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/05/28/Transformer%E6%A8%A1%E5%9E%8B%E7%90%86%E8%A7%A3%E5%8D%9A%E5%AE%A2%E7%B4%A2%E5%BC%95/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <h1 id="1-详解Transformer-（Attention-Is-All-You-Need）"><a href="#1-详解Transformer-（Attention-Is-All-You-Need）" class="headerlink" title="1. 详解Transformer （Attention Is All You Need）"></a>1. <a href="https://zhuanlan.zhihu.com/p/48508221" target="_blank" rel="noopener">详解Transformer （Attention Is All You Need）</a></h1><h1 id="2-The-Illustrated-Transformer"><a href="#2-The-Illustrated-Transformer" class="headerlink" title="2. The Illustrated Transformer"></a>2. <a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">The Illustrated Transformer</a></h1><h1 id="3-The-Illustrated-Transformer【译】"><a href="#3-The-Illustrated-Transformer【译】" class="headerlink" title="3.The Illustrated Transformer【译】"></a>3.<a href="https://blog.csdn.net/yujianmin1990/article/details/85221271" target="_blank" rel="noopener">The Illustrated Transformer【译】</a></h1><h1 id="4-Transformer-模型详解"><a href="#4-Transformer-模型详解" class="headerlink" title="4.Transformer 模型详解"></a>4.<a href="https://blog.csdn.net/Wisimer/article/details/104415321" target="_blank" rel="noopener">Transformer 模型详解</a></h1><h1 id="5-从中文Transformer到BERT的模型精讲-以及基于BERT情感分类实战"><a href="#5-从中文Transformer到BERT的模型精讲-以及基于BERT情感分类实战" class="headerlink" title="5.从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战"></a>5.<a href="https://www.bilibili.com/video/av73631845?from=search&seid=4116979672298307428" target="_blank" rel="noopener">从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战</a></h1>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-30T18:57:36+08:00"
-              content="2020-04-30">
-          04-30
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Transformer/" rel="tag"># Transformer</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/04/30/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="url">
-            <span itemprop="name"><论文>基于情绪分析方向使用依赖信息加强注意力机制</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/13/%E5%89%91%E6%8C%87offer%5B16%E3%80%8118%5D/" rel="prev" title="<剑指offer> 剑指offer 16、18">
+      <i class="fa fa-chevron-left"></i> <剑指offer> 剑指offer 16、18
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/28/%E5%89%91%E6%8C%87offer%5B19%5D/" rel="next" title="<剑指offer> 剑指offer 19">
+      <剑指offer> 剑指offer 19 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -286,6 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-详解Transformer-（Attention-Is-All-You-Need）"><span class="nav-number">1.</span> <span class="nav-text">1. 详解Transformer （Attention Is All You Need）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-The-Illustrated-Transformer"><span class="nav-number">2.</span> <span class="nav-text">2. The Illustrated Transformer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-The-Illustrated-Transformer【译】"><span class="nav-number">3.</span> <span class="nav-text">3.The Illustrated Transformer【译】</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Transformer-模型详解"><span class="nav-number">4.</span> <span class="nav-text">4.Transformer 模型详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-从中文Transformer到BERT的模型精讲-以及基于BERT情感分类实战"><span class="nav-number">5.</span> <span class="nav-text">5.从中文Transformer到BERT的模型精讲,以及基于BERT情感分类实战</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
