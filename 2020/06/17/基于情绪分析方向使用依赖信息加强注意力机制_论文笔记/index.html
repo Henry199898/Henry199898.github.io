@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="基于情绪分析方向使用依赖信息加强注意力机制 原文题目: Using Dependency Information to Enhance AttentionMechanism for Aspect-based Sentiment Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;论文&gt;基于情绪分析方向使用依赖信息加强注意力机制">
+<meta property="og:url" content="http://yoursite.com/2020/06/17/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Henry ’Blog">
+<meta property="og:description" content="基于情绪分析方向使用依赖信息加强注意力机制 原文题目: Using Dependency Information to Enhance AttentionMechanism for Aspect-based Sentiment Analysis">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221175253667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221175555841.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221175928342.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221175945554.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221181558457.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221181742147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221193128568.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221193222345.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221193423659.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221193502123.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221193945540.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221201034275.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221202042327.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191221202216546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-06-17T10:10:33.052Z">
+<meta property="article:modified_time" content="2020-04-30T11:56:33.515Z">
+<meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191221175253667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70">
+
+<link rel="canonical" href="http://yoursite.com/2020/06/17/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><论文>基于情绪分析方向使用依赖信息加强注意力机制 | Henry ’Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Henry199898" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Henry ’Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-书籍">
+
+    <a href="/book/" rel="section"><i class="fa fa-tags fa-fw"></i>书籍</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/17/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <论文>基于情绪分析方向使用依赖信息加强注意力机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-17 18:10:33" itemprop="dateCreated datePublished" datetime="2020-06-17T18:10:33+08:00">2020-06-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-30 19:56:33" itemprop="dateModified" datetime="2020-04-30T19:56:33+08:00">2020-04-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87/" itemprop="url" rel="index"><span itemprop="name">论文</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/06/17/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/17/%E5%9F%BA%E4%BA%8E%E6%83%85%E7%BB%AA%E5%88%86%E6%9E%90%E6%96%B9%E5%90%91%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96%E4%BF%A1%E6%81%AF%E5%8A%A0%E5%BC%BA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6_%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基于情绪分析方向使用依赖信息加强注意力机制"><a href="#基于情绪分析方向使用依赖信息加强注意力机制" class="headerlink" title="基于情绪分析方向使用依赖信息加强注意力机制"></a>基于情绪分析方向使用依赖信息加强注意力机制</h1><blockquote>
+<p>原文题目: Using Dependency Information to Enhance AttentionMechanism for Aspect-based Sentiment Analysis</p>
+</blockquote>
+<a id="more"></a>
+<p><strong>idea1</strong>:是否可以<strong>将情绪分析(分类)的研究应用到法条的选择中</strong>,通过其他算法将大概的案情相关法条缩减范围,通过情绪分析的方法将确定上述的几个法条是否可以在案情中使用.同理适用到其他对文本判定类别的应用之中.</p>
+<p>本文是将<strong>attention机制</strong>应用到<strong>文本情绪分析</strong>中,即为ABSA.</p>
+<blockquote>
+<p>aspect 指的是下文例子中的food和service等词,针对这些方面进行情感分析,可能是积极,消极,中立.</p>
+</blockquote>
+<p><strong>摘要</strong>：注意力机制已经被证实对ABSA（情绪分析）有效。最近出现许多研究针对于基于依赖关系实现注意力机制。然而，缺点在于依赖树必须先获得这棵树，而且存在受到误差传播的影响。因为发现注意力机制的计算是基于图去依赖分析，我们设计了一个基于多任务的新方法去转移对ABSA的依赖知识。分别针对<strong>ABSA</strong>训练了一个<strong>基于注意力的LSTM模型</strong>，针对<strong>依赖解析</strong>训练了一个<strong>基于图的模型</strong>.这个转移可以缓解因为训练数据不足造成的网络训练不足的问题.在semeval的2014餐馆笔记本一系列实验中表明我们的模型可以从依赖关系知识中获得可观的收益,并获得与具有复杂网络结构的最新模型相同的性能.</p>
+<p><strong>关键词</strong>:<strong>Aspect-based Sentiment Analysis, Multi-task Learning, DependencyParsing, Attention Mechanism</strong></p>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p> 文本情感分析的重要性,在互联网时代,大量的自动评价应用是很有发展前景的.例子: For example, in the sentence“greatfood but the service was dreadful”, targets are food and service, and the correspondingsentiment polarities are positive and negative respectively.其中target是food和service.</p>
+<p> attention机制对情感分析是很重要的,它可以强制模型去学习上下文文本与目标的关系.<strong>(存疑?)</strong>.但是当句子很复杂,特别是当文本与目标之间差别巨大,传统的attention模型有能力限制.为了克服这个缺点,一些研究者用依赖关系去完整计算对长距离的特定的目标.在这些工作中,依赖树可以用于对传统机器学习模型和基于神经网络的模型提取关系特征,或建立递归神经网络方法中用于输入的特定递归结构.但是这些方法高度依赖于自动依赖解析器产生的输入依赖解析树,树可能有错误，因此遭受错误传播问题。<br>      经过深层次的研究发现这个attention机制的计算实际上是基于图依赖分析的一部分.attention机制是去计算在句子中任何一个词与target之间的关系,当基于图依赖分析会计算出句子中任意两个词语之间的关系.所以从图依赖分析中获得的信息可以协助attention网络的训练!!! 在这篇论文中,我们以多任务学习的方式结合了一个基于attention的LSTM模型和一个基于图依赖分析的模型.我们通过一系列实验和对注意力机制改善的可视化演示了我们方法的有效性。</p>
+<blockquote>
+<p> 本文的主要贡献为:</p>
+<ol>
+<li>第一个检测到注意力层计算是基于图的依赖分析的一部分的人。 因此，联合学习与基于图的依赖关系解析可以帮助培训注意层.<br>2.我们提出了一种基于方面的情感分析的通用方法，该方法可以转移依赖性知识以获得更好的与方面相关的表示。 该架构对所有基于LSTM的ABSA模型均有效<br>3.我们提出了一种有效的方法来增强注意力机制。 它无需使用额外的依赖解析器即可传输依赖关系的知识。 在预测阶段，可以节省大量的计算资源。</li>
+</ol>
+</blockquote>
+<p>本文的其余部分的结构如下。 第2节介绍了有关基于方面的情感分析的文献。 提议的方法的总体设计在第3节中进行了描述。第4节介绍了实验设置和分析。 最后，第5节介绍了结论和未来的工作。</p>
+<h2 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2.相关工作"></a>2.相关工作</h2><h3 id="2-1-基于方面的情感分析"><a href="#2-1-基于方面的情感分析" class="headerlink" title="2.1 基于方面的情感分析"></a>2.1 基于方面的情感分析</h3><p><strong>基于方面的情感分析</strong>在文献中经常被认为是分类问题.传统的方法是基于一系列人工定义的特征做研究,但是该结果十分依赖人工的标注是否正确.而且特征的标注是一件是十分耗费人力的工作.</p>
+<p>后续的工作中在以后的工作中，方法像许多其他NLP任务一样变成了基于神经网络的方法。 简而言之，其发展大致可分为三个阶段。 最初，将任务建模为句子分类问题。 假设某产品有怀疑，则ABSA任务实际上是一个3N分类问题，因为每个方面都与三个情感极性有关：积极，消极和中立。 第二阶段是递归神经网络。 提出了许多基于递归神经网络的树结构模型。 在最近阶段，大多数作品都基于基于方面的句子表示的思想，该句子生成针对特定方面的句子表示。 Wang等采用这种想法，并利用注意力机制来产生这样的表示。 德宏等 设计了一个交互式注意力网络（IAN），它使用两个注意力网络对目标和上下文进行交互建模。 唐等提出了一种名为“具有方面嵌入的门控卷积网络”的模型（GCAE），该模型使用方面信息通过CNN和门控机制控制句子的情感特征流。 同样，黄等将目标的合并结果视为应用于句子的额外卷积核。 也有研究者将ABSA任务视为一个问答问题，其中基于内存的网络起着主要作用.</p>
+<h3 id="2-2依赖性解析"><a href="#2-2依赖性解析" class="headerlink" title="2.2依赖性解析"></a>2.2依赖性解析</h3><p><strong>*依赖性分析</strong>在情感分析中也被广泛使用*。 大多数方法从依赖树中获得直接或简短的依赖特征，以捕获句子中单词之间的关系。 Xinbo等在计算注意力权重以捕获确定目标的远程信息时，将依赖项嵌入作为附加输入。 铁二等将句子中每个依赖子树的情感极性视为隐藏变量。 考虑隐藏变量之间的相互作用来计算整个句子的极性。 Soujanya等人通过允许情感基于输入情感的依存关系从一个概念流到另一个概念.更好地理解句子中每个概念的语境作用。 但是它们都需要附加的依赖解析器，通常是斯坦福依赖解析器，并且受错误传播问题的影响。 而且，其解析过程也消耗了大量的计算资源.  </p>
+<h2 id="3-模型"><a href="#3-模型" class="headerlink" title="3 模型"></a>3 模型</h2><p>本文提出一个多任务学习模型去传递依赖性的知识给基于aspect情感分析模型. 3.1中展示基于attention的LSTM模型,3.2中为基于图依赖分析模型,3.3中为最后的多任务学习模型.</p>
+<h3 id="3-1-基于attention的LSTM模型"><a href="#3-1-基于attention的LSTM模型" class="headerlink" title="3.1 基于attention的LSTM模型"></a>3.1 基于attention的LSTM模型</h3><p>对于基于aspect的情感分析模型任务,基于attention的LSTM模型已经被证明了是有用的.它建立了一个指向性的LSTM层提取输入文本中每个词的上下文表示.之后，应用注意层来计算每个单词对aspect的贡献并获得最终的aspect相关表示,情感极性最终由softmax层计算.(<strong>对此段还是存在问题</strong>)</p>
+<p>输入句子中给出n个词语$W_{s1}$,$W_{s2}$,$W_{s3}$,……$W_{sn}$,和m个词组aspect为$W_{a1}$,$W_{a2}$,$W_{a3}$,……$W_{am}$,我们将每一个$W_{i}$词与嵌入向量e($W_{i}$)通过向量矩阵E一一对应起来.其中矩阵的横向量为单词总量,纵向量个数为词向量的维度.这些aspect的代表$e_{a_aspect}$是目标单词的词向量的平均值.(如下图中的第一个表达式)<br><img src="https://img-blog.csdnimg.cn/20191221175253667.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="图一"><br>LSTM层被用于提取每一个单词的上下文表示关系.每一个时间步的输出都是最后的表达.<strong>下公式中的V1V2等都是作为attention的输入</strong><img src="https://img-blog.csdnimg.cn/20191221175555841.png" alt="在这里插入图片描述"><br>之后,一个attention层被用于计算每句子中一个词$w_{si}$针对<strong>aspect</strong>的权重$\alpha _{i}$.它的输出是所有文本特征的加权总和。<strong>(该输出即为图一中attention的唯一输出)</strong></p>
+<blockquote>
+<p>疑问? 图一中的H是指代这什么内容???<br>猜测:图一中的attention层分为两个其中H为encoder层,aspect embedding为decoder层??</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221175928342.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20191221175945554.png" alt="在这里插入图片描述"><br>在计算βi之前，我们将$e_{a_aspect}$乘以Wα。 原因是具有一定含义的一个aspect在实际场景中可以有几种表达方式。 以笔记本电脑为例，屏幕还可以表示为显示，分辨率和外观。 因此，相似aspect的短语应被分组为一个方面。 这里我们使用一个简单的全连接神经网络来实现方面短语分组.$f_{score}$是一个基于内容的功能，<strong>可以计算每个单词对目标意见的贡献</strong>。</p>
+<p>最后，基于最终表示z，创建一个softmax层来预测概率分布的情感类别。<img src="https://img-blog.csdnimg.cn/20191221181558457.png" alt="在这里插入图片描述"><br>其中Ci表示当前样本的真实标号，Pi(Ci)表示P中真实标号的概率。</p>
+<h3 id="3-2-基于图依赖分析"><a href="#3-2-基于图依赖分析" class="headerlink" title="3.2 基于图依赖分析"></a>3.2 基于图依赖分析</h3><p><img src="https://img-blog.csdnimg.cn/20191221181742147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>图2基于图的依赖解析器的神经模型架构图,所有的MLP共享相同的参数。 在获得所有可能的n（n-1）个arcs的分数之后，可以使用动态编程算法找到最高的得分树.</p>
+<p>我们遵循基于圆弧因素的基于图的依赖解析器，其中一个树的分数是其所有head-modifier arcs（h，m）的总和。考虑到ABSA任务数据集仅是具有情感极性的注释（即是积极消极或者中立），我们只用词向量作为输入就可，CHEN已经证实了POS（词性）对于依赖分析更加有指导性.网络结构在图二中已经展示了.</p>
+<p>对于基于图的依赖关系解析，获取LSTM层输出的过程与3.1节中说明的ABSA模型的过程相同。 假设我们已经在公式2中获得了LSTM层的输出，则头部修改器arc score（h，m，s）的分数是通过一个简单的MLP层计算得出的.<br><img src="https://img-blog.csdnimg.cn/20191221193128568.png" alt="在这里插入图片描述"><br>在获得n（n-1）个可能弧的所有分数之后，找到最高得分的依存关系树成为最大化树空间Y（s）中生成树的问题。 使用Eisner的解码算法（1996年）可以有效地解决这一问题。</p>
+<p><strong>最后的模型如下</strong>:<br><img src="https://img-blog.csdnimg.cn/20191221193222345.png" alt="在这里插入图片描述"><br>在训练该模型时，不像我们仅使用结构损失而不使用由弧形标签错误产生的损失，因为这会使模型更加复杂且难以训练。 <strong>换句话说，我们只预测解析树的结构，而忽略弧的特定类别。</strong> 结构损失是基于余量的目标，旨在最大程度地提高金树的分数与预测解析树的最高分数之间的余量：<br><img src="https://img-blog.csdnimg.cn/20191221193423659.png" alt="在这里插入图片描述"></p>
+<h3 id="3-3-多任务学习"><a href="#3-3-多任务学习" class="headerlink" title="3.3 多任务学习"></a>3.3 多任务学习</h3><p><img src="https://img-blog.csdnimg.cn/20191221193502123.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>图3</strong> 多任务学习模型的插图 虚线的右边是基线模型。 FC代表完全连接的网络。</p>
+<p>从用于attention计算的公式5与为了依赖分析的公式10中,我们可以看到attention机制仅仅是基于图依赖分析计算的一部分.<br>使用文章开始的英文例子“great food but the service was dread-ful”,<strong>基于图的依存关系分析计算出句子中任意两个单词之间的关系</strong>,而<strong>注意力机制仅计算目标单词“ food”与句子中任何其他单词之间的相关性</strong>。 因此，依赖项语法中的信息可以帮助注意层的训练。</p>
+<blockquote>
+<p><strong>上述两句话就是前面两个模型的作用</strong></p>
+</blockquote>
+<p>我们建议将深度学习成功应用于依赖分析，以基于图的依赖分析模型进行联合学习。 <strong>两个模块共享一个单词嵌入层和一个LSTM层，而其他层则是特定于任务的。</strong> 最终模型的结构如图3所示。句子和Aspect共享相同的单词嵌入矩阵。 总损失由以下公式计算：</p>
+<blockquote>
+<p><strong>需要去了解以下什么是依赖分析 dependence analysis???</strong></p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221193945540.png" alt="在这里插入图片描述"><br>其中λ是影响网络优化方向的超参数</p>
+<h2 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h2><h3 id="4-1数据集"><a href="#4-1数据集" class="headerlink" title="4.1数据集"></a>4.1数据集</h3><p>对于ABSA任务，我们使用两个公共方面级别的注释数据集：SemEval 2014 Task4餐厅和笔记本电脑评论数据集。 还提供了培训和测试集。 表1给出了这两个数据集的完整统计信息。</p>
+<p><img src="https://img-blog.csdnimg.cn/20191221201034275.png" alt="在这里插入图片描述"><br>对于基于图的依赖项解析任务，我们使用Penn TreeBank (PTB)[17]数据集的Stanford dependency conversion，使用与                      相同的训练/测试分割。这些数据来自1989年的《华尔街日报》。</p>
+<h3 id="4-2-实验设置"><a href="#4-2-实验设置" class="headerlink" title="4.2 实验设置"></a>4.2 实验设置</h3><p>我们的模型是使用DyNet工具包[20]在python中实现的，用于神经网络训练。 在我们所有的实验中，我们使用在8400亿个令牌的未标记数据上预训练的300维GloVe向量4 [22]来初始化嵌入层，而所有其他参数都是随机初始化的。 单词嵌入矩阵中只包含频率最高的10,000个单词,其余的低频单词由<UNK>代替. 所有参数均通过网络培训进行更新。 对于公式12中的整体损失，经过一些尝试后，将λ设置为0.05。</p>
+<p>为了最优化结果,使用衰减率和基础学习率设置为0.001的RMSProp优化器。 上面未提及的其他参数设置为DyNet提供的默认值。</p>
+<h3 id="4-3-与现存的方法进行比较"><a href="#4-3-与现存的方法进行比较" class="headerlink" title="4.3 与现存的方法进行比较"></a>4.3 与现存的方法进行比较</h3><p>为了权威地演示该模型的性能，我们将其与以下模型进行比较：</p>
+<p>LSTM + ATT使用注意力机制从当前方面提取上下文表示，然后应用softmax层进行分类。</p>
+<p>TD-LSTM在构建学习模型时整合了目标词和上下文词之间的联系。 它使用两个LSTM网络捕获目标词及其上下文之间的联系，以生成目标相关表示。</p>
+<p>ATAE-LSTM利用方面嵌入和词嵌入的串联作为LSTM层的输入，然后添加一个公共 注意层以获得与方面有关的表示。 Wang等揭示了情感的情感极性也与所连接的方面有关。</p>
+<p>MemNet是一种基于记忆网络的ABSA任务方法。 它堆叠了一个多层注意模型，以获取每个上下文词对当前方面的情感极性判断的贡献。 该模型不仅在速度上大大超过了基于LSTM的模型，而且还可以与基于最新功能的SVM系统相媲美。</p>
+<p>DOC：MULT以多任务学习的方式从文档级情感分类中转移知识 。 它也基于LSTM + ATT。 文档级别的标签数据相对容易在线访问，例如亚马逊评论。</p>
+<p>GCAE是一个基于卷积神经网络和门控机制的模型。 它在方面方面具有附加的卷积层。 然后，目标的合并结果将作为额外的卷积过滤器应用于句子。</p>
+<p>我们使用常用的准确性和macro-f1作为评估指标。 结果示于表2。基于它们，我们有以下观察结果:</p>
+<blockquote>
+<p>1–当与LSTM + ATT模型进行比较时，我们观察到依赖性知识非常有帮助。 它为所有数据集中的指标均带来了巨大的改进。<br>2–DOC：MULT是另一种多任务学习方法。 与没有多任务学习的模型相比，它也取得了很大的进步。 但是，当整个句子的情感极性与各个方面的情感极性不一致时，该句子级别的情感信息将干扰对方面级别的情感极性的预测。 在那种情况下，来自依赖弧的知识仍然可以帮助我们找到与各方面相对应的情感词。 因此，基于图的依赖关系分析的多任务学习可以实现更好的性能。<br>3–作为一种多任务学习方法，DOC：MULT和DP：MULT都极大地提高了LSTM + ATT模型的性能，这也反映了一个事实，即数据 稀缺。 当前数据不足以训练非常有效的基于神经网络的模型。<br>4–当我们分析表3中所示的测试结果的混淆矩阵时，我们发现类别之间的样本不平衡也给网络培训带来了困难。 中立类别的召回率远低于其他两个类别。 一方面，这是由于中性样本自身的歧义所致。 另一方面，中性样本太少使模型很难学习与中性有关的模式。</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221202042327.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="4-4-attention权重的可视化"><a href="#4-4-attention权重的可视化" class="headerlink" title="4.4 attention权重的可视化"></a>4.4 attention权重的可视化</h3><p>在本节中，我们从数据集中选择一些测试样本并可视化它们的注意权重。 通过与没有多任务学习的模型结果进行比较，我们可以确认依赖信息是否发挥了应有的作用。 结果如图4所示。选择的样本都在多方面提出了意见相反的情感极性，这不能用句子级情感分析方法正确地进行分析。主要观察如下：</p>
+<blockquote>
+<p>–我们的模型可以更准确地定位与方面相关的情感词4（b）。 即使评论对包含多个情感词的多个方面进行了评论，该模型仍然可以找到针对特定方面的那些相关情感词。</p>
+<p>–在我们的模型4（a）中，与方面相关的情感词的权重更高。 这可以使关注层获得的与方面有关的表示包含更多的情感信息</p>
+</blockquote>
+<p><img src="https://img-blog.csdnimg.cn/20191221202216546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQzMzk2OQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<blockquote>
+<p>–同时，当对不同方面的看法不同时，我们的模型将赋予对比连接更大的权重，例如图4（a）和4（b）中的“ but”。 当不同方面的情感倾向完全相反时，这种现象尤其明显。 这些词包含丰富的依赖性信息，可以为注意机制带来极大的好处</p>
+</blockquote>
+<p>这些现象都表明我们的模型具有更好的注意力表现，并证实依赖知识对注意力机制非常有帮助。 该知识有助于模型获得更好的与方面有关的表示，并最终改善总体性能.</p>
+<h2 id="5-结论"><a href="#5-结论" class="headerlink" title="5 结论"></a>5 结论</h2><p>在本文中，我们提出了一种基于多任务学习策略的基于方面的情感分析的新方法。 据我们所知，我们是第一个检测注意力机制和基于图的依存关系分析之间的关系的人。 我们使用依赖知识来增强关注层的性能，然后提高整体性能。 我们已经证明了我们提出的方法的有效性，并可视化了注意层的改进。 我们的方法也具有一定的通用性。 它可以应用于其他基于LSTM的ABSA模型，以进一步提高其性能。 将来，我们将寻找更有效的方法来转移对ABSA任务的依赖性知识，并将更加关注中性注释的识别。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/17/%E5%89%91%E6%8C%87offer%5B19%5D/" rel="prev" title="<剑指offer> 剑指offer 19">
+      <i class="fa fa-chevron-left"></i> <剑指offer> 剑指offer 19
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/17/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%EF%BC%88pandas%E7%AF%87%EF%BC%89/" rel="next" title="<数据分析> 深度学习数据预处理（pandas篇）">
+      <数据分析> 深度学习数据预处理（pandas篇） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基于情绪分析方向使用依赖信息加强注意力机制"><span class="nav-number">1.</span> <span class="nav-text">基于情绪分析方向使用依赖信息加强注意力机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-介绍"><span class="nav-number">1.1.</span> <span class="nav-text">1.介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-相关工作"><span class="nav-number">1.2.</span> <span class="nav-text">2.相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-基于方面的情感分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 基于方面的情感分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2依赖性解析"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2依赖性解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-模型"><span class="nav-number">1.3.</span> <span class="nav-text">3 模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-基于attention的LSTM模型"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 基于attention的LSTM模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-基于图依赖分析"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 基于图依赖分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-多任务学习"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 多任务学习</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-实验"><span class="nav-number">1.4.</span> <span class="nav-text">4 实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1数据集"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-实验设置"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 实验设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-与现存的方法进行比较"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 与现存的方法进行比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-attention权重的可视化"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 attention权重的可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-结论"><span class="nav-number">1.5.</span> <span class="nav-text">5 结论</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Henry-Chen"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Henry-Chen</p>
+  <div class="site-description" itemprop="description">我的小屋，喝茶，读书</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_43433969" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43433969" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="music163player">
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=28566359&auto=0&height=66"></iframe>
+	</div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry-Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'JEmsj82S3MAb2DHmn';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'M3WV2SFKlhIfoqEBet4LwYnQ-gzGzoHsz',
+      appKey     : 'bDG2lPWGAJTx0Rm4vIAmkTln',
+      placeholder: "给我说两句话吧，ballball你了",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":275,"height":550},"mobile":{"show":false},"log":false});</script></body>
+</html>

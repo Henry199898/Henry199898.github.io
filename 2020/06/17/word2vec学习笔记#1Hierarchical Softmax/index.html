@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="word2vec学习笔记#1文章来自于码农场大佬的博文，做自己的摘抄笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&lt;学习笔记&gt; word2vec笔记（Hierarchical Softmax）">
+<meta property="og:url" content="http://yoursite.com/2020/06/17/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/index.html">
+<meta property="og:site_name" content="Henry ’Blog">
+<meta property="og:description" content="word2vec学习笔记#1文章来自于码农场大佬的博文，做自己的摘抄笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG82ZTVkOWxqMjE2YzBxa3doay5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191212223414310.png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d215NGpkbndqMjE0dzEyYTQydi5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29oazNwaTdqMjBrYTA0MnQ5MS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29xNW9lb2pqMjBwbTA1eXQ5YS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d293YzJvaTJqMjBxbTAybWpycy5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d295aWt5cDBqMjBmYzAza2dscy5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AwbXdzNWdqMjB6aTA4NmduOS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B0NHhnOHRqMjEyNjAzcTc1Ni5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B1czMzM3FqMjBiaTAyZ214NS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B3aXhha25qMjBuZTAya3Q5My5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B4ajYxd2pqMjBjbzAyazBzcy5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B6ajBtMHpqMjBsMjAyNnQ5MC5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3E1Y2Zxa25qMjBqZTAzcXQ5Mi5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FjZGR3dzdqMjBxNjA0MndmNC5qcGc?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FnejBlbHFqMjBwbTBxYXE1YS5qcGc?x-oss-process=image/format,png">
+<meta property="article:published_time" content="2020-06-17T10:10:32.902Z">
+<meta property="article:modified_time" content="2020-04-30T11:32:51.220Z">
+<meta property="article:author" content="Henry-Chen">
+<meta property="article:tag" content="word2vec">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png">
+
+<link rel="canonical" href="http://yoursite.com/2020/06/17/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title><学习笔记> word2vec笔记（Hierarchical Softmax） | Henry ’Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	<a href="https://github.com/Henry199898" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; left: 0; transform: scale(-1, 1);" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style></a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Henry ’Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-书籍">
+
+    <a href="/book/" rel="section"><i class="fa fa-tags fa-fw"></i>书籍</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/17/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="Henry-Chen">
+      <meta itemprop="description" content="我的小屋，喝茶，读书">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Henry ’Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          <学习笔记> word2vec笔记（Hierarchical Softmax）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-17 18:10:32" itemprop="dateCreated datePublished" datetime="2020-06-17T18:10:32+08:00">2020-06-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-30 19:32:51" itemprop="dateModified" datetime="2020-04-30T19:32:51+08:00">2020-04-30</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/06/17/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/06/17/word2vec%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0#1Hierarchical%20Softmax/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="word2vec学习笔记-1"><a href="#word2vec学习笔记-1" class="headerlink" title="word2vec学习笔记#1"></a>word2vec学习笔记#1</h1><p>文章来自于<strong><a href="https://www.hankcs.com/nlp/word2vec.html" target="_blank" rel="noopener">码农场</a></strong>大佬的博文，做自己的摘抄笔记。</p>
+<a id="more"></a>
+<h2 id="word2vec"><a href="#word2vec" class="headerlink" title="word2vec"></a>word2vec</h2><pre><code>word2vec作为神经概率语言模型的输入，其本身其实是神经概率模型的副产品，是为了通
+过神经网络学习某个语言模型而产生的中间结果。具体来说，“某个语言模型”指的是
+“CBOW”和“Skip-gram”。具体学习过程会用到两个降低复杂度的近似方法——Hierarchical 
+Softmax或Negative Sampling。两个模型乘以两种方法，一共有四种实现。</code></pre><h2 id="Hierarchical-Softmax"><a href="#Hierarchical-Softmax" class="headerlink" title="Hierarchical Softmax"></a>Hierarchical Softmax</h2><p><strong>模型共同点</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG8wdXd5ZHNqMjE2aTBpa2RpMy5qcGc?x-oss-process=image/format,png" alt="图一"><br><strong>两种模型的网络结构如下</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1dG82ZTVkOWxqMjE2YzBxa3doay5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上图中w(t)表示句子中t位置处的词语</p>
+<h3 id="CBOW"><a href="#CBOW" class="headerlink" title="CBOW"></a>CBOW</h3><p>原理：一种根据上下文词语预测当前空缺位置的概率的模型，如上左图。<br>学习目标是最大化下面的似然函数：<br><img src="https://img-blog.csdnimg.cn/20191212223414310.png" alt="在这里插入图片描述"><br>其中W为语料库中的认一个词。<br><strong>输入层</strong>是上下文的词语的词向量（现在是在训练CBOW模型，词向量只是个副产品，确切来说，是CBOW模型的一个参数。训练开始的时候，词向量是个<strong>随机值</strong>，随着训练的进行不断被更新）。<br><strong>输出层</strong>输出最可能的w。由于语料库中词汇量是固定的|C|个，所以上述过程其实可以看做一个多分类问题。给定特征，从|C|个分类中挑一个。</p>
+<p>由上输出层的分析可知，最后是对输出层的数据进行分类，下方用的<strong>Hierarchical Softmax</strong><br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d215NGpkbndqMjE0dzEyYTQydi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>非叶子节点就是一个分类器（感知机），用1或者0来代替分类的结果，每一个叶子节点即为语料库中的一个词语，可以通过上述的概率表述出条件概率   $P(w|context(w))$<br>引入下列符号：<br>1、$p^w$:从根节点到w对应的叶子节点的路径<br>2、$l^w$:路径包含的节点个数<br>3、$P_{1}^{w}$、$P_{2}^{w}$、$P_{3}^{w}$……$P_{l^w}^{w}$：为路径中的各个节点<br>4、$d_{2}^{w}$、$d_{3}^{w}$、$d_{4}^{w}$……$d_{l}^{w}$在零到一范围内，其中$d_{l}^{w}$表示第j个对应的编码（根节点无编码）<br>5、$\Theta _{1}^{w}$、$\Theta _{2}^{w}$、$\Theta _{3}^{w}$……$\Theta _{l^w}^{w}$为路径$p^w$中非叶节点对应的参数向量<br>得w的条件概率：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29oazNwaTdqMjBrYTA0MnQ5MS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>从根节点到叶节点经过了 $l^w$-1个节点，编码从下标2开始（根节点无编码），对应的参数向量下标从1开始（根节点为1）。</p>
+<p>每一项是一个逻辑斯谛回归：（即为每一个0或者1的选择都有着两个不同的概率，且二者的和为一）<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d29xNW9lb2pqMjBwbTA1eXQ5YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上式两种情况综合到一个公式中去：（下式中$d_{l}^{w}$有两种取值：0或者1）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzIuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d293YzJvaTJqMjBxbTAybWpycy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>目标函数取对数似然：（一种结果转化方式？）<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d295aWt5cDBqMjBmYzAza2dscy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>将上面几个公式结合得到如下：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AwbXdzNWdqMjB6aTA4NmduOS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>简化为：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>上式就是结果似然函数，将其最大化则得到我们最初需要通过CBOW预测的结果，将上式各项都取到最大化<br>每一项有两个参数，一个是每个节点的参数向量$\Theta <em>{j-1}^{w}$，另一个是输出层的输入$X</em>{w}$（即是中间层的输出结果转变为Hierarchical Softmax的输入）对这两个值求偏导：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B0NHhnOHRqMjEyNjAzcTc1Ni5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>因为有如下的性质<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzMuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B1czMzM3FqMjBiaTAyZ214NS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所以带入上式即可得到<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B3aXhha25qMjBuZTAya3Q5My5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>最终结果为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B4ajYxd2pqMjBjbzAyazBzcy5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$\Theta <em>{j-1}^{w}$的迭代公式即为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3B6ajBtMHpqMjBsMjAyNnQ5MC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>$X</em>{w}$偏导式为<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3AyYWhvYmxqMjB1ZzAyYWRnZS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>所有直接将 $\Theta <em>{j-1}^{w}$的偏导数中的$\Theta _{j-1}^{w}$替换为$X</em>{w}$，得到关于$X_{w}$的偏导数<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3E1Y2Zxa25qMjBqZTAzcXQ5Mi5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br>得到的是$X_{w}$的更新迭代，因为$X_{w}$并不是输入的向量，而是一个中间产物，所以必须把该结果向上传递至每个单词的词向量中：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzQuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FjZGR3dzdqMjBxNjA0MndmNC5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"><br><strong>重点：两个参数的更新伪代码</strong>：<br><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly93dzEuc2luYWltZy5jbi9sYXJnZS82Y2JiODY0NWd3MWY1d3FnejBlbHFqMjBwbTBxYXE1YS5qcGc?x-oss-process=image/format,png" alt="在这里插入图片描述"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/word2vec/" rel="tag"># word2vec</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/17/Unsupervised%20Machine%20Translation%20Using%20Monolingual%20Corpora%20Only%EF%BC%9A%E4%BB%85%E4%BD%BF%E7%94%A8%E5%8D%95%E8%AF%AD%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91/" rel="prev" title="<论文> Unsupervised Machine Translation Using Monolingual Corpora Only">
+      <i class="fa fa-chevron-left"></i> <论文> Unsupervised Machine Translation Using Monolingual Corpora Only
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/17/word2vec%E6%98%AF%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E5%90%91%E9%87%8F%E7%9A%84%EF%BC%88CBOW%E6%A8%A1%E5%9E%8B%EF%BC%89/" rel="next" title="<学习笔记> word2vec是如何得到向量的（CBOW模型）">
+      <学习笔记> word2vec是如何得到向量的（CBOW模型） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#word2vec学习笔记-1"><span class="nav-number">1.</span> <span class="nav-text">word2vec学习笔记#1</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#word2vec"><span class="nav-number">1.1.</span> <span class="nav-text">word2vec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hierarchical-Softmax"><span class="nav-number">1.2.</span> <span class="nav-text">Hierarchical Softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CBOW"><span class="nav-number">1.2.1.</span> <span class="nav-text">CBOW</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Henry-Chen"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Henry-Chen</p>
+  <div class="site-description" itemprop="description">我的小屋，喝茶，读书</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_43433969" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43433969" rel="noopener" target="_blank"><i class="fab fa-skype fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div id="music163player">
+	<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=28566359&auto=0&height=66"></iframe>
+	</div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Henry-Chen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+  <script>
+    (function(d, w, c) {
+      w.ChatraID = 'JEmsj82S3MAb2DHmn';
+      var s = d.createElement('script');
+      w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+      };
+      s.async = true;
+      s.src = 'https://call.chatra.io/chatra.js';
+      if (d.head) d.head.appendChild(s);
+    })(document, window, 'Chatra');
+  </script>
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'M3WV2SFKlhIfoqEBet4LwYnQ-gzGzoHsz',
+      appKey     : 'bDG2lPWGAJTx0Rm4vIAmkTln',
+      placeholder: "给我说两句话吧，ballball你了",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":275,"height":550},"mobile":{"show":false},"log":false});</script></body>
+</html>
